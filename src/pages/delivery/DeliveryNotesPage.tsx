@@ -28,12 +28,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { mockDataService } from '@/services/mockDataService';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { Truck, ChevronDown, Search } from 'lucide-react';
+import { Truck, ChevronDown, Search, Plus } from 'lucide-react';
 
 const DeliveryNotesPage = () => {
   const { checkPermission } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  
+  const canCreate = checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]);
   
   // Fetch delivery notes
   const { data: deliveryNotes = [], isLoading, error } = useQuery({
@@ -76,7 +78,14 @@ const DeliveryNotesPage = () => {
             Manage delivery documents for your clients
           </p>
         </div>
-        {/* This is handled via the Final Invoice page now */}
+        {canCreate && (
+          <Button asChild>
+            <Link to="/delivery-notes/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Delivery Note
+            </Link>
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -129,6 +138,14 @@ const DeliveryNotesPage = () => {
                   ? "No delivery notes found matching your criteria"
                   : "No delivery notes created yet"}
               </p>
+              {canCreate && !searchQuery && !statusFilter && (
+                <Button asChild variant="outline" className="mt-2">
+                  <Link to="/delivery-notes/new">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Your First Delivery Note
+                  </Link>
+                </Button>
+              )}
             </div>
           ) : (
             <div className="overflow-hidden rounded-md border">
