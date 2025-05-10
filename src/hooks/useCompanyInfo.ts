@@ -3,17 +3,14 @@ import { useState, useEffect } from 'react';
 import { CompanyInfo } from '@/types/company';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import { toast } from '@/components/ui/use-toast';
+import { useQuery } from '@tanstack/react-query';
 
 export const useCompanyInfo = () => {
-  const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const getCompanyInfo = async () => {
+  const { data: companyInfo, isLoading, error } = useQuery({
+    queryKey: ['companyInfo'],
+    queryFn: async () => {
       try {
-        setIsLoading(true);
-        const data = await fetchCompanyInfo();
-        setCompanyInfo(data);
+        return await fetchCompanyInfo();
       } catch (error) {
         console.error('Error fetching company info:', error);
         toast({
@@ -21,13 +18,10 @@ export const useCompanyInfo = () => {
           title: 'Error',
           description: 'Failed to load company information.',
         });
-      } finally {
-        setIsLoading(false);
+        throw error;
       }
-    };
-
-    getCompanyInfo();
-  }, []);
+    }
+  });
 
   return { companyInfo, isLoading };
 };

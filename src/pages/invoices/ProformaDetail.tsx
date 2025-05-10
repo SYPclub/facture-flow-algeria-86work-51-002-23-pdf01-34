@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -106,7 +105,10 @@ const proformaFormSchema = z.object({
         code: z.string(),
         unitprice: z.number(),
         taxrate: z.number(),
-      }).optional()
+      }).optional(),
+      totalExcl: z.number().optional(),
+      totalTax: z.number().optional(),
+      total: z.number().optional()
     })
   ).min(1, 'At least one item is required')
 });
@@ -227,15 +229,21 @@ const ProformaDetail = () => {
         quantity: 1,
         unitprice: 0,
         taxrate: 0,
-        discount: 0
+        discount: 0,
+        totalExcl: 0,
+        totalTax: 0,
+        total: 0
       }
     ]);
+    // Force a re-render to show the new item
+    setTimeout(() => calculateTotals(), 0);
   };
 
   const removeItem = (index: number) => {
     const currentItems = [...form.getValues('items')];
     currentItems.splice(index, 1);
     form.setValue('items', currentItems);
+    setTimeout(() => calculateTotals(), 0);
   };
 
   const updateItemProduct = (index: number, productId: string) => {
@@ -247,16 +255,20 @@ const ProformaDetail = () => {
         productId: productId,
         unitprice: product.unitprice,
         taxrate: product.taxrate,
-        product: product
+        product: product,
+        totalExcl: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100),
+        totalTax: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100) * (product.taxrate / 100),
+        total: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100) * (1 + (product.taxrate / 100))
       };
       form.setValue('items', items);
+      setTimeout(() => calculateTotals(), 0);
     }
   };
 
   const updateProformaMutation = useMutation({
     mutationFn: async (data) => {
       // First update the invoice basic details
-      await Br.updateProformaInvoice(id || '', {
+      const updatedInvoice = await updateProformaInvoice(id || '', {
         clientid: data.clientid,
         issuedate: data.issuedate,
         duedate: data.duedate,
@@ -291,17 +303,15 @@ const ProformaDetail = () => {
       const total = subtotal + taxTotal + stampTax;
 
       // Update the invoice with calculated totals
-      await Br.updateProformaInvoice(id || '', {
+      await updateProformaInvoice(id || '', {
         subtotal,
         taxtotal: taxTotal,
         stamp_tax: stampTax,
         total
       });
 
-      // Process items for database insertion
-      // Here we'd normally insert items into invoice_items table and link them
-      // For the mock service, we're updating through the service
-      return await mockDataService.Br.updateProformaInvoice(id || '', {
+      // Update invoice items through the mock service for now
+      return mockDataService.updateProformaInvoice(id || '', {
         ...data,
         items: processedItems,
         subtotal,

@@ -48,14 +48,15 @@ export const updateProformaInvoice = async (id: string, data: any) => {
       .eq('id', id);
     
     if (error) throw error;
-    return { success: true };
+    return data;
   } catch (error) {
     console.error('Error updating proforma invoice:', error);
     throw error;
   }
 };
 
-const Br = {
+// Export all functions as a named export
+export const Br = {
   updateProformaInvoice,
 };
 
