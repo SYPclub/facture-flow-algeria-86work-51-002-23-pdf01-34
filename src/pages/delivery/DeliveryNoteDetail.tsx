@@ -113,16 +113,17 @@ const DeliveryNoteDetail = () => {
   
   const deliveryNote = isNewNote ? null : deliveryNotes.find(n => n.id === id);
 
+  // Updated form initialization to properly include the transportation details
   const form = useForm({
     resolver: zodResolver(deliveryNoteFormSchema),
     defaultValues: {
-      notes: deliveryNote?.notes || '',
-      driver_name: deliveryNote?.driver_name || '',
-      truck_id: deliveryNote?.truck_id || '',
-      delivery_company: deliveryNote?.delivery_company || '',
-      issuedate: deliveryNote?.issuedate || '',
-      deliveryDate: deliveryNote?.deliveryDate || '',
-      items: deliveryNote?.items || []
+      notes: '',
+      driver_name: '',
+      truck_id: '',
+      delivery_company: '',
+      issuedate: '',
+      deliveryDate: '',
+      items: []
     },
     values: {
       notes: deliveryNote?.notes || '',
@@ -134,6 +135,21 @@ const DeliveryNoteDetail = () => {
       items: deliveryNote?.items || []
     }
   });
+
+  // Update form values when deliveryNote changes
+  React.useEffect(() => {
+    if (deliveryNote) {
+      form.reset({
+        notes: deliveryNote.notes || '',
+        driver_name: deliveryNote.driver_name || '',
+        truck_id: deliveryNote.truck_id || '',
+        delivery_company: deliveryNote.delivery_company || '',
+        issuedate: deliveryNote.issuedate || '',
+        deliveryDate: deliveryNote.deliveryDate || '',
+        items: deliveryNote.items || []
+      });
+    }
+  }, [deliveryNote, form]);
 
   const updateDeliveryNoteMutation = useMutation({
     mutationFn: (data) => updateDeliveryNote(id || '', data),
