@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -27,6 +26,8 @@ import {
   Save,
   Check,
   Trash2,
+  Plus,
+  X,
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -55,6 +56,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { InvoiceItem, Product } from '@/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
@@ -63,6 +72,20 @@ const deliveryNoteFormSchema = z.object({
   delivery_company: z.string().optional(),
   issuedate: z.string(),
   deliveryDate: z.string().optional(),
+  items: z.array(
+    z.object({
+      id: z.string(),
+      productId: z.string().min(1, 'Product is required'),
+      quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
+      product: z.object({
+        name: z.string(),
+        description: z.string(),
+        code: z.string(),
+        unitprice: z.number(),
+        taxrate: z.number(),
+      }).optional()
+    })
+  ).min(1, 'At least one item is required')
 });
 
 const DeliveryNoteDetail = () => {
@@ -82,6 +105,11 @@ const DeliveryNoteDetail = () => {
     queryFn: () => mockDataService.getDeliveryNotes(),
     enabled: !isNewNote,
   });
+
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => mockDataService.getProducts(),
+  });
   
   const deliveryNote = isNewNote ? null : deliveryNotes.find(n => n.id === id);
 
@@ -94,6 +122,7 @@ const DeliveryNoteDetail = () => {
       delivery_company: deliveryNote?.delivery_company || '',
       issuedate: deliveryNote?.issuedate || '',
       deliveryDate: deliveryNote?.deliveryDate || '',
+      items: deliveryNote?.items || []
     },
     values: {
       notes: deliveryNote?.notes || '',
@@ -102,6 +131,7 @@ const DeliveryNoteDetail = () => {
       delivery_company: deliveryNote?.delivery_company || '',
       issuedate: deliveryNote?.issuedate || '',
       deliveryDate: deliveryNote?.deliveryDate || '',
+      items: deliveryNote?.items || []
     }
   });
 
@@ -188,6 +218,40 @@ const DeliveryNoteDetail = () => {
       default:
         return 'outline';
     }
+  };
+
+  const addItem = () => {
+    const currentItems = form.getValues('items') || [];
+    form.setValue('items', [
+      ...currentItems,
+      {
+        id: Math.random().toString(36).substring(2, 15),
+        productId: '',
+        quantity: 1
+      }
+    ]);
+  };
+
+  const removeItem = (index: number) => {
+    const currentItems = [...form.getValues('items')];
+    if (currentItems.length <= 1) {
+      toast({
+        variant: 'destructive',
+        title: 'Cannot Remove',
+        description: 'At least one item is required'
+      });
+      return;
+    }
+    currentItems.splice(index, 1);
+    form.setValue('items', currentItems);
+  };
+
+  const updateItemProduct = (index: number, productId: string) => {
+    const product = products.find(p => p.id === productId);
+    const items = [...form.getValues('items')];
+    items[index].productId = productId;
+    items[index].product = product;
+    form.setValue('items', items);
   };
 
   const onSubmit = (data) => {
@@ -405,9 +469,14 @@ const DeliveryNoteDetail = () => {
               </Card>
               
               <Card>
-                <CardHeader>
-                  <CardTitle>Items for Delivery</CardTitle>
-                  <CardDescription>Products to be delivered</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>Items for Delivery</CardTitle>
+                    <CardDescription>Products to be delivered</CardDescription>
+                  </div>
+                  <Button type="button" onClick={addItem} variant="outline" size="sm">
+                    <Plus className="mr-2 h-4 w-4" /> Add Item
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-hidden rounded-md border">
@@ -416,25 +485,72 @@ const DeliveryNoteDetail = () => {
                         <tr className="border-b bg-muted/50">
                           <th className="px-4 py-2 text-left">Product</th>
                           <th className="px-4 py-2 text-right">Quantity</th>
-                          <th className="px-4 py-2 text-left">Unit</th>
-                          <th className="px-4 py-2 text-left">Description</th>
+                          <th className="px-4 py-2 text-left w-[100px]"></th>
                         </tr>
                       </thead>
                       <tbody>
-                        {deliveryNote.items.map((item) => (
-                          <tr key={item.id} className="border-b">
-                            <td className="px-4 py-2 font-medium">
-                              {item.product?.name}
-                              <div className="text-xs text-muted-foreground">Code: {item.product?.code}</div>
+                        {form.getValues('items')?.map((item, index) => (
+                          <tr key={item.id || index} className="border-b">
+                            <td className="px-4 py-2">
+                              <Select
+                                value={item.productId}
+                                onValueChange={(value) => updateItemProduct(index, value)}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a product" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {products.map(product => (
+                                    <SelectItem key={product.id} value={product.id}>
+                                      {product.name} ({product.code})
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              {form.formState.errors.items?.[index]?.productId && (
+                                <p className="text-xs text-destructive mt-1">
+                                  Product is required
+                                </p>
+                              )}
                             </td>
-                            <td className="px-4 py-2 text-right">{item.quantity}</td>
-                            <td className="px-4 py-2">Unit</td>
-                            <td className="px-4 py-2 text-sm text-muted-foreground">{item.product?.description}</td>
+                            <td className="px-4 py-2">
+                              <Input
+                                type="number"
+                                min="1"
+                                value={item.quantity}
+                                onChange={(e) => {
+                                  const items = [...form.getValues('items')];
+                                  items[index].quantity = parseInt(e.target.value) || 1;
+                                  form.setValue('items', items);
+                                }}
+                                className="text-right"
+                              />
+                              {form.formState.errors.items?.[index]?.quantity && (
+                                <p className="text-xs text-destructive mt-1">
+                                  Valid quantity is required
+                                </p>
+                              )}
+                            </td>
+                            <td className="px-4 py-2 text-center">
+                              <Button 
+                                type="button"
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => removeItem(index)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
+                  {form.formState.errors.items && !Array.isArray(form.formState.errors.items) && (
+                    <p className="text-xs text-destructive mt-1">
+                      {form.formState.errors.items.message}
+                    </p>
+                  )}
                   
                   <div className="mt-6">
                     <FormField
