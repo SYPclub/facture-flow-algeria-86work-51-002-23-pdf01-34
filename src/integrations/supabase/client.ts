@@ -42,13 +42,14 @@ export const rollbackTransaction = async () => {
 // Update proforma invoice functions
 export const updateProformaInvoice = async (id: string, data: any) => {
   try {
-    const { error } = await supabase
+    const { data: result, error } = await supabase
       .from('proforma_invoices')
       .update(data)
-      .eq('id', id);
+      .eq('id', id)
+      .select();
     
     if (error) throw error;
-    return data;
+    return result;
   } catch (error) {
     console.error('Error updating proforma invoice:', error);
     throw error;

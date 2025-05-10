@@ -35,9 +35,10 @@ import {
   supabase, 
   updateProformaInvoiceItems,
   deleteProformaInvoice,
-  undoProformaConversion 
+  undoProformaConversion,
+  updateProformaInvoice,
+  Br
 } from '@/integrations/supabase/client';
-import Br from  '@/integrations/supabase/client';
 import {
   useAuth,
   UserRole
@@ -311,7 +312,7 @@ const ProformaDetail = () => {
       });
 
       // Update invoice items through the mock service for now
-      return mockDataService.updateProformaInvoice(id || '', {
+      return await mockDataService.updateProformaInvoice(id || '', {
         ...data,
         items: processedItems,
         subtotal,
