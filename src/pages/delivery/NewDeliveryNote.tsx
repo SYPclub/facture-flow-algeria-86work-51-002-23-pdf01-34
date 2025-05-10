@@ -86,6 +86,9 @@ const NewDeliveryNote = () => {
   const { checkPermission } = useAuth();
   const canCreate = checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]);
   
+  // Added state to force re-render when items update
+  const [itemsState, setItemsState] = useState<any[]>([]);
+  
   const queryParams = new URLSearchParams(location.search);
   const invoiceId = queryParams.get('invoiceId');
   
@@ -137,26 +140,41 @@ const NewDeliveryNote = () => {
           product: item.product
         }));
         form.setValue('items', items);
+        setItemsState(items);
       }
     }
   }, [invoice, form]);
+  
+  // Update itemsState when form values change
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name?.includes('items')) {
+        setItemsState([...form.getValues('items')]);
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const addItem = () => {
     const currentItems = form.getValues('items') || [];
-    form.setValue('items', [
+    const newItems = [
       ...currentItems,
       {
         id: generateId(),
         productId: '',
         quantity: 1
       }
-    ]);
+    ];
+    form.setValue('items', newItems);
+    setItemsState(newItems);
   };
 
   const removeItem = (index: number) => {
     const currentItems = [...form.getValues('items')];
     currentItems.splice(index, 1);
     form.setValue('items', currentItems);
+    setItemsState([...currentItems]);
   };
 
   const updateItemProduct = (index: number, productId: string) => {
@@ -165,6 +183,7 @@ const NewDeliveryNote = () => {
     items[index].productId = productId;
     items[index].product = product;
     form.setValue('items', items);
+    setItemsState([...items]);
   };
 
   const createMutation = useMutation({
@@ -410,7 +429,7 @@ const NewDeliveryNote = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {form.getValues('items')?.map((item, index) => (
+                    {itemsState.map((item, index) => (
                       <TableRow key={item.id}>
                         <TableCell>
                           <Select
@@ -418,7 +437,9 @@ const NewDeliveryNote = () => {
                             onValueChange={(value) => updateItemProduct(index, value)}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a product" />
+                              <SelectValue placeholder="Select a product">
+                                {item.productId && products.find(p => p.id === item.productId)?.name}
+                              </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                               {products.map(product => (
@@ -438,11 +459,12 @@ const NewDeliveryNote = () => {
                           <Input
                             type="number"
                             min="1"
-                            defaultValue={item.quantity}
+                            value={item.quantity}
                             onChange={(e) => {
                               const items = [...form.getValues('items')];
                               items[index].quantity = parseInt(e.target.value) || 1;
                               form.setValue('items', items);
+                              setItemsState([...items]);
                             }}
                           />
                           {form.formState.errors.items?.[index]?.quantity && (
