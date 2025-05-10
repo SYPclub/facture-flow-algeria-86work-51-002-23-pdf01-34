@@ -311,7 +311,7 @@ const ProformaDetail = () => {
         total
       });
 
-      // Update invoice items through the mock service for now
+      // Use the mockDataService to update the proforma with all data including items
       return await mockDataService.updateProformaInvoice(id || '', {
         ...data,
         items: processedItems,

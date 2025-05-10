@@ -471,7 +471,93 @@ class MockDataService {
     }
   }
 
-  async updateProformaStatus(id: string, status: 'draft' | 'sent' | 'approved' | 'rejected'): Promise<{ id: string; status: string }> {
+  async updateProformaInvoice(id: string, data: any): Promise<ProformaInvoice | null> {
+    try {
+      await beginTransaction();
+      
+      try {
+        // Update the basic proforma invoice details
+        const { error: invoiceError } = await supabase
+          .from('proforma_invoices')
+          .update({
+            clientid: data.clientid,
+            issuedate: data.issuedate,
+            duedate: data.duedate,
+            notes: data.notes,
+            payment_type: data.payment_type,
+            subtotal: data.subtotal,
+            taxtotal: data.taxTotal,
+            stamp_tax: data.stampTax,
+            total: data.total,
+            status: data.status
+          })
+          .eq('id', id);
+        
+        if (invoiceError) throw invoiceError;
+        
+        if (data.items && Array.isArray(data.items)) {
+          // First, handle the existing items
+          const { data: existingItems, error: fetchError } = await supabase
+            .from('proforma_invoice_items')
+            .select('*, invoice_items(*)')
+            .eq('proformainvoiceid', id);
+          
+          if (fetchError) throw fetchError;
+          
+          // Delete existing items
+          const { error: deleteError } = await supabase
+            .from('proforma_invoice_items')
+            .delete()
+            .eq('proformainvoiceid', id);
+          
+          if (deleteError) throw deleteError;
+          
+          // Create new items
+          for (const item of data.items) {
+            // Create or update the invoice item
+            const { data: itemData, error: itemError } = await supabase
+              .from('invoice_items')
+              .insert({
+                productid: item.productId,
+                quantity: item.quantity,
+                unitprice: item.unitprice,
+                taxrate: item.taxrate,
+                discount: item.discount || 0,
+                totalexcl: item.totalExcl,
+                totaltax: item.totalTax,
+                total: item.total
+              })
+              .select()
+              .single();
+            
+            if (itemError) throw itemError;
+            
+            // Link the item to the proforma invoice
+            const { error: linkError } = await supabase
+              .from('proforma_invoice_items')
+              .insert({
+                proformainvoiceid: id,
+                itemid: itemData.id
+              });
+            
+            if (linkError) throw linkError;
+          }
+        }
+        
+        await commitTransaction();
+        return await this.getProformaInvoiceById(id);
+        
+      } catch (error) {
+        await rollbackTransaction();
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error updating proforma invoice:', error);
+      throw error;
+    }
+  }
+
+  async updateProformaStatus(status: 'draft' | 'sent' | 'approved' | 'rejected'): Promise<{ id: string; status: string }> {
     const { error } = await supabase
       .from('proforma_invoices')
       .update({ status })
