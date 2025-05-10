@@ -855,7 +855,7 @@ class MockDataService {
       }
       
       await commitTransaction();
-      return data as FinalInvoice;
+      return this.getFinalInvoiceById(id);
     } catch (error) {
       console.error('Error marking invoice as paid:', error);
       await rollbackTransaction();

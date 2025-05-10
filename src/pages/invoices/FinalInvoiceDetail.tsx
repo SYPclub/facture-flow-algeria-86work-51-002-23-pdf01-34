@@ -80,8 +80,8 @@ const finalInvoiceFormSchema = z.object({
   issuedate: z.string(),
   duedate: z.string(),
   status: z.string(),
-  paymentDate: z.string().optional(),
-  paymentReference: z.string().optional(),
+  paymentdate: z.string().optional(),
+  paymentreference: z.string().optional(),
 });
 
 const FinalInvoiceDetail = () => {
@@ -105,21 +105,21 @@ const FinalInvoiceDetail = () => {
       issuedate: invoice?.issuedate || '',
       duedate: invoice?.duedate || '',
       status: invoice?.status || 'unpaid',
-      paymentDate: invoice?.paymentDate || '',
-      paymentReference: invoice?.paymentReference || '',
+      paymentdate: invoice?.paymentDate || '',
+      paymentreference: invoice?.paymentReference || '',
     },
     values: {
       notes: invoice?.notes || '',
       issuedate: invoice?.issuedate || '',
       duedate: invoice?.duedate || '',
       status: invoice?.status || 'unpaid',
-      paymentDate: invoice?.paymentDate || '',
-      paymentReference: invoice?.paymentReference || '',
+      paymentdate: invoice?.paymentDate || '',
+      paymentreference: invoice?.paymentReference || '',
     }
   });
 
   const updateInvoiceMutation = useMutation({
-    mutationFn: (data) => updateFinalInvoice(id || '', data),
+    mutationFn: (data: any) => updateFinalInvoice(id || '', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
       toast({
@@ -159,7 +159,7 @@ const FinalInvoiceDetail = () => {
   });
 
   const statusUpdateMutation = useMutation({
-    mutationFn: (data) => {
+    mutationFn: (data: any) => {
       return updateFinalInvoice(id || '', data);
     },
     onSuccess: () => {
@@ -179,14 +179,15 @@ const FinalInvoiceDetail = () => {
     }
   });
 
-  const handleUpdateStatus = (status: 'paid' | 'unpaid' | 'cancelled' | 'credited', additionalData = {}) => {
+  const handleUpdateStatus = (status: 'unpaid' | 'paid' | 'cancelled' | 'credited', additionalData = {}) => {
     if (!id) return;
-    statusUpdateMutation.mutate({ status, ...additionalData });
+    const updateData = { status, ...additionalData };
+    statusUpdateMutation.mutate(updateData);
   };
 
   const handleMarkAsPaid = () => {
-    const paymentDate = new Date().toISOString().split('T')[0];
-    handleUpdateStatus('paid', { paymentDate });
+    const paymentdate = new Date().toISOString().split('T')[0];
+    handleUpdateStatus('paid', { paymentdate });
   };
 
   const handleExportPDF = () => {
@@ -215,7 +216,7 @@ const FinalInvoiceDetail = () => {
     deleteInvoiceMutation.mutate();
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: any) => {
     if (!id) return;
     updateInvoiceMutation.mutate(data);
   };
@@ -397,7 +398,7 @@ const FinalInvoiceDetail = () => {
                   <>
                     <FormField
                       control={form.control}
-                      name="paymentDate"
+                      name="paymentdate"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Payment Date</FormLabel>
@@ -411,7 +412,7 @@ const FinalInvoiceDetail = () => {
                     
                     <FormField
                       control={form.control}
-                      name="paymentReference"
+                      name="paymentreference"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Payment Reference</FormLabel>
@@ -715,11 +716,11 @@ const FinalInvoiceDetail = () => {
                       <AlertDialogAction
                         onClick={() => {
                           const paymentRef = (document.getElementById('paymentReference') as HTMLInputElement)?.value;
-                          const paymentDate = new Date().toISOString().split('T')[0];
+                          const paymentdate = new Date().toISOString().split('T')[0];
                           const data = {
                             status: 'paid',
-                            paymentDate,
-                            ...(paymentRef ? { paymentReference: paymentRef } : {})
+                            paymentdate,
+                            ...(paymentRef ? { paymentreference: paymentRef } : {})
                           };
                           statusUpdateMutation.mutate(data);
                         }}
@@ -807,7 +808,7 @@ const FinalInvoiceDetail = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => handleUpdateStatus('unpaid', { paymentDate: null, paymentReference: null })}
+                        onClick={() => handleUpdateStatus('unpaid', { paymentdate: null, paymentreference: null })}
                       >
                         Confirm
                       </AlertDialogAction>

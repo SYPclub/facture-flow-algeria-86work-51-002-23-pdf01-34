@@ -1,4 +1,3 @@
-
 // Base types for our domain models
 
 export interface Client {
@@ -65,8 +64,8 @@ export interface ProformaInvoice extends BaseInvoice {
 export interface FinalInvoice extends BaseInvoice {
   status: 'unpaid' | 'paid' | 'cancelled' | 'credited';
   proformaId?: string; // Reference to the source proforma invoice
-  paymentDate?: string;
-  paymentReference?: string;
+  paymentdate?: string;
+  paymentreference?: string;
 }
 
 export interface DeliveryNote {
