@@ -317,9 +317,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     `Address: ${deliveryNote.client?.address || ''}`,
     `Ville: ${deliveryNote.client?.city || ''}, ${deliveryNote.client?.country || ''}`,
     `Telephone: ${deliveryNote.client?.phone || ''} , 
-    Email: ${deliveryNote.client?.email || ''} `,
-       
-    .
+    Email: ${deliveryNote.client?.email || ''} `
   ], 14, 75);
   
   pdf.setFontSize(10);
@@ -329,8 +327,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     `Delivery Date: ${deliveryNote.deliverydate ? formatDate(deliveryNote.deliverydate) : 'Not delivered yet'}`
   ], 140, 75);
 
-  pdf.setFontSize(13);
-  pdf.text('  ', 14, 95);
+   
   // Transportation details
   pdf.setFontSize(13);
   pdf.text('Transportation Details:', 14, 97);
