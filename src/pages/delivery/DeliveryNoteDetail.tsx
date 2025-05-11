@@ -150,7 +150,20 @@ const DeliveryNoteDetail = () => {
   }, [deliveryNote, form]);
 
   const updateDeliveryNoteMutation = useMutation({
-    mutationFn: (data) => updateDeliveryNote(id || '', data),
+    mutationFn: (data) => {
+      // Make sure we're only sending valid fields to the delivery_notes table
+      const { notes, driver_name, truck_id, delivery_company, issuedate, deliverydate, items } = data;
+      const deliveryNoteData = {
+        notes,
+        driver_name,
+        truck_id,
+        delivery_company,
+        issuedate,
+        deliverydate,
+        items // This will be handled separately in the updateDeliveryNote function
+      };
+      return updateDeliveryNote(id || '', deliveryNoteData);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
       toast({
