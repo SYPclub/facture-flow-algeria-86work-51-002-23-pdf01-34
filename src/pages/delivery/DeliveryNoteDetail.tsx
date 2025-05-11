@@ -71,7 +71,7 @@ const deliveryNoteFormSchema = z.object({
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   issuedate: z.string(),
-  deliveryDate: z.string().optional(),
+  deliverydate: z.string().optional(),
   items: z.array(
     z.object({
       id: z.string(),
@@ -128,7 +128,7 @@ const DeliveryNoteDetail = () => {
       truck_id: '',
       delivery_company: '',
       issuedate: '',
-      deliveryDate: '',
+      deliverydate: '',
       items: []
     }
   });
@@ -143,7 +143,7 @@ const DeliveryNoteDetail = () => {
         truck_id: deliveryNote.truck_id || '',
         delivery_company: deliveryNote.delivery_company || '',
         issuedate: deliveryNote.issuedate || '',
-        deliveryDate: deliveryNote.deliveryDate || '',
+        deliverydate: deliveryNote.deliverydate || '',
         items: deliveryNote.items || []
       });
     }
@@ -172,7 +172,7 @@ const DeliveryNoteDetail = () => {
   const markAsDeliveredMutation = useMutation({
     mutationFn: () => updateDeliveryNote(id || '', { 
       status: 'delivered', 
-      deliveryDate: new Date().toISOString().split('T')[0] 
+      deliverydate: new Date().toISOString().split('T')[0] 
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
@@ -400,7 +400,7 @@ const DeliveryNoteDetail = () => {
                       
                       <FormField
                         control={form.control}
-                        name="deliveryDate"
+                        name="deliverydate"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Delivery Date (optional)</FormLabel>
@@ -648,7 +648,7 @@ const DeliveryNoteDetail = () => {
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
-                      <span>{deliveryNote.deliveryDate || 'Not delivered yet'}</span>
+                      <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Status:</span>

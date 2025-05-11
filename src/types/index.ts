@@ -76,7 +76,7 @@ export interface DeliveryNote {
   clientid: string;
   client?: Client;
   issuedate: string;
-  deliveryDate?: string;
+  deliverydate?: string;
   items: InvoiceItem[];
   notes: string;
   status: 'pending' | 'delivered' | 'cancelled';

@@ -323,7 +323,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.text([
     `Delivery Number: ${deliveryNote.number}`,
     `Issue Date: ${formatDate(deliveryNote.issuedate)}`,
-    `Delivery Date: ${deliveryNote.deliveryDate ? formatDate(deliveryNote.deliveryDate) : 'Not delivered yet'}`
+    `Delivery Date: ${deliveryNote.deliverydate ? formatDate(deliveryNote.deliverydate) : 'Not delivered yet'}`
   ], 140, 75);
   
   // Transportation details
