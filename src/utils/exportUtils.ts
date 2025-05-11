@@ -316,7 +316,10 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     `NIF: ${deliveryNote.client?.taxid || ''}`,
     `Address: ${deliveryNote.client?.address || ''}`,
     `Ville: ${deliveryNote.client?.city || ''}, ${deliveryNote.client?.country || ''}`,
-    `Telephone: ${deliveryNote.client?.phone || ''} , Email: ${deliveryNote.client?.email || ''} `
+    `Telephone: ${deliveryNote.client?.phone || ''} , 
+    Email: ${deliveryNote.client?.email || ''} `,
+       
+    .
   ], 14, 75);
   
   pdf.setFontSize(10);
