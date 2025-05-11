@@ -120,7 +120,6 @@ export type Database = {
           createdat: string | null
           delivery_company: string | null
           deliverydate: string | null
-          drivername: string | null
           finalinvoiceid: string | null
           id: string
           issuedate: string
@@ -129,6 +128,7 @@ export type Database = {
           status: string
           truck_id: string | null
           updatedat: string | null
+          drivername: string | null
         }
         Insert: {
           clientid: string
