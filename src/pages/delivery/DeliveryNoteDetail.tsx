@@ -545,7 +545,7 @@ const DeliveryNoteDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {items.map((item, index) =>  (
+                        {form.watch('items')?.map((item, index) => (
                           <tr key={item.id || index} className="border-b">
                             <td className="px-4 py-2">
                               <Select
