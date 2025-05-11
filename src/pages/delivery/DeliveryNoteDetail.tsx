@@ -70,7 +70,6 @@ import {
 } from '@/components/ui/select';
 
 
- 
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
@@ -266,21 +265,25 @@ const DeliveryNoteDetail = () => {
 
   const addItem = () => {
     const currentItems = form.getValues('items') || [];
-    form.setValue('items', [
-      ...currentItems,
-      {
-        id: Math.random().toString(36).substring(2, 15),
-        productId: '',
-        quantity: 1,
-        unitprice: 0,
-        taxrate: 0,
-        discount: 0,
-        totalExcl: 0,
-        totalTax: 0,
-        total: 0
-      }
-    ]);
+    const newItem = {
+      id: Math.random().toString(36).substring(2, 15),
+      productId: '',
+      quantity: 1,
+      unitprice: 0,
+      taxrate: 0,
+      discount: 0,
+      totalExcl: 0,
+      totalTax: 0,
+      total: 0,
+    };
+
+    form.setValue('items', [...currentItems, newItem], {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
+
 
   const removeItem = (index: number) => {
     const currentItems = [...form.getValues('items')];
@@ -293,7 +296,11 @@ const DeliveryNoteDetail = () => {
       return;
     }
     currentItems.splice(index, 1);
-    form.setValue('items', currentItems);
+    form.setValue('items', currentItems, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
 
   const updateItemProduct = (index: number, productId: string) => {
@@ -544,7 +551,7 @@ const DeliveryNoteDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(form.watch('items') || []).map((item, index) => (
+                        {form.watch('items')?.map((item, index) => (
                           <tr key={item.id || index} className="border-b">
                             <td className="px-4 py-2">
                               <Select
@@ -562,33 +569,30 @@ const DeliveryNoteDetail = () => {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              {form.formState.errors.items?.[index]?.productId && (
+                              {form.formState.errors.items?.[index]?.productId?.message && (
                                 <p className="text-xs text-destructive mt-1">
                                   Product is required
                                 </p>
                               )}
                             </td>
-
                             <td className="px-4 py-2">
                               <Input
                                 type="number"
                                 min="1"
                                 value={item.quantity}
                                 onChange={(e) => {
-                                  const value = Number(e.target.value) || 1;
                                   const items = [...form.getValues('items')];
-                                  items[index].quantity = value;
+                                  items[index].quantity = parseInt(e.target.value) || 1;
                                   form.setValue('items', items);
                                 }}
                                 className="text-right"
                               />
-                              {form.formState.errors.items?.[index]?.quantity && (
+                              {form.formState.errors.items?.[index]?.quantity?.message && (
                                 <p className="text-xs text-destructive mt-1">
                                   Valid quantity is required
                                 </p>
                               )}
                             </td>
-
                             <td className="px-4 py-2 text-center">
                               <Button 
                                 type="button"
@@ -601,7 +605,6 @@ const DeliveryNoteDetail = () => {
                             </td>
                           </tr>
                         ))}
-
                       </tbody>
                     </table>
                   </div>
