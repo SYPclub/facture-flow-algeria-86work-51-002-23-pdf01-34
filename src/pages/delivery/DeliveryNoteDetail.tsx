@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -95,6 +96,8 @@ const deliveryNoteFormSchema = z.object({
   ).min(1, 'At least one item is required')
 });
 
+type DeliveryNoteFormValues = z.infer<typeof deliveryNoteFormSchema>;
+
 const DeliveryNoteDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -121,7 +124,7 @@ const DeliveryNoteDetail = () => {
   const deliveryNote = isNewNote ? null : deliveryNotes.find(n => n.id === id);
 
   // Initialize form with empty values
-  const form = useForm({
+  const form = useForm<DeliveryNoteFormValues>({
     resolver: zodResolver(deliveryNoteFormSchema),
     defaultValues: {
       notes: '',
@@ -151,7 +154,7 @@ const DeliveryNoteDetail = () => {
   }, [deliveryNote, form]);
 
   const updateDeliveryNoteMutation = useMutation({
-    mutationFn: (data) => {
+    mutationFn: (data: DeliveryNoteFormValues) => {
       // Make sure we're only sending valid fields to the delivery_notes table
       const { notes, drivername, truck_id, delivery_company, issuedate, deliverydate, items } = data;
       const deliveryNoteData = {
@@ -163,7 +166,9 @@ const DeliveryNoteDetail = () => {
         deliverydate,
         items // This will be handled separately in the updateDeliveryNote function
       };
-      return updateDeliveryNote(id || '', deliveryNoteData);
+      
+      if (!id) throw new Error('No delivery note ID provided');
+      return updateDeliveryNote(id, deliveryNoteData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
@@ -184,10 +189,13 @@ const DeliveryNoteDetail = () => {
   });
 
   const markAsDeliveredMutation = useMutation({
-    mutationFn: () => updateDeliveryNote(id || '', { 
-      status: 'delivered', 
-      deliverydate: new Date().toISOString().split('T')[0] 
-    }),
+    mutationFn: () => {
+      if (!id) throw new Error('No delivery note ID provided');
+      return updateDeliveryNote(id, { 
+        status: 'delivered', 
+        deliverydate: new Date().toISOString().split('T')[0] 
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
       toast({
@@ -206,7 +214,10 @@ const DeliveryNoteDetail = () => {
   });
 
   const deleteDeliveryNoteMutation = useMutation({
-    mutationFn: () => deleteDeliveryNote(id || ''),
+    mutationFn: () => {
+      if (!id) throw new Error('No delivery note ID provided');
+      return deleteDeliveryNote(id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
       toast({
@@ -288,7 +299,7 @@ const DeliveryNoteDetail = () => {
     form.setValue('items', items);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: DeliveryNoteFormValues) => {
     if (!id) return;
     updateDeliveryNoteMutation.mutate(data);
   };
@@ -541,7 +552,7 @@ const DeliveryNoteDetail = () => {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              {form.formState.errors.items?.[index]?.productId && (
+                              {form.formState.errors.items?.[index]?.productId?.message && (
                                 <p className="text-xs text-destructive mt-1">
                                   Product is required
                                 </p>
@@ -559,7 +570,7 @@ const DeliveryNoteDetail = () => {
                                 }}
                                 className="text-right"
                               />
-                              {form.formState.errors.items?.[index]?.quantity && (
+                              {form.formState.errors.items?.[index]?.quantity?.message && (
                                 <p className="text-xs text-destructive mt-1">
                                   Valid quantity is required
                                 </p>
@@ -663,7 +674,7 @@ const DeliveryNoteDetail = () => {
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
                        
-                      <span>{deliveryNote.drivername || 'Not delivered yet'}</span>
+                      <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Status:</span>
@@ -695,37 +706,29 @@ const DeliveryNoteDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {deliveryNote.drivername && (
-                    <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground flex items-center">
-                        <User className="mr-2 h-4 w-4" />
-                        Driver:
-                      </span>
-                      <span>{deliveryNote.drivername || 'Not specified'}</span>
-                    </div>
-                  )}
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      Driver:
+                    </span>
+                    <span>{deliveryNote.drivername || 'Not specified'}</span>
+                  </div>
                   
-                  {deliveryNote.truck_id && (
-                    <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground flex items-center">
-                        <Truck className="mr-2 h-4 w-4" />
-                        Truck ID:
-                      </span>
-                      <span>{deliveryNote.truck_id || 'Not specified'}</span>
-                    </div>
-                  )}
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <Truck className="mr-2 h-4 w-4" />
+                      Truck ID:
+                    </span>
+                    <span>{deliveryNote.truck_id || 'Not specified'}</span>
+                  </div>
                   
-                  {deliveryNote.delivery_company && (
-                    <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground flex items-center">
-                        <Building className="mr-2 h-4 w-4" />
-                        Delivery Company:
-                      </span>
-                      <span>{deliveryNote.delivery_company || 'Not specified'}</span>
-                    </div>
-                  )}
-                  
-                  
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <Building className="mr-2 h-4 w-4" />
+                      Delivery Company:
+                    </span>
+                    <span>{deliveryNote.delivery_company || 'Not specified'}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
