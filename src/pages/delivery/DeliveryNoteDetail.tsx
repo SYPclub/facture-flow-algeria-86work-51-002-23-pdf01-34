@@ -662,6 +662,7 @@ const DeliveryNoteDetail = () => {
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
                       <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
+                      <span>{deliveryNote.driver_name}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Status:</span>
@@ -699,7 +700,7 @@ const DeliveryNoteDetail = () => {
                         <User className="mr-2 h-4 w-4" />
                         Driver:
                       </span>
-                      <span>{deliveryNote.deliverydate}</span>
+                      <span>{deliveryNote.driver_name}</span>
                     </div>
                   )}
                   
