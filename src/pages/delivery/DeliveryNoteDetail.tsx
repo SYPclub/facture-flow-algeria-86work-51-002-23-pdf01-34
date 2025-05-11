@@ -699,7 +699,7 @@ const DeliveryNoteDetail = () => {
                         <User className="mr-2 h-4 w-4" />
                         Driver:
                       </span>
-                      <span>{deliveryNote.driver_name}</span>
+                      <span>{deliveryNote.deliverydate}</span>
                     </div>
                   )}
                   
