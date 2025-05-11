@@ -333,7 +333,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.text('  ', 14, 95);
   // Transportation details
   pdf.setFontSize(13);
-  pdf.text('Transportation Details:', 14, 95);
+  pdf.text('Transportation Details:', 14, 97);
   pdf.setFontSize(10);
   
   const transportDetails = [];
