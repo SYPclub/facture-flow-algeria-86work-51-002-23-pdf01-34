@@ -265,25 +265,21 @@ const DeliveryNoteDetail = () => {
 
   const addItem = () => {
     const currentItems = form.getValues('items') || [];
-    const newItem = {
-      id: Math.random().toString(36).substring(2, 15),
-      productId: '',
-      quantity: 1,
-      unitprice: 0,
-      taxrate: 0,
-      discount: 0,
-      totalExcl: 0,
-      totalTax: 0,
-      total: 0,
-    };
-
-    form.setValue('items', [...currentItems, newItem], {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
+    form.setValue('items', [
+      ...currentItems,
+      {
+        id: Math.random().toString(36).substring(2, 15),
+        productId: '',
+        quantity: 1,
+        unitprice: 0,
+        taxrate: 0,
+        discount: 0,
+        totalExcl: 0,
+        totalTax: 0,
+        total: 0
+      }
+    ]);
   };
-
 
   const removeItem = (index: number) => {
     const currentItems = [...form.getValues('items')];
@@ -296,11 +292,7 @@ const DeliveryNoteDetail = () => {
       return;
     }
     currentItems.splice(index, 1);
-    form.setValue('items', currentItems, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
+    form.setValue('items', currentItems);
   };
 
   const updateItemProduct = (index: number, productId: string) => {
@@ -551,7 +543,7 @@ const DeliveryNoteDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {form.watch('items')?.map((item, index) => (
+                        {form.getValues('items')?.map((item, index) => (
                           <tr key={item.id || index} className="border-b">
                             <td className="px-4 py-2">
                               <Select
