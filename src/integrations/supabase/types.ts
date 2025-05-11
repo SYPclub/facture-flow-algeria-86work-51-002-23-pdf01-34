@@ -120,15 +120,15 @@ export type Database = {
           createdat: string | null
           delivery_company: string | null
           deliverydate: string | null
+          drivername: string | null
           finalinvoiceid: string | null
           id: string
           issuedate: string
           notes: string | null
           number: string
           status: string
-          truck_id: string  
-          updatedat: string  
-          drivername: string  
+          truck_id: string | null
+          updatedat: string | null
         }
         Insert: {
           clientid: string
