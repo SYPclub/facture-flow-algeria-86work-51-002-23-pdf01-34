@@ -146,7 +146,7 @@ const DeliveryNoteDetail = () => {
       form.reset({
         notes: deliveryNote.notes || '',
         drivername: deliveryNote.drivername || '',
-        truck_id: deliveryNote.truck_id || '',
+        truck_id: deliveryNote.truck_id || null,
         delivery_company: deliveryNote.delivery_company || '',
         issuedate: deliveryNote.issuedate || '',
         deliverydate: deliveryNote.deliverydate || null,
