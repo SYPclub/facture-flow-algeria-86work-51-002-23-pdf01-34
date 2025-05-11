@@ -30,6 +30,8 @@ import {
   Plus,
   X,
   Building,
+  CarFront,
+  Bus,
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -73,7 +75,7 @@ const deliveryNoteFormSchema = z.object({
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   issuedate: z.string(),
-  deliverydate: z.string().optional(),
+  deliverydate: z.string().optional().nullable(),
   items: z.array(
     z.object({
       id: z.string(),
@@ -132,7 +134,7 @@ const DeliveryNoteDetail = () => {
       truck_id: '',
       delivery_company: '',
       issuedate: '',
-      deliverydate: '',
+      deliverydate: null,
       items: []
     }
   });
@@ -147,7 +149,7 @@ const DeliveryNoteDetail = () => {
         truck_id: deliveryNote.truck_id || '',
         delivery_company: deliveryNote.delivery_company || '',
         issuedate: deliveryNote.issuedate || '',
-        deliverydate: deliveryNote.deliverydate || '',
+        deliverydate: deliveryNote.deliverydate || null,
         items: deliveryNote.items || []
       });
     }
@@ -163,7 +165,7 @@ const DeliveryNoteDetail = () => {
         truck_id,
         delivery_company,
         issuedate,
-        deliverydate,
+        deliverydate, // Now correctly handled in updateDeliveryNote
         items // This will be handled separately in the updateDeliveryNote function
       };
       
@@ -430,7 +432,12 @@ const DeliveryNoteDetail = () => {
                           <FormItem>
                             <FormLabel>Delivery Date (optional)</FormLabel>
                             <FormControl>
-                              <Input type="date" {...field} />
+                              <Input
+                                type="date"
+                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) => field.onChange(e.target.value || null)}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

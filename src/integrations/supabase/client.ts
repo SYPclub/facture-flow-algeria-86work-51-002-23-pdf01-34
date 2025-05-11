@@ -175,9 +175,13 @@ export const updateDeliveryNote = async (id: string, data: any) => {
     // Remove items property from the data as it's not a column in delivery_notes table
     const { items, ...deliveryNoteData } = data;
     
-    // Clean up empty string dates which cause SQL errors
-    if (deliveryNoteData.deliverydate === '') {
+    // Handle empty string and null dates properly
+    if (deliveryNoteData.deliverydate === '' || deliveryNoteData.deliverydate === undefined) {
       deliveryNoteData.deliverydate = null;
+    }
+    
+    if (deliveryNoteData.issuedate === '') {
+      deliveryNoteData.issuedate = null;
     }
     
     console.log('Updating delivery note with data:', deliveryNoteData);
