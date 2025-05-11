@@ -82,7 +82,7 @@ export interface DeliveryNote {
   status: 'pending' | 'delivered' | 'cancelled';
   createdAt: string;
   updatedAt: string;
-  drivername?: string;
+  drivername: string;
   truck_id?: string;
   delivery_company?: string;
 }
