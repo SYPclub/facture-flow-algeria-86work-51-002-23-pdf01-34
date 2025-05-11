@@ -58,9 +58,9 @@ const deliveryNoteSchema = z.object({
   clientid: z.string().min(1, 'Client is required'),
   issuedate: z.string().min(1, 'Issue date is required'),
   notes: z.string().optional(),
-  driverName: z.string().optional(),
-  truckId: z.string().optional(),
-  deliveryCompany: z.string().optional(),
+  drivername: z.string().optional(),
+  truck_id: z.string().optional(),
+  delivery_company: z.string().optional(),
   items: z.array(
     z.object({
       id: z.string(),
@@ -114,9 +114,9 @@ const NewDeliveryNote = () => {
       clientid: '',
       issuedate: getCurrentDate(),
       notes: '',
-      driverName: '',
-      truckId: '',
-      deliveryCompany: '',
+      drivername: '',
+      truck_id: '',
+      delivery_company: '',
       items: [
         {
           id: generateId(),
@@ -194,9 +194,9 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: data.driverName || null,
-        truck_id: data.truckId || null,
-        delivery_company: data.deliveryCompany || null,
+        drivername: data.drivername || null,
+        truck_id: data.truck_id || null,
+        delivery_company: data.delivery_company || null,
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
@@ -341,7 +341,7 @@ const NewDeliveryNote = () => {
               <div className="grid gap-4 sm:grid-cols-3">
                 <FormField
                   control={form.control}
-                  name="driverName"
+                  name="drivername"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center">
@@ -358,7 +358,7 @@ const NewDeliveryNote = () => {
 
                 <FormField
                   control={form.control}
-                  name="truckId"
+                  name="truck_id"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center">
@@ -375,7 +375,7 @@ const NewDeliveryNote = () => {
 
                 <FormField
                   control={form.control}
-                  name="deliveryCompany"
+                  name="delivery_company"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Delivery Company</FormLabel>
