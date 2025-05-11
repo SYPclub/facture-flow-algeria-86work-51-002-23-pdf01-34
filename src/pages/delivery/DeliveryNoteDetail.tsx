@@ -661,7 +661,7 @@ const DeliveryNoteDetail = () => {
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
-                      <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
+                       
                       <span>{deliveryNote.driver_name}</span>
                     </div>
                     <div className="grid grid-cols-2">
