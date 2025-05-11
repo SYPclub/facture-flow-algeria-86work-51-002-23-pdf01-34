@@ -194,7 +194,7 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        driver_name: data.driverName || null,
+        drivername: data.driverName || null,
         truck_id: data.truckId || null,
         delivery_company: data.deliveryCompany || null,
         items: data.items.map(item => {

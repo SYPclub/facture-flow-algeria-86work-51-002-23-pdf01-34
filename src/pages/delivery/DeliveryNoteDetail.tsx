@@ -67,7 +67,7 @@ import {
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
-  driver_name: z.string().optional(),
+  drivername: z.string().optional(),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   issuedate: z.string(),
@@ -124,7 +124,7 @@ const DeliveryNoteDetail = () => {
     resolver: zodResolver(deliveryNoteFormSchema),
     defaultValues: {
       notes: '',
-      driver_name: '',
+      drivername: '',
       truck_id: '',
       delivery_company: '',
       issuedate: '',
@@ -139,7 +139,7 @@ const DeliveryNoteDetail = () => {
       console.log("Delivery note loaded:", deliveryNote);
       form.reset({
         notes: deliveryNote.notes || '',
-        driver_name: deliveryNote.driver_name || '',
+        drivername: deliveryNote.drivername || '',
         truck_id: deliveryNote.truck_id || '',
         delivery_company: deliveryNote.delivery_company || '',
         issuedate: deliveryNote.issuedate || '',
@@ -152,10 +152,10 @@ const DeliveryNoteDetail = () => {
   const updateDeliveryNoteMutation = useMutation({
     mutationFn: (data) => {
       // Make sure we're only sending valid fields to the delivery_notes table
-      const { notes, driver_name, truck_id, delivery_company, issuedate, deliverydate, items } = data;
+      const { notes, drivername, truck_id, delivery_company, issuedate, deliverydate, items } = data;
       const deliveryNoteData = {
         notes,
-        driver_name,
+        drivername,
         truck_id,
         delivery_company,
         issuedate,
@@ -458,7 +458,7 @@ const DeliveryNoteDetail = () => {
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
-                      name="driver_name"
+                      name="drivername"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Driver Name</FormLabel>
@@ -662,7 +662,7 @@ const DeliveryNoteDetail = () => {
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
                        
-                      <span>{deliveryNote.driver_name}</span>
+                      <span>{deliveryNote.drivername}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Status:</span>
@@ -694,13 +694,13 @@ const DeliveryNoteDetail = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {deliveryNote.driver_name && (
+                  {deliveryNote.drivername && (
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground flex items-center">
                         <User className="mr-2 h-4 w-4" />
                         Driver:
                       </span>
-                      <span>{deliveryNote.driver_name}</span>
+                      <span>{deliveryNote.drivername}</span>
                     </div>
                   )}
                   

@@ -332,7 +332,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.setFontSize(10);
   
   const transportDetails = [];
-  if (deliveryNote.driver_name) transportDetails.push(`Driver: ${deliveryNote.driver_name}`);
+  if (deliveryNote.drivername) transportDetails.push(`Driver: ${deliveryNote.drivername}`);
   if (deliveryNote.truck_id) transportDetails.push(`Truck ID: ${deliveryNote.truck_id}`);
   if (deliveryNote.delivery_company) transportDetails.push(`Delivery Company: ${deliveryNote.delivery_company}`);
   
