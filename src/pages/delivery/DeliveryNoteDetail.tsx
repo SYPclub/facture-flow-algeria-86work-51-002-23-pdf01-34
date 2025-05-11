@@ -28,6 +28,7 @@ import {
   Trash2,
   Plus,
   X,
+  Building,
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -662,7 +663,7 @@ const DeliveryNoteDetail = () => {
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Delivery Date:</span>
                        
-                      <span>{deliveryNote.drivername}</span>
+                      <span>{deliveryNote.drivername || 'Not delivered yet'}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Status:</span>
@@ -700,7 +701,7 @@ const DeliveryNoteDetail = () => {
                         <User className="mr-2 h-4 w-4" />
                         Driver:
                       </span>
-                      <span>{deliveryNote.drivername}</span>
+                      <span>{deliveryNote.drivername || 'Not specified'}</span>
                     </div>
                   )}
                   
@@ -710,14 +711,17 @@ const DeliveryNoteDetail = () => {
                         <Truck className="mr-2 h-4 w-4" />
                         Truck ID:
                       </span>
-                      <span>{deliveryNote.truck_id}</span>
+                      <span>{deliveryNote.truck_id || 'Not specified'}</span>
                     </div>
                   )}
                   
                   {deliveryNote.delivery_company && (
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Delivery Company:</span>
-                      <span>{deliveryNote.delivery_company}</span>
+                      <span className="text-sm text-muted-foreground flex items-center">
+                        <Building className="mr-2 h-4 w-4" />
+                        Delivery Company:
+                      </span>
+                      <span>{deliveryNote.delivery_company || 'Not specified'}</span>
                     </div>
                   )}
                   
