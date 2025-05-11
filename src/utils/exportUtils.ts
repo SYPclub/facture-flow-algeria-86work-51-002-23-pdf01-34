@@ -325,11 +325,12 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     `Issue Date: ${formatDate(deliveryNote.issuedate)}`,
     `Delivery Date: ${deliveryNote.deliverydate ? formatDate(deliveryNote.deliverydate) : 'Not delivered yet'}`
   ], 140, 75);
-  
+
+  pdf.setFontSize(13);
+  pdf.text('  ', 14, 95);
   // Transportation details
-  pdf.setFontSize(11);
-  pdf.text(' ', 14, 95);
-  pdf.text('Transportation Details:', 25, 95);
+  pdf.setFontSize(13);
+  pdf.text('Transportation Details:', 14, 95);
   pdf.setFontSize(10);
   
   const transportDetails = [];
