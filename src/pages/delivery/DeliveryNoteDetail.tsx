@@ -544,7 +544,7 @@ const DeliveryNoteDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {form.watch('items')?.map((item, index) => (
+                        {(form.watch('items') || []).map((item, index) => (
                           <tr key={item.id || index} className="border-b">
                             <td className="px-4 py-2">
                               <Select
@@ -562,30 +562,33 @@ const DeliveryNoteDetail = () => {
                                   ))}
                                 </SelectContent>
                               </Select>
-                              {form.formState.errors.items?.[index]?.productId?.message && (
+                              {form.formState.errors.items?.[index]?.productId && (
                                 <p className="text-xs text-destructive mt-1">
                                   Product is required
                                 </p>
                               )}
                             </td>
+
                             <td className="px-4 py-2">
                               <Input
                                 type="number"
                                 min="1"
                                 value={item.quantity}
                                 onChange={(e) => {
+                                  const value = Number(e.target.value) || 1;
                                   const items = [...form.getValues('items')];
-                                  items[index].quantity = parseInt(e.target.value) || 1;
+                                  items[index].quantity = value;
                                   form.setValue('items', items);
                                 }}
                                 className="text-right"
                               />
-                              {form.formState.errors.items?.[index]?.quantity?.message && (
+                              {form.formState.errors.items?.[index]?.quantity && (
                                 <p className="text-xs text-destructive mt-1">
                                   Valid quantity is required
                                 </p>
                               )}
                             </td>
+
                             <td className="px-4 py-2 text-center">
                               <Button 
                                 type="button"
@@ -598,6 +601,7 @@ const DeliveryNoteDetail = () => {
                             </td>
                           </tr>
                         ))}
+
                       </tbody>
                     </table>
                   </div>
