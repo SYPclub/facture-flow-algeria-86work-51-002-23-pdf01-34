@@ -718,7 +718,7 @@ const DeliveryNoteDetail = () => {
                       <User className="mr-2 h-4 w-4" />
                       Driver:
                     </span>
-                    <p>dr : {deliveryNote.drivername || 'Not specified'}</p>
+                    <p>dr : {deliveryNote?.drivername || 'Not specified'}</p>
                   </div>
                   
                   <div className="grid grid-cols-2">
