@@ -70,8 +70,7 @@ import {
 } from '@/components/ui/select';
 
 
-const items = form.watch('items');
-
+ 
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
