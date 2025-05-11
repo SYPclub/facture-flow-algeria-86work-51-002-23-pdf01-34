@@ -83,7 +83,13 @@ const deliveryNoteFormSchema = z.object({
         code: z.string(),
         unitprice: z.number(),
         taxrate: z.number(),
-      }).optional()
+      }).optional(),
+      unitprice: z.number().default(0),
+      taxrate: z.number().default(0),
+      discount: z.number().default(0),
+      totalExcl: z.number().default(0),
+      totalTax: z.number().default(0),
+      total: z.number().default(0)
     })
   ).min(1, 'At least one item is required')
 });
@@ -113,7 +119,7 @@ const DeliveryNoteDetail = () => {
   
   const deliveryNote = isNewNote ? null : deliveryNotes.find(n => n.id === id);
 
-  // Updated form initialization to properly include the transportation details
+  // Initialize form with empty values
   const form = useForm({
     resolver: zodResolver(deliveryNoteFormSchema),
     defaultValues: {
@@ -124,21 +130,13 @@ const DeliveryNoteDetail = () => {
       issuedate: '',
       deliveryDate: '',
       items: []
-    },
-    values: {
-      notes: deliveryNote?.notes || '',
-      driver_name: deliveryNote?.driver_name || '',
-      truck_id: deliveryNote?.truck_id || '',
-      delivery_company: deliveryNote?.delivery_company || '',
-      issuedate: deliveryNote?.issuedate || '',
-      deliveryDate: deliveryNote?.deliveryDate || '',
-      items: deliveryNote?.items || []
     }
   });
 
   // Update form values when deliveryNote changes
   React.useEffect(() => {
     if (deliveryNote) {
+      console.log("Delivery note loaded:", deliveryNote);
       form.reset({
         notes: deliveryNote.notes || '',
         driver_name: deliveryNote.driver_name || '',
@@ -243,7 +241,13 @@ const DeliveryNoteDetail = () => {
       {
         id: Math.random().toString(36).substring(2, 15),
         productId: '',
-        quantity: 1
+        quantity: 1,
+        unitprice: 0,
+        taxrate: 0,
+        discount: 0,
+        totalExcl: 0,
+        totalTax: 0,
+        total: 0
       }
     ]);
   };
