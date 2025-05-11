@@ -720,9 +720,7 @@ const DeliveryNoteDetail = () => {
                     </div>
                   )}
                   
-                  {!deliveryNote.driver_name && !deliveryNote.truck_id && !deliveryNote.delivery_company && (
-                    <p className="text-sm text-muted-foreground italic">No transportation details provided</p>
-                  )}
+                  
                 </div>
               </CardContent>
             </Card>
