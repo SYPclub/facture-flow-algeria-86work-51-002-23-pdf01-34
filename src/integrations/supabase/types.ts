@@ -126,9 +126,9 @@ export type Database = {
           notes: string | null
           number: string
           status: string
-          truck_id: string | null
-          updatedat: string | null
-          drivername: string | null
+          truck_id: string  
+          updatedat: string  
+          drivername: string  
         }
         Insert: {
           clientid: string
