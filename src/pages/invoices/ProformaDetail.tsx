@@ -786,6 +786,7 @@ const ProformaDetail = () => {
                               }}
                             />
                           </TableCell>
+                          <TableCell className="text-right">{item.unit}</TableCell>
                           <TableCell>
                             <Input
                               type="number"
@@ -799,7 +800,7 @@ const ProformaDetail = () => {
                               }}
                             />
                           </TableCell>
-                          <TableCell className="text-right">{item.unit}</TableCell>
+                          
                           <TableCell>
                             <Input
                               type="number"
