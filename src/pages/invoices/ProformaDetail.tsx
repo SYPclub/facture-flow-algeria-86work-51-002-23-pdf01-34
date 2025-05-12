@@ -899,37 +899,37 @@ const ProformaDetail = () => {
                 {proforma.client?.name}
               </div>
               <div>
-                  <strong className="font-semibold">NIF:</strong>{" "}
-                  {proforma.client?.taxid}
-                </div>
-                <div>
-                  <strong className="font-semibold">NIS:</strong>{" "}
-                  {proforma.client?.nis}
-                </div>
-                <div>
-                  <strong className="font-semibold">RC:</strong>{" "}
-                  {proforma.client?.rc}
-                </div>
-                <div>
-                  <strong className="font-semibold">A.I:</strong>{" "}
-                  {proforma.client?.ai}
-                </div>
-                <div>
-                  <strong className="font-semibold">RIB:</strong>{" "}
-                  {proforma.client?.rib}
-                </div>
-                <div>
-                  <strong className="font-semibold">CCP:</strong>{" "}
-                  {proforma.client?.ccp}
-                </div>
-                <div>
-                  <strong className="font-semibold">contact name:</strong>{" "}
-                  {proforma.client?.contact}
-                </div>
-                <div>
-                  <strong className="font-semibold">contact phone:</strong>{" "}
-                  {proforma.client?.telcontact}
-                </div>
+                <strong className="font-semibold">NIF:</strong>{" "}
+                {proforma.client?.taxid}
+              </div>
+              <div>
+                <strong className="font-semibold">NIS:</strong>{" "}
+                {proforma.client?.nis}
+              </div>
+              <div>
+                <strong className="font-semibold">RC:</strong>{" "}
+                {proforma.client?.rc}
+              </div>
+              <div>
+                <strong className="font-semibold">A.I:</strong>{" "}
+                {proforma.client?.ai}
+              </div>
+              <div>
+                <strong className="font-semibold">RIB:</strong>{" "}
+                {proforma.client?.rib}
+              </div>
+              <div>
+                <strong className="font-semibold">CCP:</strong>{" "}
+                {proforma.client?.ccp}
+              </div>
+              <div>
+                <strong className="font-semibold">contact name:</strong>{" "}
+                {proforma.client?.contact}
+              </div>
+              <div>
+                <strong className="font-semibold">contact phone:</strong>{" "}
+                {proforma.client?.telcontact}
+              </div>
               <div>
                 <strong className="font-semibold">Address:</strong>{" "}
                 {proforma.client?.address}
