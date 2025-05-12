@@ -4,7 +4,7 @@ export interface Client {
   id: string;
   name: string;
   address: string;
-  taxid: string; // NIF (tax ID)
+  taxid: string; // NIF (tax ID )
   phone: string;
   email: string;
   country: string;
