@@ -83,12 +83,12 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     `NIF: ${proforma.client?.taxid || ''}`,
 
     proforma.client?.nis && `NIS: ${proforma.client.nis}`,
-    proforma.client?.rc && `NIS: ${proforma.client.rc}`,
-    proforma.client?.ai && `NIS: ${proforma.client.ai}`,
-    proforma.client?.ccp && `NIS: ${proforma.client.ccp}`,
-    proforma.client?.rib && `NIS: ${proforma.client.rib}`,
-    proforma.client?.contact && `NIS: ${proforma.client.contact}`,
-    proforma.client?.telcontact && `NIS: ${proforma.client.telcontact}`,
+    proforma.client?.rc && `rc: ${proforma.client.rc}`,
+    proforma.client?.ai && `ai: ${proforma.client.ai}`,
+    proforma.client?.ccp && `ccp: ${proforma.client.ccp}`,
+    proforma.client?.rib && `rib: ${proforma.client.rib}`,
+    proforma.client?.contact && `contact: ${proforma.client.contact}`,
+    proforma.client?.telcontact && `telcontact: ${proforma.client.telcontact}`,
       
 
     `Address: ${proforma.client?.address || ''}`,
