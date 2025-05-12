@@ -87,6 +87,7 @@ const deliveryNoteFormSchema = z.object({
         name: z.string(),
         description: z.string(),
         code: z.string(),
+        unit: z.string(),
         unitprice: z.number(),
         taxrate: z.number(),
       }).optional(),
