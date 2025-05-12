@@ -110,10 +110,9 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   
   // Items table (adjust Y position)
   const tableY = companyInfo ? 100 : 96;
-  const invoiceItems = proforma.items.map(item => [
-    item.product?.name || 'Unnamed Product',
+  const tableRows = proforma.items.map(item => [
+    `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
-    item.unit || item.product?.unit || '-', // Include unit
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
     `${item.discount}%`,
@@ -124,8 +123,8 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   
   autoTable(pdf, {
     startY: tableY,
-    head: [['Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Disc %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
-    body: invoiceItems,
+    head: [['Product', 'Qty', 'Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
+    body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
     columnStyles: {
@@ -248,9 +247,8 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   
   // Items table
   const tableRows = invoice.items.map(item => [
-    item.product?.name || 'Unnamed Product',
+    `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
-    item.unit || item.product?.unit || '-', // Include unit
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
     formatCurrency(item.total)
@@ -258,7 +256,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   
   autoTable(pdf, {
     startY: 100,
-    head: [['Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Total']],
+    head: [['Product', 'Qty', 'Unit Price', 'Tax %', 'Total']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
@@ -386,17 +384,15 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   
   // Items table
   const tableRows = deliveryNote.items.map(item => [
-    item.product?.name || 'Unnamed Product',
-    item.product?.code || 'No Code',
+    `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
-    item.unit || item.product?.unit || '-', // Include unit
-    formatCurrency(item.unitprice),
-    formatCurrency(item.total)
+    'Unit',
+    item.product?.description || ''
   ]);
   
   autoTable(pdf, {
     startY: 115,
-    head: [['Product', 'Code', 'Qty', 'Unit', 'Unit Price', 'Total']],
+    head: [['Product', 'Quantity', 'Unit', 'Description']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },

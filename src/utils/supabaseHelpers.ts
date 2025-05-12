@@ -1,4 +1,3 @@
-
 // Helper functions to map between database schema and our domain models
 
 import { User, UserRole } from '@/types';
@@ -32,7 +31,7 @@ export const mapDbProductToDomainProduct = (dbProduct: any): any => {
     unitprice: dbProduct.unitprice,
     taxrate: dbProduct.taxrate,
     stockquantity: dbProduct.stockquantity,
-    unit: dbProduct.unit || '', // Make sure unit is included with fallback
+    unit: dbProduct.unit || '', // Added unit field with fallback to empty string
     createdAt: dbProduct.createdat,
     updatedAt: dbProduct.updatedat,
   };
@@ -50,34 +49,8 @@ export const mapDomainProductToDb = (product: any): any => {
     unitprice: product.unitprice,
     taxrate: product.taxrate,
     stockquantity: product.stockquantity,
-    unit: product.unit || '', // Make sure unit is included with fallback
+    unit: product.unit || '', // Added unit field with fallback to empty string
     createdat: product.createdAt,
     updatedat: product.updatedAt,
-  };
-};
-
-/**
- * Maps invoice item from DB to domain model
- */
-export const mapDbInvoiceItemToDomainItem = (dbItem: any, dbProduct?: any): any => {
-  if (!dbItem) return null;
-  
-  let product = null;
-  if (dbProduct) {
-    product = mapDbProductToDomainProduct(dbProduct);
-  }
-  
-  return {
-    id: dbItem.id,
-    productId: dbItem.productid,
-    product: product,
-    quantity: dbItem.quantity,
-    unitprice: dbItem.unitprice,
-    taxrate: dbItem.taxrate,
-    discount: dbItem.discount || 0,
-    totalExcl: dbItem.totalexcl,
-    totalTax: dbItem.totaltax,
-    total: dbItem.total,
-    unit: dbItem.unit || (product?.unit || ''), // Make sure unit is included with fallback
   };
 };
