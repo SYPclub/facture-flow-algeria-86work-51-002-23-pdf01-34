@@ -590,7 +590,7 @@ const ProformaDetail = () => {
                   <div className="mt-4 space-y-2 border-t pt-4">
                     <div>
                      <strong className="font-semibold">NIF:</strong>{" "}
-                      {invoice.client?.taxid}
+                      {invoice.client?.taxid} 
                     </div>
                     <div>
                       <strong className="font-semibold">NIS:</strong>{" "}

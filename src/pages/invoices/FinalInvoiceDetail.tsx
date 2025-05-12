@@ -551,7 +551,7 @@ const FinalInvoiceDetail = () => {
                 </div>
                 <div>
                   <strong className="font-semibold">NIF:</strong>{" "}
-                  {invoice.client?.taxid}
+                  {invoice.client?.taxid} 
                 </div>
                 <div>
                   <strong className="font-semibold">NIS:</strong>{" "}
