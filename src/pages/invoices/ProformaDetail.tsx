@@ -106,7 +106,9 @@ const proformaFormSchema = z.object({
         code: z.string(),
         unitprice: z.number(),
         taxrate: z.number(),
+        unit: z.string().optional(),
       }).optional(),
+      unit: z.string().optional(),
       totalExcl: z.number().optional(),
       totalTax: z.number().optional(),
       total: z.number().optional()
@@ -231,6 +233,7 @@ const ProformaDetail = () => {
         unitprice: 0,
         taxrate: 0,
         discount: 0,
+        unit: '', // Initialize unit field
         totalExcl: 0,
         totalTax: 0,
         total: 0
@@ -256,6 +259,7 @@ const ProformaDetail = () => {
         productId: productId,
         unitprice: product.unitprice,
         taxrate: product.taxrate,
+        unit: product.unit || '', // Set unit from product
         product: product,
         totalExcl: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100),
         totalTax: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100) * (product.taxrate / 100),
@@ -738,6 +742,7 @@ const ProformaDetail = () => {
                       <TableRow>
                         <TableHead>Product</TableHead>
                         <TableHead className="w-[80px]">Qty</TableHead>
+                        <TableHead className="w-[80px]">Unit</TableHead>
                         <TableHead className="w-[120px]">Unit Price</TableHead>
                         <TableHead className="w-[80px]">Tax %</TableHead>
                         <TableHead className="w-[80px]">Disc %</TableHead>
@@ -777,6 +782,17 @@ const ProformaDetail = () => {
                               onChange={(e) => {
                                 const items = [...form.getValues('items')];
                                 items[index].quantity = parseInt(e.target.value) || 1;
+                                form.setValue('items', items);
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="text"
+                              value={item.unit || ''}
+                              onChange={(e) => {
+                                const items = [...form.getValues('items')];
+                                items[index].unit = e.target.value;
                                 form.setValue('items', items);
                               }}
                             />
@@ -1002,6 +1018,7 @@ const ProformaDetail = () => {
                   <TableRow>
                     <TableHead>Product</TableHead>
                     <TableHead className="text-right">Qty</TableHead>
+                    <TableHead className="text-center">Unit</TableHead>
                     <TableHead className="text-right">Unit Price</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
                     <TableHead className="text-right">Discount %</TableHead>
@@ -1020,6 +1037,7 @@ const ProformaDetail = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
+                      <TableCell className="text-center">{item.unit || item.product?.unit || '-'}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                       <TableCell className="text-right">{item.taxrate}%</TableCell>
                       <TableCell className="text-right">{item.discount}%</TableCell>

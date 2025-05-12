@@ -51,29 +51,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getCurrentDate, generateId } from '@/types';
+import { getCurrentDate, generateId, formatCurrency } from '@/types';
 
 const deliveryNoteSchema = z.object({
-  clientid: z.string().min(1, 'Client is required'),
-  issuedate: z.string().min(1, 'Issue date is required'),
+  clientid: z.string().min(1, "Client is required"),
   notes: z.string().optional(),
-  drivername: z.string().min(1, 'Driver name is required'),
+  issuedate: z.string(),
+  deliverydate: z.string().optional(),
+  finalInvoiceId: z.string().min(1, "Invoice is required"),
+  drivername: z.string().optional(),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   items: z.array(
     z.object({
       id: z.string(),
-      productId: z.string().min(1, 'Product is required'),
-      quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
+      productId: z.string(),
       product: z.object({
         name: z.string(),
-        description: z.string(),
         code: z.string(),
         unitprice: z.number(),
-        taxrate: z.number(),
-      }).optional()
+        unit: z.string().optional(),
+      }).optional(),
+      quantity: z.number().min(1, "Quantity must be at least 1"),
+      unit: z.string().optional(), // Include unit field
+      total: z.number(),
     })
-  ).min(1, 'At least one item is required')
+  ),
 });
 
 type DeliveryNoteFormValues = z.infer<typeof deliveryNoteSchema>;
@@ -111,8 +114,10 @@ const NewDeliveryNote = () => {
     resolver: zodResolver(deliveryNoteSchema),
     defaultValues: {
       clientid: '',
-      issuedate: getCurrentDate(),
       notes: '',
+      issuedate: getCurrentDate(),
+      deliverydate: null,
+      finalInvoiceId: invoiceId || null,
       drivername: 'Unknown Driver', // Initialize with a default value
       truck_id: '',
       delivery_company: '',
@@ -120,7 +125,10 @@ const NewDeliveryNote = () => {
         {
           id: generateId(),
           productId: '',
+          product: undefined,
           quantity: 1,
+          unit: '',
+          total: 0
         }
       ]
     }
@@ -135,8 +143,10 @@ const NewDeliveryNote = () => {
         const items = invoice.items.map(item => ({
           id: generateId(),
           productId: item.productId,
+          product: item.product,
           quantity: item.quantity,
-          product: item.product
+          unit: item.unit || '',
+          total: item.total
         }));
         form.setValue('items', items);
         setItemsState(items);
@@ -157,16 +167,17 @@ const NewDeliveryNote = () => {
 
   const addItem = () => {
     const currentItems = form.getValues('items') || [];
-    const newItems = [
+    form.setValue('items', [
       ...currentItems,
       {
         id: generateId(),
         productId: '',
-        quantity: 1
+        product: undefined,
+        quantity: 1,
+        unit: '',
+        total: 0
       }
-    ];
-    form.setValue('items', newItems);
-    setItemsState(newItems);
+    ]);
   };
 
   const removeItem = (index: number) => {
@@ -178,15 +189,17 @@ const NewDeliveryNote = () => {
 
   const updateItemProduct = (index: number, productId: string) => {
     const product = products.find(p => p.id === productId);
-    const items = [...form.getValues('items')];
-    items[index].productId = productId;
-    items[index].product = product;
-    // Transfer the unit from the product to the item
-    if (product?.unit) {
-      items[index].unit = product.unit;
+    if (product) {
+      const items = [...form.getValues('items')];
+      items[index] = {
+        ...items[index],
+        productId,
+        product,
+        unit: product.unit || '', // Set unit from product
+        total: items[index].quantity * product.unitprice
+      };
+      form.setValue('items', items);
     }
-    form.setValue('items', items);
-    setItemsState([...items]);
   };
 
   const createMutation = useMutation({
@@ -432,23 +445,23 @@ const NewDeliveryNote = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Product</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Unit</TableHead>
-                      <TableHead className="w-[100px]"></TableHead>
+                      <TableHead className="w-[80px]">Qty</TableHead>
+                      <TableHead className="w-[80px]">Unit</TableHead> {/* Added Unit column */}
+                      <TableHead className="w-[120px]">Price</TableHead>
+                      <TableHead className="w-[120px]">Total</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {itemsState.map((item, index) => (
-                      <TableRow key={item.id}>
+                    {form.getValues('items')?.map((item, index) => (
+                      <TableRow key={item.id || index}>
                         <TableCell>
                           <Select
                             value={item.productId}
                             onValueChange={(value) => updateItemProduct(index, value)}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a product">
-                                {item.productId && products.find(p => p.id === item.productId)?.name}
-                              </SelectValue>
+                              <SelectValue placeholder="Select a product" />
                             </SelectTrigger>
                             <SelectContent>
                               {products.map(product => (
@@ -458,11 +471,6 @@ const NewDeliveryNote = () => {
                               ))}
                             </SelectContent>
                           </Select>
-                          {form.formState.errors.items?.[index]?.productId && (
-                            <p className="text-xs text-destructive mt-1">
-                              Product is required
-                            </p>
-                          )}
                         </TableCell>
                         <TableCell>
                           <Input
@@ -472,18 +480,29 @@ const NewDeliveryNote = () => {
                             onChange={(e) => {
                               const items = [...form.getValues('items')];
                               items[index].quantity = parseInt(e.target.value) || 1;
+                              if (items[index].product) {
+                                items[index].total = items[index].quantity * items[index].product.unitprice;
+                              }
                               form.setValue('items', items);
-                              setItemsState([...items]);
                             }}
                           />
-                          {form.formState.errors.items?.[index]?.quantity && (
-                            <p className="text-xs text-destructive mt-1">
-                              Valid quantity is required
-                            </p>
-                          )}
                         </TableCell>
                         <TableCell>
-                          {item.productId && products.find(p => p.id === item.productId)?.unit || '-'}
+                          <Input
+                            type="text"
+                            value={item.unit || ''}
+                            onChange={(e) => {
+                              const items = [...form.getValues('items')];
+                              items[index].unit = e.target.value;
+                              form.setValue('items', items);
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {item.product && formatCurrency(item.product.unitprice)}
+                        </TableCell>
+                        <TableCell>
+                          {item.product && formatCurrency(item.total)}
                         </TableCell>
                         <TableCell>
                           <Button 
