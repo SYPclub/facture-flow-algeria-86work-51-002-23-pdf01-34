@@ -195,9 +195,9 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: data.drivername || 'Not specified', // Set a default if empty
-        truck_id: data.truck_id || null,
-        delivery_company: data.delivery_company || null,
+        drivername: data.drivername, // Set a default if empty
+        truck_id: data.truck_id ,
+        delivery_company: data.delivery_company ,
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
