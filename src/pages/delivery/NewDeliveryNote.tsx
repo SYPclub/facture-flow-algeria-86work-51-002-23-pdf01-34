@@ -197,8 +197,8 @@ const NewDeliveryNote = () => {
         notes: data.notes || '',
         status: 'pending',
         drivername: driverName, // Guarantee non-empty value
-        truck_id: data.truck_id || null, // Ensure null if empty
-        delivery_company: data.delivery_company || null, // Ensure null if empty
+        truck_id: data.truck_id || '', // Ensure null if empty
+        delivery_company: data.delivery_company || '', // Ensure null if empty
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
