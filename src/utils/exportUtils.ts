@@ -216,14 +216,26 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   pdf.setFontSize(11);
   pdf.text('Billed To:', 14, 70);
   pdf.setFontSize(10);
-  pdf.text([
-    `client: ${invoice.client?.name || ''}`,
-    `NIF: ${invoice.client?.taxid || ''}`,
-    `Address: ${invoice.client?.address || ''}`,
-    `ville: ${invoice.client?.city || ''}, ${invoice.client?.country || ''}`,
-    `Telephone: ${invoice.client?.phone || ''} , email: ${invoice.client?.email || ''} `,
-
-  ], 14, 75);
+  pdf.text([[
+    `client: ${proforma.client?.name || ''}`,
+    `NIF: ${proforma.client?.taxid || ''}`,
+    proforma.client?.nis && `NIS: ${proforma.client.nis}`,
+    ].filter(Boolean).join(' | '),
+    [
+    proforma.client?.rc && `RC: ${proforma.client.rc}`,
+    proforma.client?.ai && `A.I: ${proforma.client.ai}`,
+    proforma.client?.ccp && `CCP: ${proforma.client.ccp}`,
+    ].filter(Boolean).join(' | '),
+    [
+    proforma.client?.rib && `RIB: ${proforma.client.rib}`,
+    proforma.client?.contact && `Contact: ${proforma.client.contact}`,
+    proforma.client?.telcontact && `Tel-contact: ${proforma.client.telcontact}`,
+    ].filter(Boolean).join(' | '),
+    
+    `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
+    `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
+    
+  ].filter(Boolean), 14, 75);
   
   pdf.setFontSize(10);
   pdf.text([
@@ -325,14 +337,26 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.setFontSize(11);
   pdf.text('Client:', 14, 70);
   pdf.setFontSize(10);
-  pdf.text([
-    `Client: ${deliveryNote.client?.name || ''}`,
-    `NIF: ${deliveryNote.client?.taxid || ''}`,
-    `Address: ${deliveryNote.client?.address || ''}`,
-    `Ville: ${deliveryNote.client?.city || ''}, ${deliveryNote.client?.country || ''}`,
-    `Telephone: ${deliveryNote.client?.phone || ''} , 
-    Email: ${deliveryNote.client?.email || ''} `
-  ], 14, 75);
+  pdf.text([[
+    `client: ${proforma.client?.name || ''}`,
+    `NIF: ${proforma.client?.taxid || ''}`,
+    proforma.client?.nis && `NIS: ${proforma.client.nis}`,
+    ].filter(Boolean).join(' | '),
+    [
+    proforma.client?.rc && `RC: ${proforma.client.rc}`,
+    proforma.client?.ai && `A.I: ${proforma.client.ai}`,
+    proforma.client?.ccp && `CCP: ${proforma.client.ccp}`,
+    ].filter(Boolean).join(' | '),
+    [
+    proforma.client?.rib && `RIB: ${proforma.client.rib}`,
+    proforma.client?.contact && `Contact: ${proforma.client.contact}`,
+    proforma.client?.telcontact && `Tel-contact: ${proforma.client.telcontact}`,
+    ].filter(Boolean).join(' | '),
+    
+    `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
+    `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
+    
+  ].filter(Boolean), 14, 75);
   
   pdf.setFontSize(10);
   pdf.text([
