@@ -558,54 +558,78 @@ const ProformaDetail = () => {
                 <CardTitle>Client Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                              <div>
-                                <strong className="font-semibold">Name:</strong>{" "}
-                                {invoice.client?.name}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">NIF:</strong>{" "}
-                                {invoice.client?.taxid}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">NIS:</strong>{" "}
-                                {invoice.client?.nis}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">RC:</strong>{" "}
-                                {invoice.client?.rc}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">A.I:</strong>{" "}
-                                {invoice.client?.ai}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">RIB:</strong>{" "}
-                                {invoice.client?.rib}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">CCP:</strong>{" "}
-                                {invoice.client?.ccp}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">contact name:</strong>{" "}
-                                {invoice.client?.contact}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">contact phone:</strong>{" "}
-                                {invoice.client?.telcontact}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">Address:</strong>{" "}
-                                {invoice.client?.address}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">City:</strong>{" "}
-                                {invoice.client?.city}, {invoice.client?.country}
-                              </div>
-                              <div>
-                                <strong className="font-semibold">Contact:</strong>{" "}
-                                {invoice.client?.phone} | {invoice.client?.email}
-                              </div>
+                <FormField
+                  control={form.control}
+                  name="clientid"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a client" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {clients.map(client => (
+                            <SelectItem key={client.id} value={client.id}>
+                              {client.name} ({client.taxid})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {field => field.value && (
+                  <div className="mt-4 space-y-2 border-t pt-4">
+                    <div>
+                     <strong className="font-semibold">NIF:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.taxid } 
+                    </div>
+                    <div>
+                      <strong className="font-semibold">NIS:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.nis}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">RC:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.rc}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">A.I:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.ai}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">RIB:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.rib}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">CCP:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.ccp}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">contact name:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.contact}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">contact phone:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.telcontact}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">Address:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.address || ''}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">City:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
