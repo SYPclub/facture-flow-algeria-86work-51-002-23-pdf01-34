@@ -85,14 +85,14 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     proforma.client?.nis && `NIS: ${proforma.client.nis}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rc && `rc: ${proforma.client.rc}`,
-    proforma.client?.ai && `ai: ${proforma.client.ai}`,
-    proforma.client?.ccp && `ccp: ${proforma.client.ccp}`,
+    proforma.client?.rc && `RC: ${proforma.client.rc}`,
+    proforma.client?.ai && `A.I: ${proforma.client.ai}`,
+    proforma.client?.ccp && `CCP: ${proforma.client.ccp}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rib && `rib: ${proforma.client.rib}`,
-    proforma.client?.contact && `contact: ${proforma.client.contact}`,
-    proforma.client?.telcontact && `telcontact: ${proforma.client.telcontact}`,
+    proforma.client?.rib && `RIB: ${proforma.client.rib}`,
+    proforma.client?.contact && `Contact: ${proforma.client.contact}`,
+    proforma.client?.telcontact && `Tel-contact: ${proforma.client.telcontact}`,
     ].filter(Boolean).join(' | '),
     
     `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
