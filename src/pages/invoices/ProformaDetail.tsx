@@ -589,8 +589,36 @@ const ProformaDetail = () => {
                 {field => field.value && (
                   <div className="mt-4 space-y-2 border-t pt-4">
                     <div>
-                      <strong className="font-semibold">Tax ID:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.taxid}
+                     <strong className="font-semibold">NIF:</strong>{" "}
+                      {invoice.client?.taxid}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">NIS:</strong>{" "}
+                      {invoice.client?.nis}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">RC:</strong>{" "}
+                      {invoice.client?.rc}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">A.I:</strong>{" "}
+                      {invoice.client?.ai}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">RIB:</strong>{" "}
+                      {invoice.client?.rib}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">CCP:</strong>{" "}
+                      {invoice.client?.ccp}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">contact name:</strong>{" "}
+                      {invoice.client?.contact}
+                    </div>
+                    <div>
+                      <strong className="font-semibold">contact phone:</strong>{" "}
+                      {invoice.client?.telcontact}
                     </div>
                     <div>
                       <strong className="font-semibold">Address:</strong>{" "}
@@ -871,9 +899,37 @@ const ProformaDetail = () => {
                 {proforma.client?.name}
               </div>
               <div>
-                <strong className="font-semibold">Tax ID:</strong>{" "}
-                {proforma.client?.taxid}
-              </div>
+                  <strong className="font-semibold">NIF:</strong>{" "}
+                  {invoice.client?.taxid}
+                </div>
+                <div>
+                  <strong className="font-semibold">NIS:</strong>{" "}
+                  {invoice.client?.nis}
+                </div>
+                <div>
+                  <strong className="font-semibold">RC:</strong>{" "}
+                  {invoice.client?.rc}
+                </div>
+                <div>
+                  <strong className="font-semibold">A.I:</strong>{" "}
+                  {invoice.client?.ai}
+                </div>
+                <div>
+                  <strong className="font-semibold">RIB:</strong>{" "}
+                  {invoice.client?.rib}
+                </div>
+                <div>
+                  <strong className="font-semibold">CCP:</strong>{" "}
+                  {invoice.client?.ccp}
+                </div>
+                <div>
+                  <strong className="font-semibold">contact name:</strong>{" "}
+                  {invoice.client?.contact}
+                </div>
+                <div>
+                  <strong className="font-semibold">contact phone:</strong>{" "}
+                  {invoice.client?.telcontact}
+                </div>
               <div>
                 <strong className="font-semibold">Address:</strong>{" "}
                 {proforma.client?.address}
