@@ -590,7 +590,7 @@ const ProformaDetail = () => {
                   <div className="mt-4 space-y-2 border-t pt-4">
                     <div>
                      <strong className="font-semibold">NIF:</strong>{" "}
-                      {invoice.client?.taxid} 
+                      {invoice.client?.taxid } 
                     </div>
                     <div>
                       <strong className="font-semibold">NIS:</strong>{" "}
@@ -622,11 +622,11 @@ const ProformaDetail = () => {
                     </div>
                     <div>
                       <strong className="font-semibold">Address:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.address}
+                      {clients.find(c => c.id === field.value)?.address || ''}
                     </div>
                     <div>
                       <strong className="font-semibold">City:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.city}, {clients.find(c => c.id === field.value)?.country}
+                      {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
                     </div>
                   </div>
                 )}
