@@ -66,6 +66,7 @@ const proformaSchema = z.object({
       productId: z.string().min(1, 'Product is required'),
       quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
       unitprice: z.coerce.number().min(0, 'Price must be positive'),
+      unit: z.coerce.string(),
       taxrate: z.coerce.number().min(0, 'Tax rate must be positive'),
       discount: z.coerce.number().min(0).max(100, 'Discount must be between 0 and 100'),
       product: z.object({
@@ -73,6 +74,7 @@ const proformaSchema = z.object({
         description: z.string(),
         code: z.string(),
         unitprice: z.number(),
+        unit: z.string(),
         taxrate: z.number(),
       }).optional()
     })
@@ -117,6 +119,7 @@ const NewProformaInvoice = () => {
           productId: '',
           quantity: 1,
           unitprice: 0,
+          unit: '',
           taxrate: 0,
           discount: 0
         }
@@ -185,6 +188,7 @@ const NewProformaInvoice = () => {
         productId: '',
         quantity: 1,
         unitprice: 0,
+        unit: '',
         taxrate: 0,
         discount: 0
       }
@@ -205,6 +209,7 @@ const NewProformaInvoice = () => {
         ...items[index],
         productId: productId,
         unitprice: product.unitprice,
+        unit: product.unit,
         taxrate: product.taxrate,
         product: product
       };
@@ -238,6 +243,7 @@ const NewProformaInvoice = () => {
           product: products.find(p => p.id === item.productId),
           quantity,
           unitprice,
+          unit: item.unit,
           taxrate,
           discount,
           totalExcl,
