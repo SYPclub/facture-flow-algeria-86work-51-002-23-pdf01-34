@@ -1008,6 +1008,7 @@ const ProformaDetail = () => {
                   <TableRow>
                     <TableHead>Product</TableHead>
                     <TableHead className="text-right">Qty</TableHead>
+                    <TableHead className="text-right">unit</TableHead>
                     <TableHead className="text-right">Unit Price</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
                     <TableHead className="text-right">Discount %</TableHead>
@@ -1026,6 +1027,7 @@ const ProformaDetail = () => {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
+                      <TableCell className="text-right">{item.unit}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                       <TableCell className="text-right">{item.taxrate}%</TableCell>
                       <TableCell className="text-right">{item.discount}%</TableCell>
