@@ -113,6 +113,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   const tableRows = proforma.items.map(item => [
     `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
+    item.unit.toString(),
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
     `${item.discount}%`,
@@ -123,7 +124,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   
   autoTable(pdf, {
     startY: tableY,
-    head: [['Product', 'Qty', 'Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
+    head: [['Product', 'Qty', 'unit','Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
@@ -249,6 +250,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   const tableRows = invoice.items.map(item => [
     `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
+    item.unit.toString(),
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
     formatCurrency(item.total)
@@ -256,7 +258,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   
   autoTable(pdf, {
     startY: 100,
-    head: [['Product', 'Qty', 'Unit Price', 'Tax %', 'Total']],
+    head: [['Product', 'Qty', 'unit', 'Unit Price', 'Tax %', 'Total']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
@@ -386,7 +388,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   const tableRows = deliveryNote.items.map(item => [
     `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
-    'Unit',
+    item.unit.toString(),
     item.product?.description || ''
   ]);
   
