@@ -900,35 +900,35 @@ const ProformaDetail = () => {
               </div>
               <div>
                   <strong className="font-semibold">NIF:</strong>{" "}
-                  {invoice.client?.taxid}
+                  {proforma.client?.taxid}
                 </div>
                 <div>
                   <strong className="font-semibold">NIS:</strong>{" "}
-                  {invoice.client?.nis}
+                  {proforma.client?.nis}
                 </div>
                 <div>
                   <strong className="font-semibold">RC:</strong>{" "}
-                  {invoice.client?.rc}
+                  {proforma.client?.rc}
                 </div>
                 <div>
                   <strong className="font-semibold">A.I:</strong>{" "}
-                  {invoice.client?.ai}
+                  {proforma.client?.ai}
                 </div>
                 <div>
                   <strong className="font-semibold">RIB:</strong>{" "}
-                  {invoice.client?.rib}
+                  {proforma.client?.rib}
                 </div>
                 <div>
                   <strong className="font-semibold">CCP:</strong>{" "}
-                  {invoice.client?.ccp}
+                  {proforma.client?.ccp}
                 </div>
                 <div>
                   <strong className="font-semibold">contact name:</strong>{" "}
-                  {invoice.client?.contact}
+                  {proforma.client?.contact}
                 </div>
                 <div>
                   <strong className="font-semibold">contact phone:</strong>{" "}
-                  {invoice.client?.telcontact}
+                  {proforma.client?.telcontact}
                 </div>
               <div>
                 <strong className="font-semibold">Address:</strong>{" "}
