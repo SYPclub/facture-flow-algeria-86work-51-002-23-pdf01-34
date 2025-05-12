@@ -383,7 +383,7 @@ const NewDeliveryNote = () => {
                     <FormItem>
                       <FormLabel>Delivery Company</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter delivery company name" {...field} />
+                        <Textarea placeholder="Enter delivery company name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
