@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -114,7 +113,7 @@ const NewDeliveryNote = () => {
       clientid: '',
       issuedate: getCurrentDate(),
       notes: '',
-      drivername: '',
+      drivername: '', // Initialize with empty string but required by schema
       truck_id: '',
       delivery_company: '',
       items: [
@@ -188,18 +187,18 @@ const NewDeliveryNote = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data: DeliveryNoteFormValues) => {
-      // Ensure drivername is not empty even if validation allows it
+      // Always ensure driver name has a value to meet database constraint
       const driverName = data.drivername.trim() || 'Unknown Driver';
       
       const deliveryNote = {
         clientid: data.clientid,
-        finalInvoiceId: invoiceId || undefined,
+        finalInvoiceId: invoiceId || null, // Ensure null if no invoice ID
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: driverName, // Use the non-empty driver name
-        truck_id: data.truck_id || null,
-        delivery_company: data.delivery_company || null,
+        drivername: driverName, // Guarantee non-empty value
+        truck_id: data.truck_id || null, // Ensure null if empty
+        delivery_company: data.delivery_company || null, // Ensure null if empty
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {

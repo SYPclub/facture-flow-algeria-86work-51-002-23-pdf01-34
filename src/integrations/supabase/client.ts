@@ -184,6 +184,11 @@ export const updateDeliveryNote = async (id: string, data: any) => {
       deliveryNoteData.issuedate = null;
     }
     
+    // Ensure transportation fields are properly handled
+    deliveryNoteData.drivername = deliveryNoteData.drivername || 'Unknown Driver';
+    deliveryNoteData.truck_id = deliveryNoteData.truck_id || null;
+    deliveryNoteData.delivery_company = deliveryNoteData.delivery_company || null;
+    
     console.log('Updating delivery note with data:', deliveryNoteData);
     
     // Update the delivery note
