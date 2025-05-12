@@ -195,7 +195,7 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: data.drivername, // Set a default if empty
+        drivername: data.drivername,
         truck_id: data.truck_id ,
         delivery_company: data.delivery_company ,
         items: data.items.map(item => {
