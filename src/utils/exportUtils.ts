@@ -217,23 +217,23 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   pdf.text('Billed To:', 14, 70);
   pdf.setFontSize(10);
   pdf.text([[
-    `client: ${proforma.client?.name || ''}`,
-    `NIF: ${proforma.client?.taxid || ''}`,
-    proforma.client?.nis && `NIS: ${proforma.client.nis}`,
+    `client: ${invoice.client?.name || ''}`,
+    `NIF: ${invoice.client?.taxid || ''}`,
+    invoice.client?.nis && `NIS: ${invoice.client.nis}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rc && `RC: ${proforma.client.rc}`,
-    proforma.client?.ai && `A.I: ${proforma.client.ai}`,
-    proforma.client?.ccp && `CCP: ${proforma.client.ccp}`,
+    invoice.client?.rc && `RC: ${invoice.client.rc}`,
+    invoice.client?.ai && `A.I: ${invoice.client.ai}`,
+    invoice.client?.ccp && `CCP: ${invoice.client.ccp}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rib && `RIB: ${proforma.client.rib}`,
-    proforma.client?.contact && `Contact: ${proforma.client.contact}`,
-    proforma.client?.telcontact && `Tel-contact: ${proforma.client.telcontact}`,
+    invoice.client?.rib && `RIB: ${invoice.client.rib}`,
+    invoice.client?.contact && `Contact: ${invoice.client.contact}`,
+    invoice.client?.telcontact && `Tel-contact: ${invoice.client.telcontact}`,
     ].filter(Boolean).join(' | '),
     
-    `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
-    `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
+    `Address: ${invoice.client?.address || ''} | ville: ${invoice.client?.city || ''}`,
+    `Telephone: ${invoice.client?.phone || ''} , email: ${invoice.client?.email || ''} `
     
   ].filter(Boolean), 14, 75);
   
@@ -338,23 +338,23 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.text('Client:', 14, 70);
   pdf.setFontSize(10);
   pdf.text([[
-    `client: ${proforma.client?.name || ''}`,
-    `NIF: ${proforma.client?.taxid || ''}`,
-    proforma.client?.nis && `NIS: ${proforma.client.nis}`,
+    `client: ${deliveryNote.client?.name || ''}`,
+    `NIF: ${deliveryNote.client?.taxid || ''}`,
+    deliveryNote.client?.nis && `NIS: ${deliveryNote.client.nis}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rc && `RC: ${proforma.client.rc}`,
-    proforma.client?.ai && `A.I: ${proforma.client.ai}`,
-    proforma.client?.ccp && `CCP: ${proforma.client.ccp}`,
+    deliveryNote.client?.rc && `RC: ${deliveryNote.client.rc}`,
+    deliveryNote.client?.ai && `A.I: ${deliveryNote.client.ai}`,
+    deliveryNote.client?.ccp && `CCP: ${deliveryNote.client.ccp}`,
     ].filter(Boolean).join(' | '),
     [
-    proforma.client?.rib && `RIB: ${proforma.client.rib}`,
-    proforma.client?.contact && `Contact: ${proforma.client.contact}`,
-    proforma.client?.telcontact && `Tel-contact: ${proforma.client.telcontact}`,
+    deliveryNote.client?.rib && `RIB: ${deliveryNote.client.rib}`,
+    deliveryNote.client?.contact && `Contact: ${deliveryNote.client.contact}`,
+    deliveryNote.client?.telcontact && `Tel-contact: ${deliveryNote.client.telcontact}`,
     ].filter(Boolean).join(' | '),
     
-    `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
-    `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
+    `Address: ${deliveryNote.client?.address || ''} | ville: ${deliveryNote.client?.city || ''}`,
+    `Telephone: ${deliveryNote.client?.phone || ''} , email: ${deliveryNote.client?.email || ''} `
     
   ].filter(Boolean), 14, 75);
   
