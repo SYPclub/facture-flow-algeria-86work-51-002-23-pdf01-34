@@ -343,21 +343,18 @@ const NewDeliveryNote = () => {
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <FormField
-                  control={form.control}
-                  name="drivername"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center">
-                        <User className="mr-2 h-4 w-4" />
-                        Driver Name*
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter driver name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                                          control={form.control}
+                                          name="drivername"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel>Driver Name</FormLabel>
+                                              <FormControl>
+                                                <Input {...field} />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                  />
 
                 <FormField
                   control={form.control}
