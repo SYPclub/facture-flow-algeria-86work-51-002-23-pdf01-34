@@ -590,43 +590,43 @@ const ProformaDetail = () => {
                   <div className="mt-4 space-y-2 border-t pt-4">
                     <div>
                      <strong className="font-semibold">NIF:</strong>{" "}
-                      {invoice.client?.taxid } 
+                      {clients.find(c => c.id === field.value)?.taxid } 
                     </div>
                     <div>
                       <strong className="font-semibold">NIS:</strong>{" "}
-                      {invoice.client?.nis}
+                      {clients.find(c => c.id === field.value)?.nis}
                     </div>
                     <div>
                       <strong className="font-semibold">RC:</strong>{" "}
-                      {invoice.client?.rc}
+                      {clients.find(c => c.id === field.value)?.rc}
                     </div>
                     <div>
                       <strong className="font-semibold">A.I:</strong>{" "}
-                      {invoice.client?.ai}
+                      {clients.find(c => c.id === field.value)?.ai}
                     </div>
                     <div>
                       <strong className="font-semibold">RIB:</strong>{" "}
-                      {invoice.client?.rib}
+                      {clients.find(c => c.id === field.value)?.rib}
                     </div>
                     <div>
                       <strong className="font-semibold">CCP:</strong>{" "}
-                      {invoice.client?.ccp}
+                      {clients.find(c => c.id === field.value)?.ccp}
                     </div>
                     <div>
                       <strong className="font-semibold">contact name:</strong>{" "}
-                      {invoice.client?.contact}
+                      {clients.find(c => c.id === field.value)?.contact}
                     </div>
                     <div>
                       <strong className="font-semibold">contact phone:</strong>{" "}
-                      {invoice.client?.telcontact}
+                      {clients.find(c => c.id === field.value)?.telcontact}
                     </div>
                     <div>
                       <strong className="font-semibold">Address:</strong>{" "}
-                      {invoice.client?.address || ''}
+                      {clients.find(c => c.id === field.value)?.address || ''}
                     </div>
                     <div>
                       <strong className="font-semibold">City:</strong>{" "}
-                      {invoice.client?.city || ''}, {invoice.client?.country || ''}
+                      {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
                     </div>
                   </div>
                 )}
