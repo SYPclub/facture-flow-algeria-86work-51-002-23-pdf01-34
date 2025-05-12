@@ -1,4 +1,3 @@
-
 // Base types for our domain models
 
 export interface Client {
@@ -12,6 +11,13 @@ export interface Client {
   city: string;
   createdAt: string;
   updatedAt: string;
+  // New fields
+  nis: string | null;
+  ai: string | null;
+  rib: string | null;
+  ccp: string | null;
+  contact: string | null;
+  telcontact: string | null;
 }
 
 export interface Product {

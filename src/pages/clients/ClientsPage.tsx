@@ -41,7 +41,9 @@ const ClientsPage = () => {
       client.name.toLowerCase().includes(query) ||
       client.taxid.toLowerCase().includes(query) ||
       client.city.toLowerCase().includes(query) ||
-      client.email.toLowerCase().includes(query)
+      client.email.toLowerCase().includes(query) ||
+      (client.nis && client.nis.toLowerCase().includes(query)) ||
+      (client.contact && client.contact.toLowerCase().includes(query))
     );
   });
 
@@ -103,8 +105,8 @@ const ClientsPage = () => {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Tax ID (NIF)</TableHead>
-                    <TableHead>City</TableHead>
-                    <TableHead>Contact</TableHead>
+                    <TableHead>NIS</TableHead>
+                    <TableHead>Contact Info</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -113,11 +115,11 @@ const ClientsPage = () => {
                     <TableRow key={client.id}>
                       <TableCell className="font-medium">{client.name}</TableCell>
                       <TableCell>{client.taxid}</TableCell>
-                      <TableCell>{client.city}</TableCell>
+                      <TableCell>{client.nis || '-'}</TableCell>
                       <TableCell>
                         <div className="flex flex-col">
-                          <span className="text-xs">{client.email}</span>
-                          <span className="text-xs text-muted-foreground">{client.phone}</span>
+                          <span className="text-xs">{client.contact || client.email}</span>
+                          <span className="text-xs text-muted-foreground">{client.telcontact || client.phone}</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-right">

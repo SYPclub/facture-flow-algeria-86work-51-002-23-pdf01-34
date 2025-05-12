@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -37,6 +38,13 @@ const clientSchema = z.object({
   email: z.string().email('Invalid email address'),
   country: z.string().min(2, 'Country must be at least 2 characters'),
   city: z.string().min(2, 'City must be at least 2 characters'),
+  // New fields - all optional
+  nis: z.string().optional().nullable(),
+  ai: z.string().optional().nullable(),
+  rib: z.string().optional().nullable(),
+  ccp: z.string().optional().nullable(),
+  contact: z.string().optional().nullable(),
+  telcontact: z.string().optional().nullable(),
 });
 
 type ClientFormValues = z.infer<typeof clientSchema>;
@@ -72,6 +80,12 @@ const ClientDetail = () => {
           email: '',
           country: 'Algeria', // Default country
           city: '',
+          nis: '',
+          ai: '',
+          rib: '',
+          ccp: '',
+          contact: '',
+          telcontact: '',
         }
       : {
           name: client?.name || '',
@@ -81,6 +95,12 @@ const ClientDetail = () => {
           email: client?.email || '',
           country: client?.country || '',
           city: client?.city || '',
+          nis: client?.nis || '',
+          ai: client?.ai || '',
+          rib: client?.rib || '',
+          ccp: client?.ccp || '',
+          contact: client?.contact || '',
+          telcontact: client?.telcontact || '',
         },
   });
   
@@ -94,6 +114,12 @@ const ClientDetail = () => {
         email: client.email,
         country: client.country,
         city: client.city,
+        nis: client.nis || '',
+        ai: client.ai || '',
+        rib: client.rib || '',
+        ccp: client.ccp || '',
+        contact: client.contact || '',
+        telcontact: client.telcontact || '',
       });
     }
   }, [client, form, isNewClient]);
@@ -107,7 +133,13 @@ const ClientDetail = () => {
         phone: data.phone,
         email: data.email,
         country: data.country,
-        city: data.city
+        city: data.city,
+        nis: data.nis || null,
+        ai: data.ai || null,
+        rib: data.rib || null,
+        ccp: data.ccp || null,
+        contact: data.contact || null,
+        telcontact: data.telcontact || null
       };
       return mockDataService.createClient(newClient);
     },
@@ -137,7 +169,13 @@ const ClientDetail = () => {
         phone: data.phone,
         email: data.email,
         country: data.country,
-        city: data.city
+        city: data.city,
+        nis: data.nis || null,
+        ai: data.ai || null,
+        rib: data.rib || null,
+        ccp: data.ccp || null,
+        contact: data.contact || null,
+        telcontact: data.telcontact || null
       };
       return mockDataService.updateClient(id!, updatedClient);
     },
@@ -324,6 +362,45 @@ const ClientDetail = () => {
                 />
               </div>
               
+              {/* New fields: NIS and AI */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="nis"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>NIS</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter NIS" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="ai"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>AI</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter AI" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
               <FormField
                 control={form.control}
                 name="address"
@@ -370,6 +447,86 @@ const ClientDetail = () => {
                       <FormControl>
                         <Input 
                           placeholder="Enter country" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <Separator />
+              
+              {/* Contact person details */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="contact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Person</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter contact person name" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="telcontact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Phone</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter contact person phone" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              {/* Banking details */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="rib"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>RIB (Bank Account)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter RIB" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="ccp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>CCP</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter CCP" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -437,6 +594,12 @@ const ClientDetail = () => {
                           email: client?.email || '',
                           country: client?.country || '',
                           city: client?.city || '',
+                          nis: client?.nis || '',
+                          ai: client?.ai || '',
+                          rib: client?.rib || '',
+                          ccp: client?.ccp || '',
+                          contact: client?.contact || '',
+                          telcontact: client?.telcontact || '',
                         });
                       }}
                     >

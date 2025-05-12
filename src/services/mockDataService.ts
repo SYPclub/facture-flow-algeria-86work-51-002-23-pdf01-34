@@ -45,10 +45,24 @@ class MockDataService {
 
   async createClient(clientData: Partial<Client>): Promise<Client | null> {
     try {
-      // Add new client
+      // Add new client with the new fields
       const { data, error } = await supabase
         .from('clients')
-        .insert([clientData])
+        .insert([{
+          name: clientData.name,
+          address: clientData.address,
+          taxid: clientData.taxid,
+          phone: clientData.phone,
+          email: clientData.email,
+          country: clientData.country,
+          city: clientData.city,
+          nis: clientData.nis || null,
+          ai: clientData.ai || null,
+          rib: clientData.rib || null,
+          ccp: clientData.ccp || null,
+          contact: clientData.contact || null,
+          telcontact: clientData.telcontact || null
+        }])
         .select('*')
         .single();
       
@@ -63,10 +77,24 @@ class MockDataService {
 
   async updateClient(id: string, clientData: Partial<Client>): Promise<Client | null> {
     try {
-      // Update existing client
+      // Update existing client with the new fields
       const { data, error } = await supabase
         .from('clients')
-        .update(clientData)
+        .update({
+          name: clientData.name,
+          address: clientData.address,
+          taxid: clientData.taxid,
+          phone: clientData.phone,
+          email: clientData.email,
+          country: clientData.country,
+          city: clientData.city,
+          nis: clientData.nis || null,
+          ai: clientData.ai || null,
+          rib: clientData.rib || null,
+          ccp: clientData.ccp || null,
+          contact: clientData.contact || null,
+          telcontact: clientData.telcontact || null
+        })
         .eq('id', id)
         .select('*')
         .single();
