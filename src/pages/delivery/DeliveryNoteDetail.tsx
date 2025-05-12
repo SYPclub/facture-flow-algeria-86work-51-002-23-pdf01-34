@@ -767,7 +767,7 @@ const DeliveryNoteDetail = () => {
                             <div className="text-xs text-muted-foreground">Code: {item.product?.code}</div>
                           </td>
                           <td className="px-4 py-2 text-right">{item.quantity}</td>
-                          <td className="px-4 py-2">Unit</td>
+                          <td className="px-4 py-2">{item.product?.Unit}</td>
                           <td className="px-4 py-2 text-sm text-muted-foreground">{item.product?.description}</td>
                         </tr>
                       ))}
