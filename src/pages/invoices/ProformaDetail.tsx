@@ -622,11 +622,11 @@ const ProformaDetail = () => {
                     </div>
                     <div>
                       <strong className="font-semibold">Address:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.address || ''}
+                      {invoice.client?.address || ''}
                     </div>
                     <div>
                       <strong className="font-semibold">City:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
+                      {invoice.client?.city || ''}, {invoice.client?.country || ''}
                     </div>
                   </div>
                 )}
