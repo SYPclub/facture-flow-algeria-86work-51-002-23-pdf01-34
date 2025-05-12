@@ -903,6 +903,34 @@ const ProformaDetail = () => {
                 {proforma.client?.taxid}
               </div>
               <div>
+                <strong className="font-semibold">NIS:</strong>{" "}
+                {invoice.client?.nis}
+              </div>                            
+              <div>
+                <strong className="font-semibold">RC:</strong>{" "}
+                {invoice.client?.rc}
+              </div>
+              <div>
+                <strong className="font-semibold">A.I:</strong>{" "}
+                {invoice.client?.ai}
+              </div>
+              <div>
+                <strong className="font-semibold">RIB:</strong>{" "}
+                {invoice.client?.rib}
+              </div>
+              <div>
+                <strong className="font-semibold">CCP:</strong>{" "}
+                {invoice.client?.ccp}
+              </div>
+              <div>
+                <strong className="font-semibold">contact name:</strong>{" "}
+                {invoice.client?.contact}
+              </div>
+              <div>
+                <strong className="font-semibold">contact phone:</strong>{" "}
+                {invoice.client?.telcontact}
+              </div>
+              <div>
                 <strong className="font-semibold">Address:</strong>{" "}
                 {proforma.client?.address}
               </div>
