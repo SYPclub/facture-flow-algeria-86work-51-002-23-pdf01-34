@@ -1,3 +1,4 @@
+
 // Base types for our domain models
 
 export interface Client {
@@ -82,9 +83,9 @@ export interface DeliveryNote {
   status: 'pending' | 'delivered' | 'cancelled';
   createdAt: string;
   updatedAt: string;
-  drivername: string;
-  truck_id?: string;
-  delivery_company?: string;
+  drivername: string | null;
+  truck_id?: string | null;
+  delivery_company?: string | null;
 }
 
 // User related types

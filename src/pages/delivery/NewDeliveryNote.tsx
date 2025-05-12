@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -58,9 +59,9 @@ const deliveryNoteSchema = z.object({
   clientid: z.string().min(1, 'Client is required'),
   issuedate: z.string().min(1, 'Issue date is required'),
   notes: z.string().optional(),
-  drivername: z.string().optional(),
-  truck_id: z.string().optional(),
-  delivery_company: z.string().optional(),
+  drivername: z.string().min(1, 'Driver name is required'),
+  truck_id: z.string().optional().nullable(),
+  delivery_company: z.string().optional().nullable(),
   items: z.array(
     z.object({
       id: z.string(),
@@ -194,7 +195,7 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: data.drivername || null,
+        drivername: data.drivername || 'Not specified', // Set a default if empty
         truck_id: data.truck_id || null,
         delivery_company: data.delivery_company || null,
         items: data.items.map(item => {
@@ -346,7 +347,7 @@ const NewDeliveryNote = () => {
                     <FormItem>
                       <FormLabel className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
-                        Driver Name
+                        Driver Name*
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="Enter driver name" {...field} />
