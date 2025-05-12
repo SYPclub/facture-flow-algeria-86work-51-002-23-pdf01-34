@@ -312,6 +312,15 @@ class MockDataService {
         email: invoice.clients.email,
         country: invoice.clients.country,
         city: invoice.clients.city,
+        nis: invoice.clients.nis,
+        rib: invoice.clients.rib,
+        ai: invoice.clients.ai,
+        ccp: invoice.clients.ccp,
+        contact: invoice.clients.contact,
+        telcontact: invoice.clients.telcontact,
+        rc: invoice.clients.rc,
+
+        
         createdAt: invoice.clients.createdat || new Date().toISOString(),
         updatedAt: invoice.clients.updatedat || new Date().toISOString()
       } : undefined;
@@ -409,6 +418,15 @@ class MockDataService {
       email: invoice.clients.email,
       country: invoice.clients.country,
       city: invoice.clients.city,
+
+      nis: invoice.clients.nis,
+      rib: invoice.clients.rib,
+      ai: invoice.clients.ai,
+      ccp: invoice.clients.ccp,
+      contact: invoice.clients.contact,
+      telcontact: invoice.clients.telcontact,
+      rc: invoice.clients.rc,
+
       createdAt: invoice.clients.createdat || new Date().toISOString(),
       updatedAt: invoice.clients.updatedat || new Date().toISOString()
     } : undefined;
@@ -742,6 +760,15 @@ class MockDataService {
         email: invoice.clients.email,
         country: invoice.clients.country,
         city: invoice.clients.city,
+
+        nis: invoice.clients.nis,
+        rib: invoice.clients.rib,
+        ai: invoice.clients.ai,
+        ccp: invoice.clients.ccp,
+        contact: invoice.clients.contact,
+        telcontact: invoice.clients.telcontact,
+        rc: invoice.clients.rc,
+
         createdAt: invoice.clients.createdat || new Date().toISOString(),
         updatedAt: invoice.clients.updatedat || new Date().toISOString()
       } : undefined;
@@ -841,6 +868,15 @@ class MockDataService {
       email: invoice.clients.email,
       country: invoice.clients.country,
       city: invoice.clients.city,
+
+      nis: invoice.clients.nis,
+      rib: invoice.clients.rib,
+      ai: invoice.clients.ai,
+      ccp: invoice.clients.ccp,
+      contact: invoice.clients.contact,
+      telcontact: invoice.clients.telcontact,
+      rc: invoice.clients.rc,
+
       createdAt: invoice.clients.createdat || new Date().toISOString(),
       updatedAt: invoice.clients.updatedat || new Date().toISOString()
     } : undefined;
@@ -964,6 +1000,17 @@ class MockDataService {
         email: note.clients.email,
         country: note.clients.country,
         city: note.clients.city,
+
+        nis: note.clients.nis,
+        rib: note.clients.rib,
+        ai: note.clients.ai,
+        ccp: note.clients.ccp,
+        contact: note.clients.contact,
+        telcontact: note.clients.telcontact,
+        rc: note.clients.rc,
+
+
+
         createdAt: note.clients.createdat || new Date().toISOString(),
         updatedAt: note.clients.updatedat || new Date().toISOString()
       } : undefined;
@@ -1071,6 +1118,15 @@ class MockDataService {
       email: note.clients.email,
       country: note.clients.country,
       city: note.clients.city,
+
+      nis: note.clients.nis,
+      rib: note.clients.rib,
+      ai: note.clients.ai,
+      ccp: note.clients.ccp,
+      contact: note.clients.contact,
+      telcontact: note.clients.telcontact,
+      rc: note.clients.rc,
+      
       createdAt: note.clients.createdat || new Date().toISOString(),
       updatedAt: note.clients.updatedat || new Date().toISOString()
     } : undefined;
