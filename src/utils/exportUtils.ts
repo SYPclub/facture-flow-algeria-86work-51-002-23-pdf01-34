@@ -98,7 +98,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     `Address: ${proforma.client?.address || ''} | ville: ${proforma.client?.city || ''}`,
     `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
     
-  ].filter(Boolean), 14, clientY + 12);
+  ].filter(Boolean), 14, clientY + 5);
   
   pdf.setFontSize(10);
   pdf.text([
