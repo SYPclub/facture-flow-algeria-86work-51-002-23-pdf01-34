@@ -98,6 +98,7 @@ const proformaFormSchema = z.object({
       productId: z.string().min(1, 'Product is required'),
       quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
       unitprice: z.coerce.number().min(0, 'Price must be positive'),
+      unit: z.coerce.string(),
       taxrate: z.coerce.number().min(0, 'Tax rate must be positive'),
       discount: z.coerce.number().min(0).max(100, 'Discount must be between 0 and 100'),
       product: z.object({
@@ -105,6 +106,7 @@ const proformaFormSchema = z.object({
         description: z.string(),
         code: z.string(),
         unitprice: z.number(),
+        unit: z.string(),
         taxrate: z.number(),
       }).optional(),
       totalExcl: z.number().optional(),
@@ -229,6 +231,7 @@ const ProformaDetail = () => {
         productId: '',
         quantity: 1,
         unitprice: 0,
+        unit: '',
         taxrate: 0,
         discount: 0,
         totalExcl: 0,
@@ -255,6 +258,7 @@ const ProformaDetail = () => {
         ...items[index],
         productId: productId,
         unitprice: product.unitprice,
+        unit: product.unit,
         taxrate: product.taxrate,
         product: product,
         totalExcl: items[index].quantity * product.unitprice * (1 - (items[index].discount || 0) / 100),
@@ -738,6 +742,7 @@ const ProformaDetail = () => {
                       <TableRow>
                         <TableHead>Product</TableHead>
                         <TableHead className="w-[80px]">Qty</TableHead>
+                        <TableHead className="w-[80px]">unit</TableHead>
                         <TableHead className="w-[120px]">Unit Price</TableHead>
                         <TableHead className="w-[80px]">Tax %</TableHead>
                         <TableHead className="w-[80px]">Disc %</TableHead>
@@ -794,6 +799,7 @@ const ProformaDetail = () => {
                               }}
                             />
                           </TableCell>
+                          <TableCell className="text-right">{item.unit}</TableCell>
                           <TableCell>
                             <Input
                               type="number"
