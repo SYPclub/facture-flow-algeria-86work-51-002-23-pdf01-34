@@ -59,7 +59,7 @@ const deliveryNoteSchema = z.object({
   clientid: z.string().min(1, 'Client is required'),
   issuedate: z.string().min(1, 'Issue date is required'),
   notes: z.string().optional(),
-  drivername: z.string().optional(),
+  drivername: z.string().min(1, 'dar is required'),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   items: z.array(
