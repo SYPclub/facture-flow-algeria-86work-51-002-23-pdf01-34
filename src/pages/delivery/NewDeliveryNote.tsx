@@ -53,13 +53,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getCurrentDate, generateId } from '@/types';
-import { supabase } from '@/integrations/supabase/client';
 
 const deliveryNoteSchema = z.object({
   clientid: z.string().min(1, 'Client is required'),
   issuedate: z.string().min(1, 'Issue date is required'),
   notes: z.string().optional(),
-  drivername: z.string().min(1, 'dar is required'),
+  drivername: z.string().min(1, 'Driver name is required'),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
   items: z.array(
@@ -189,15 +188,18 @@ const NewDeliveryNote = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data: DeliveryNoteFormValues) => {
+      // Ensure drivername is not empty even if validation allows it
+      const driverName = data.drivername.trim() || 'Unknown Driver';
+      
       const deliveryNote = {
         clientid: data.clientid,
         finalInvoiceId: invoiceId || undefined,
         issuedate: data.issuedate,
         notes: data.notes || '',
         status: 'pending',
-        drivername: data.drivername,
-        truck_id: data.truck_id ,
-        delivery_company: data.delivery_company ,
+        drivername: driverName, // Use the non-empty driver name
+        truck_id: data.truck_id || null,
+        delivery_company: data.delivery_company || null,
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
@@ -215,6 +217,7 @@ const NewDeliveryNote = () => {
         })
       };
       
+      console.log('Creating delivery note with data:', deliveryNote);
       return mockDataService.createDeliveryNote(deliveryNote);
     },
     onSuccess: () => {
