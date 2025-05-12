@@ -68,12 +68,14 @@ const proformaSchema = z.object({
       unitprice: z.coerce.number().min(0, 'Price must be positive'),
       taxrate: z.coerce.number().min(0, 'Tax rate must be positive'),
       discount: z.coerce.number().min(0).max(100, 'Discount must be between 0 and 100'),
+      unit: z.string().optional(),
       product: z.object({
         name: z.string(),
         description: z.string(),
         code: z.string(),
         unitprice: z.number(),
         taxrate: z.number(),
+        unit: z.string().optional(),
       }).optional()
     })
   ).min(1, 'At least one item is required')
@@ -118,7 +120,8 @@ const NewProformaInvoice = () => {
           quantity: 1,
           unitprice: 0,
           taxrate: 0,
-          discount: 0
+          discount: 0,
+          unit: ''
         }
       ]
     }
@@ -186,7 +189,8 @@ const NewProformaInvoice = () => {
         quantity: 1,
         unitprice: 0,
         taxrate: 0,
-        discount: 0
+        discount: 0,
+        unit: ''
       }
     ]);
   };
@@ -206,6 +210,7 @@ const NewProformaInvoice = () => {
         productId: productId,
         unitprice: product.unitprice,
         taxrate: product.taxrate,
+        unit: product.unit || '',
         product: product
       };
       form.setValue('items', items);
@@ -480,6 +485,7 @@ const NewProformaInvoice = () => {
                     <TableRow>
                       <TableHead>Product</TableHead>
                       <TableHead className="w-[80px]">Qty</TableHead>
+                      <TableHead className="w-[80px]">Unit</TableHead>
                       <TableHead className="w-[120px]">Unit Price</TableHead>
                       <TableHead className="w-[80px]">Tax %</TableHead>
                       <TableHead className="w-[80px]">Disc %</TableHead>
@@ -519,6 +525,17 @@ const NewProformaInvoice = () => {
                             onChange={(e) => {
                               const items = [...form.getValues('items')];
                               items[index].quantity = parseInt(e.target.value) || 1;
+                              form.setValue('items', items);
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Input
+                            type="text"
+                            value={item.unit || (item.product?.unit || '')}
+                            onChange={(e) => {
+                              const items = [...form.getValues('items')];
+                              items[index].unit = e.target.value;
                               form.setValue('items', items);
                             }}
                           />
