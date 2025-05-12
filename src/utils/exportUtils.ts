@@ -81,10 +81,20 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   pdf.text([
     `client: ${proforma.client?.name || ''}`,
     `NIF: ${proforma.client?.taxid || ''}`,
+
+    proforma.client?.nis && `NIS: ${proforma.client.nis}`,
+    proforma.client?.rc && `NIS: ${proforma.client.nis}`,
+    proforma.client?.ai && `NIS: ${proforma.client.nis}`,
+    proforma.client?.ccp && `NIS: ${proforma.client.nis}`,
+    proforma.client?.rib && `NIS: ${proforma.client.nis}`,
+    proforma.client?.contact && `NIS: ${proforma.client.nis}`,
+    proforma.client?.telcontact && `NIS: ${proforma.client.nis}`,
+      
+
     `Address: ${proforma.client?.address || ''}`,
     `ville: ${proforma.client?.city || ''}, ${proforma.client?.country || ''}`,
     `Telephone: ${proforma.client?.phone || ''} , email: ${proforma.client?.email || ''} `
-  ], 14, clientY + 5);
+  ].filter(Boolean), 14, clientY + 5);
   
   pdf.setFontSize(10);
   pdf.text([
