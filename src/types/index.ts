@@ -1,4 +1,3 @@
-
 // Base types for our domain models
 
 export interface Client {
@@ -45,7 +44,7 @@ export interface InvoiceItem {
   totalExcl: number;
   totalTax: number;
   total: number;
-  unit: string; // Changed from optional to required field
+  unit?: string; // Added unit field
 }
 
 export interface BaseInvoice {

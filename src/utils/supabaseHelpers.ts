@@ -1,7 +1,6 @@
-
 // Helper functions to map between database schema and our domain models
 
-import { User, UserRole, Product, InvoiceItem } from '@/types';
+import { User, UserRole } from '@/types';
 
 /**
  * Maps a user from Supabase Auth to our domain User model
@@ -21,8 +20,8 @@ export const mapSupabaseAuthUserToDomainUser = (authUser: any): User => {
 /**
  * Maps product from DB to domain model
  */
-export const mapDbProductToDomainProduct = (dbProduct: any): Product => {
-  if (!dbProduct) return null as unknown as Product;
+export const mapDbProductToDomainProduct = (dbProduct: any): any => {
+  if (!dbProduct) return null;
   
   return {
     id: dbProduct.id,
@@ -32,7 +31,7 @@ export const mapDbProductToDomainProduct = (dbProduct: any): Product => {
     unitprice: dbProduct.unitprice,
     taxrate: dbProduct.taxrate,
     stockquantity: dbProduct.stockquantity,
-    unit: dbProduct.unit || '', // Ensure unit field is present
+    unit: dbProduct.unit || '', // Added unit field with fallback to empty string
     createdAt: dbProduct.createdat,
     updatedAt: dbProduct.updatedat,
   };
@@ -41,7 +40,7 @@ export const mapDbProductToDomainProduct = (dbProduct: any): Product => {
 /**
  * Maps a domain Product model to database columns
  */
-export const mapDomainProductToDb = (product: Product): any => {
+export const mapDomainProductToDb = (product: any): any => {
   return {
     id: product.id,
     code: product.code,
@@ -50,29 +49,8 @@ export const mapDomainProductToDb = (product: Product): any => {
     unitprice: product.unitprice,
     taxrate: product.taxrate,
     stockquantity: product.stockquantity,
-    unit: product.unit || '', // Ensure unit field is present
+    unit: product.unit || '', // Added unit field with fallback to empty string
     createdat: product.createdAt,
     updatedat: product.updatedAt,
-  };
-};
-
-/**
- * Maps invoice item from DB to domain model
- */
-export const mapDbInvoiceItemToDomainItem = (dbItem: any, product?: Product): InvoiceItem => {
-  if (!dbItem) return null as unknown as InvoiceItem;
-  
-  return {
-    id: dbItem.id,
-    productId: dbItem.productid,
-    product: product,
-    quantity: dbItem.quantity,
-    unitprice: dbItem.unitprice,
-    taxrate: dbItem.taxrate,
-    discount: dbItem.discount || 0,
-    totalExcl: dbItem.totalexcl,
-    totalTax: dbItem.totaltax,
-    total: dbItem.total,
-    unit: product?.unit || '', // Use product unit as default
   };
 };
