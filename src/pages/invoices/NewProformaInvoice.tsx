@@ -480,6 +480,7 @@ const NewProformaInvoice = () => {
                     <TableRow>
                       <TableHead>Product</TableHead>
                       <TableHead className="w-[80px]">Qty</TableHead>
+                      <TableHead className="w-[80px]">unit</TableHead>
                       <TableHead className="w-[120px]">Unit Price</TableHead>
                       <TableHead className="w-[80px]">Tax %</TableHead>
                       <TableHead className="w-[80px]">Disc %</TableHead>
@@ -523,6 +524,7 @@ const NewProformaInvoice = () => {
                             }}
                           />
                         </TableCell>
+                        <TableCell className="text-right">{item.unit}</TableCell>
                         <TableCell>
                           <Input
                             type="number"

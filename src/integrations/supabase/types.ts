@@ -287,6 +287,7 @@ export type Database = {
           totalexcl: number
           totaltax: number
           unitprice: number
+          unit: string | null
         }
         Insert: {
           discount?: number
@@ -298,6 +299,7 @@ export type Database = {
           totalexcl: number
           totaltax: number
           unitprice: number
+          unit: string | null
         }
         Update: {
           discount?: number
@@ -309,6 +311,7 @@ export type Database = {
           totalexcl?: number
           totaltax?: number
           unitprice?: number
+          unit?: string | null
         }
         Relationships: [
           {
@@ -330,6 +333,7 @@ export type Database = {
           stockquantity: number
           taxrate: number
           unitprice: number
+          unit: string | null
           updatedat: string | null
         }
         Insert: {
@@ -341,6 +345,7 @@ export type Database = {
           stockquantity?: number
           taxrate: number
           unitprice: number
+          unit: string | null
           updatedat?: string | null
         }
         Update: {
@@ -352,6 +357,7 @@ export type Database = {
           stockquantity?: number
           taxrate?: number
           unitprice?: number
+          unit: string | null
           updatedat?: string | null
         }
         Relationships: []
