@@ -131,7 +131,6 @@ const ProductsPage = () => {
                     <TableHead>Price</TableHead>
                     <TableHead>Tax</TableHead>
                     <TableHead className="hidden sm:table-cell">Stock</TableHead>
-                    <TableHead className="hidden md:table-cell">Unit</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -146,7 +145,6 @@ const ProductsPage = () => {
                       <TableCell>{formatCurrency(product.unitprice)}</TableCell>
                       <TableCell>{product.taxrate}%</TableCell>
                       <TableCell className="hidden sm:table-cell">{product.stockquantity}</TableCell>
-                      <TableCell className="hidden md:table-cell">{product.unit || '-'}</TableCell>
                       <TableCell className="text-right">
                         <Link
                           to={`/products/${product.id}`}

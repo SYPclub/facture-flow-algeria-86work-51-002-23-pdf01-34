@@ -1,3 +1,4 @@
+
 // Helper functions to map between database schema and our domain models
 
 import { User, UserRole } from '@/types';
@@ -18,11 +19,9 @@ export const mapSupabaseAuthUserToDomainUser = (authUser: any): User => {
 };
 
 /**
- * Maps product from DB to domain model
+ * Maps database product rows to our domain Product model
  */
-export const mapDbProductToDomainProduct = (dbProduct: any): any => {
-  if (!dbProduct) return null;
-  
+export const mapDbProductToDomainProduct = (dbProduct: any) => {
   return {
     id: dbProduct.id,
     code: dbProduct.code,
@@ -31,16 +30,15 @@ export const mapDbProductToDomainProduct = (dbProduct: any): any => {
     unitprice: dbProduct.unitprice,
     taxrate: dbProduct.taxrate,
     stockquantity: dbProduct.stockquantity,
-    unit: dbProduct.unit || '', // Added unit field with fallback to empty string
-    createdAt: dbProduct.createdat,
-    updatedAt: dbProduct.updatedat,
+    createdAt: dbProduct.createdat || dbProduct.created_at,
+    updatedAt: dbProduct.updatedat || dbProduct.updated_at,
   };
 };
 
 /**
  * Maps a domain Product model to database columns
  */
-export const mapDomainProductToDb = (product: any): any => {
+export const mapDomainProductToDb = (product: any) => {
   return {
     id: product.id,
     code: product.code,
@@ -49,8 +47,6 @@ export const mapDomainProductToDb = (product: any): any => {
     unitprice: product.unitprice,
     taxrate: product.taxrate,
     stockquantity: product.stockquantity,
-    unit: product.unit || '', // Added unit field with fallback to empty string
-    createdat: product.createdAt,
-    updatedat: product.updatedAt,
+    // We don't map created_at and updated_at as they're handled by the database
   };
 };

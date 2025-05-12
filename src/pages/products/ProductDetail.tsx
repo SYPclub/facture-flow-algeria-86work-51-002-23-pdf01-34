@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -56,7 +55,6 @@ const productSchema = z.object({
   unitprice: z.coerce.number().min(0, 'Price must be positive'),
   taxrate: z.coerce.number().min(0, 'Tax rate must be positive'),
   stockquantity: z.coerce.number().min(0, 'Stock must be positive'),
-  unit: z.string().optional().default(''), // Added unit field
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -98,7 +96,6 @@ const ProductDetail = () => {
       unitprice: 0,
       taxrate: 0,
       stockquantity: 0,
-      unit: '', // Default value for unit
     },
     mode: 'onChange'
   });
@@ -113,7 +110,6 @@ const ProductDetail = () => {
         unitprice: product.unitprice,
         taxrate: product.taxrate,
         stockquantity: product.stockquantity,
-        unit: product.unit || '', // Handle unit field
       });
     }
   }, [product, form]);
@@ -127,8 +123,7 @@ const ProductDetail = () => {
         description: data.description || '',
         unitprice: data.unitprice,
         taxrate: data.taxrate,
-        stockquantity: data.stockquantity,
-        unit: data.unit || '', // Include unit field
+        stockquantity: data.stockquantity
       };
       
       const { data: newProduct, error } = await supabase
@@ -166,8 +161,7 @@ const ProductDetail = () => {
         description: data.description || '',
         unitprice: data.unitprice,
         taxrate: data.taxrate,
-        stockquantity: data.stockquantity,
-        unit: data.unit || '', // Include unit field
+        stockquantity: data.stockquantity
       };
       
       const { data: updatedProduct, error } = await supabase
@@ -492,28 +486,6 @@ const ProductDetail = () => {
                   )}
                 />
               </div>
-
-              {/* Add unit field */}
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit of Measure</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g., kg, L, pcs, etc." 
-                        {...field} 
-                        value={field.value || ''}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Specify the unit of measurement for this product
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
           </Card>
 

@@ -181,10 +181,6 @@ const NewDeliveryNote = () => {
     const items = [...form.getValues('items')];
     items[index].productId = productId;
     items[index].product = product;
-    // Transfer the unit from the product to the item
-    if (product?.unit) {
-      items[index].unit = product.unit;
-    }
     form.setValue('items', items);
     setItemsState([...items]);
   };
@@ -215,8 +211,7 @@ const NewDeliveryNote = () => {
             discount: 0,
             totalExcl: (product?.unitprice || 0) * item.quantity,
             totalTax: (product?.unitprice || 0) * item.quantity * (product?.taxrate || 0) / 100,
-            total: (product?.unitprice || 0) * item.quantity * (1 + (product?.taxrate || 0) / 100),
-            unit: product?.unit || '', // Include the unit from the product
+            total: (product?.unitprice || 0) * item.quantity * (1 + (product?.taxrate || 0) / 100)
           };
         })
       };
@@ -433,7 +428,6 @@ const NewDeliveryNote = () => {
                     <TableRow>
                       <TableHead>Product</TableHead>
                       <TableHead>Quantity</TableHead>
-                      <TableHead>Unit</TableHead>
                       <TableHead className="w-[100px]"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -481,9 +475,6 @@ const NewDeliveryNote = () => {
                               Valid quantity is required
                             </p>
                           )}
-                        </TableCell>
-                        <TableCell>
-                          {item.productId && products.find(p => p.id === item.productId)?.unit || '-'}
                         </TableCell>
                         <TableCell>
                           <Button 

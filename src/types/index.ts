@@ -28,7 +28,6 @@ export interface Product {
   unitprice: number;
   taxrate: number; // TVA rate
   stockquantity: number;
-  unit: string; // Added unit field
   createdAt: string;
   updatedAt: string;
 }
@@ -44,7 +43,6 @@ export interface InvoiceItem {
   totalExcl: number;
   totalTax: number;
   total: number;
-  unit?: string; // Added unit field
 }
 
 export interface BaseInvoice {
