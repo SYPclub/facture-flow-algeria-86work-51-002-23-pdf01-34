@@ -113,7 +113,7 @@ const NewDeliveryNote = () => {
       clientid: '',
       issuedate: getCurrentDate(),
       notes: '',
-      drivername: '', // Initialize with empty string but required by schema
+      drivername: 'Unknown Driver', // Initialize with a default value
       truck_id: '',
       delivery_company: '',
       items: [
@@ -187,18 +187,18 @@ const NewDeliveryNote = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data: DeliveryNoteFormValues) => {
-      // Always ensure driver name has a value to meet database constraint
-      const driverName = data.drivername.trim() || 'Unknown Driver';
-      
+      // Always ensure non-empty values for required fields
       const deliveryNote = {
         clientid: data.clientid,
-        finalInvoiceId: invoiceId || null, // Ensure null if no invoice ID
-        issuedate: data.issuedate,
+        finalInvoiceId: invoiceId || null,
+        issuedate: data.issuedate || getCurrentDate(),
+        deliverydate: null, // Default to null
         notes: data.notes || '',
         status: 'pending',
-        drivername: driverName, // Guarantee non-empty value
-        truck_id: data.truck_id || '', // Ensure null if empty
-        delivery_company: data.delivery_company || '', // Ensure null if empty
+        // Ensure all transportation fields are properly included
+        drivername: data.drivername.trim() || 'Unknown Driver',
+        truck_id: data.truck_id || null, 
+        delivery_company: data.delivery_company || null,
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
@@ -343,18 +343,21 @@ const NewDeliveryNote = () => {
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <FormField
-                                          control={form.control}
-                                          name="drivername"
-                                          render={({ field }) => (
-                                            <FormItem>
-                                              <FormLabel>Driver Name</FormLabel>
-                                              <FormControl>
-                                                <Input {...field} />
-                                              </FormControl>
-                                              <FormMessage />
-                                            </FormItem>
-                                          )}
-                  />
+                  control={form.control}
+                  name="drivername"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Driver Name</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          placeholder="Enter driver name"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -380,7 +383,7 @@ const NewDeliveryNote = () => {
                     <FormItem>
                       <FormLabel>Delivery Company</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Enter delivery company name" {...field} />
+                        <Input placeholder="Enter delivery company name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

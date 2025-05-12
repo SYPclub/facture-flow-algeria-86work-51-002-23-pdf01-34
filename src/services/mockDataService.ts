@@ -1084,6 +1084,7 @@ class MockDataService {
         const { data: numberData, error: numberError } = await supabase.rpc('generate_delivery_note_number');
         if (numberError) throw numberError;
         
+        // Make sure transportation fields are explicitly included and properly formatted
         const { data: createdNote, error: noteError } = await supabase
           .from('delivery_notes')
           .insert({
@@ -1091,13 +1092,22 @@ class MockDataService {
             finalinvoiceid: deliveryNote.finalInvoiceId,
             number: numberData || deliveryNote.number,
             issuedate: deliveryNote.issuedate,
+            deliverydate: deliveryNote.deliverydate,
             notes: deliveryNote.notes || '',
-            status: deliveryNote.status || 'pending'
+            status: deliveryNote.status || 'pending',
+            drivername: deliveryNote.drivername || 'Unknown Driver',
+            truck_id: deliveryNote.truck_id || null,
+            delivery_company: deliveryNote.delivery_company || null
           })
           .select()
           .single();
         
-        if (noteError) throw noteError;
+        if (noteError) {
+          console.error("Error creating delivery note:", noteError);
+          throw noteError;
+        }
+        
+        console.log("Created delivery note:", createdNote);
         
         for (const item of deliveryNote.items) {
           const { data: createdItem, error: itemError } = await supabase
