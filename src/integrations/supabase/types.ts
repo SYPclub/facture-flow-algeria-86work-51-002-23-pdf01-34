@@ -12,38 +12,59 @@ export type Database = {
       clients: {
         Row: {
           address: string
+          ai: string | null
+          ccp: string | null
           city: string
+          contact: string | null
           country: string
           createdat: string | null
           email: string
           id: string
           name: string
+          nis: string | null
           phone: string
+          rc: string | null
+          rib: string | null
           taxid: string
+          telcontact: string | null
           updatedat: string | null
         }
         Insert: {
           address: string
+          ai?: string | null
+          ccp?: string | null
           city: string
+          contact?: string | null
           country: string
           createdat?: string | null
           email: string
           id?: string
           name: string
+          nis?: string | null
           phone: string
+          rc?: string | null
+          rib?: string | null
           taxid: string
+          telcontact?: string | null
           updatedat?: string | null
         }
         Update: {
           address?: string
+          ai?: string | null
+          ccp?: string | null
           city?: string
+          contact?: string | null
           country?: string
           createdat?: string | null
           email?: string
           id?: string
           name?: string
+          nis?: string | null
           phone?: string
+          rc?: string | null
+          rib?: string | null
           taxid?: string
+          telcontact?: string | null
           updatedat?: string | null
         }
         Relationships: []
@@ -209,6 +230,8 @@ export type Database = {
       }
       final_invoices: {
         Row: {
+          amount_paid: number | null
+          client_debt: number | null
           clientid: string
           createdat: string | null
           duedate: string
@@ -226,6 +249,8 @@ export type Database = {
           updatedat: string | null
         }
         Insert: {
+          amount_paid?: number | null
+          client_debt?: number | null
           clientid: string
           createdat?: string | null
           duedate: string
@@ -243,6 +268,8 @@ export type Database = {
           updatedat?: string | null
         }
         Update: {
+          amount_paid?: number | null
+          client_debt?: number | null
           clientid?: string
           createdat?: string | null
           duedate?: string
@@ -286,8 +313,8 @@ export type Database = {
           total: number
           totalexcl: number
           totaltax: number
-          unitprice: number
           unit: string | null
+          unitprice: number
         }
         Insert: {
           discount?: number
@@ -298,8 +325,8 @@ export type Database = {
           total: number
           totalexcl: number
           totaltax: number
+          unit?: string | null
           unitprice: number
-          unit: string | null
         }
         Update: {
           discount?: number
@@ -310,8 +337,8 @@ export type Database = {
           total?: number
           totalexcl?: number
           totaltax?: number
-          unitprice?: number
           unit?: string | null
+          unitprice?: number
         }
         Relationships: [
           {
@@ -319,6 +346,41 @@ export type Database = {
             columns: ["productid"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          invoiceId: string
+          payment_date: string
+          payment_reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          invoiceId: string
+          payment_date?: string
+          payment_reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          invoiceId?: string
+          payment_date?: string
+          payment_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_payments_invoiceId_fkey"
+            columns: ["invoiceId"]
+            isOneToOne: false
+            referencedRelation: "final_invoices"
             referencedColumns: ["id"]
           },
         ]
@@ -332,8 +394,8 @@ export type Database = {
           name: string
           stockquantity: number
           taxrate: number
-          unitprice: number
           unit: string | null
+          unitprice: number
           updatedat: string | null
         }
         Insert: {
@@ -344,8 +406,8 @@ export type Database = {
           name: string
           stockquantity?: number
           taxrate: number
+          unit?: string | null
           unitprice: number
-          unit: string | null
           updatedat?: string | null
         }
         Update: {
@@ -356,8 +418,8 @@ export type Database = {
           name?: string
           stockquantity?: number
           taxrate?: number
+          unit?: string | null
           unitprice?: number
-          unit: string | null
           updatedat?: string | null
         }
         Relationships: []
