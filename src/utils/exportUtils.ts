@@ -110,7 +110,8 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   
   // Items table (adjust Y position)
   const tableY = companyInfo ? 100 : 96;
-  const tableRows = proforma.items.map(item => [
+  const tableRows = proforma.items.map((item, index) => [
+    (index + 1).toString(),
     `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -247,7 +248,8 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   ], 140, 75);
   
   // Items table
-  const tableRows = invoice.items.map(item => [
+  const tableRows = invoice.items.map(item , index) => [
+    (index + 1).toString(),
     `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -362,7 +364,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   
   pdf.setFontSize(10);
   pdf.text([
-    `Delivery Number: ${deliveryNote.number}`,
+    `Delivery Number: ${deliveryNote.number || 'N/A'} `,
     `Issue Date: ${formatDate(deliveryNote.issuedate)}`,
     `Delivery Date: ${deliveryNote.deliverydate ? formatDate(deliveryNote.deliverydate) : 'Not delivered yet'}`
   ], 140, 75);
@@ -385,10 +387,11 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   }
   
   // Items table
-  const tableRows = deliveryNote.items.map(item => [
-    `${item.product?.name}\n${item.product?.code}`,
-    item.quantity.toString(),
-    item.unit.toString(),
+  const tableRows = deliveryNote.items.map(item , index) => [
+    (index + 1).toString(),
+    `${item.product?.name || 'N/A' } \n${item.product?.code || 'N/A'}`,
+    item.quantity.toString() || 'N/A',
+    item.unit.toString() || 'N/A',
     item.product?.description || ''
   ]);
   
