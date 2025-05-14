@@ -109,7 +109,6 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   ], 140, clientY + 5);
   
   // Items table (adjust Y position)
-  let counter = 0;
   const tableY = companyInfo ? 100 : 96;
   let counter = 0;
   const tableRows = proforma.items.map(item => [
