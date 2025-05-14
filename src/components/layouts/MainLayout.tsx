@@ -165,7 +165,7 @@ const MainLayout = () => {
           />
           <SidebarItem 
             icon={FileSpreadsheet} 
-            title="client debt" 
+            title="client  debt" 
             href="/reports/clients-debt"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
           />
