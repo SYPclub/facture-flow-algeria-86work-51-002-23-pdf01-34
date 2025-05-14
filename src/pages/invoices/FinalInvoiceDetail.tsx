@@ -290,7 +290,7 @@ const FinalInvoiceDetail = () => {
     return <CreditCard className="h-4 w-4 text-blue-600 mr-2" />;
   };
 
-  const amountPaid = invoice.amount_paid ?? 0;
+  const amountPaid = invoice.amount_paid ;
   const clientDebt = invoice.client_debt ?? invoice.total;
 
   // Special status computed from payment amounts
