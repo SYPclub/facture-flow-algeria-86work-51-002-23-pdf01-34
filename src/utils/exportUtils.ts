@@ -109,9 +109,10 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   ], 140, clientY + 5);
   
   // Items table (adjust Y position)
+  let counter = 0;
   const tableY = companyInfo ? 100 : 96;
-  const tableRows = proforma.items.map((item, index) => [
-    (index + 1).toString(),
+  const tableRows = proforma.items.map(item => [
+    (++counter).toString(),  // Pre-increment counter for numbering
     `${item.product?.name}\n${item.product?.code}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -125,7 +126,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   
   autoTable(pdf, {
     startY: tableY,
-    head: [['No.' , 'Product', 'Qty', 'unit','Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
+    head: [['no', 'Product', 'Qty', 'unit','Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total Incl.']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
@@ -248,8 +249,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   ], 140, 75);
   
   // Items table
-  const tableRows = invoice.items.map(item , index) => [
-    (index + 1).toString(),
+  const tableRows = invoice.items.map(item => [
     `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -260,7 +260,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   
   autoTable(pdf, {
     startY: 100,
-    head: [['No.', 'Product', 'Qty', 'unit', 'Unit Price', 'Tax %', 'Total']],
+    head: [['Product', 'Qty', 'unit', 'Unit Price', 'Tax %', 'Total']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
@@ -387,8 +387,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   }
   
   // Items table
-  const tableRows = deliveryNote.items.map(item, index) => [
-    (index + 1).toString(),
+  const tableRows = deliveryNote.items.map(item => [
     `${item.product?.name || 'N/A' } \n${item.product?.code || 'N/A'}`,
     item.quantity.toString() || 'N/A',
     item.unit.toString() || 'N/A',
@@ -397,7 +396,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   
   autoTable(pdf, {
     startY: 115,
-    head: [['No.', 'Product', 'Quantity', 'Unit', 'Description']],
+    head: [['Product', 'Quantity', 'Unit', 'Description']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
