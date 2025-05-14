@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@/components/ui/card';
 import {
   Table,
@@ -29,12 +30,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { mockDataService } from '@/services/mockDataService';
 import { 
   supabase, 
   updateFinalInvoice, 
-  deleteFinalInvoice 
+  deleteFinalInvoice,
+  getInvoicePayments
 } from '@/integrations/supabase/client';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import {
@@ -50,6 +59,7 @@ import {
   Printer,
   Trash2,
   Undo,
+  Plus,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
@@ -74,6 +84,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import PaymentForm from '@/components/invoices/PaymentForm';
+import PaymentHistory from '@/components/invoices/PaymentHistory';
 
 const finalInvoiceFormSchema = z.object({
   notes: z.string().optional(),
@@ -91,6 +103,7 @@ const FinalInvoiceDetail = () => {
   const { checkPermission } = useAuth();
   const canEdit = checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]);
   const isEditMode = window.location.pathname.includes('/edit/');
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
 
   const { data: invoice, isLoading } = useQuery({
     queryKey: ['finalInvoice', id],
@@ -179,7 +192,7 @@ const FinalInvoiceDetail = () => {
     }
   });
 
-  const handleUpdateStatus = (status: 'unpaid' | 'paid' | 'cancelled' | 'credited', additionalData = {}) => {
+  const handleUpdateStatus = (status: 'unpaid' | 'paid' | 'partially_paid' | 'cancelled' | 'credited', additionalData = {}) => {
     if (!id) return;
     const updateData = { status, ...additionalData };
     statusUpdateMutation.mutate(updateData);
@@ -187,7 +200,7 @@ const FinalInvoiceDetail = () => {
 
   const handleMarkAsPaid = () => {
     const paymentdate = new Date().toISOString().split('T')[0];
-    handleUpdateStatus('paid', { paymentdate });
+    handleUpdateStatus('paid', { paymentdate, amount_paid: invoice?.total || 0, client_debt: 0 });
   };
 
   const handleExportPDF = () => {
@@ -252,6 +265,7 @@ const FinalInvoiceDetail = () => {
   const statusColor = {
     unpaid: "bg-amber-500",
     paid: "bg-green-500",
+    partially_paid: "bg-blue-500",
     cancelled: "bg-red-500",
     credited: "bg-purple-500",
   };
@@ -276,6 +290,19 @@ const FinalInvoiceDetail = () => {
     return <CreditCard className="h-4 w-4 text-blue-600 mr-2" />;
   };
 
+  const amountPaid = invoice.amount_paid ?? 0;
+  const clientDebt = invoice.client_debt ?? invoice.total;
+
+  // Special status computed from payment amounts
+  let computedStatus = invoice.status;
+  if (amountPaid >= invoice.total) {
+    computedStatus = 'paid';
+  } else if (amountPaid > 0) {
+    computedStatus = 'partially_paid';
+  } else if (invoice.status !== 'cancelled' && invoice.status !== 'credited') {
+    computedStatus = 'unpaid';
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -291,9 +318,9 @@ const FinalInvoiceDetail = () => {
         </div>
         {!isEditMode && (
           <Badge
-            className={`${statusColor[invoice.status]} text-white px-3 py-1 text-xs font-medium uppercase`}
+            className={`${statusColor[computedStatus]} text-white px-3 py-1 text-xs font-medium uppercase`}
           >
-            {invoice.status}
+            {computedStatus}
           </Badge>
         )}
       </div>
@@ -412,6 +439,7 @@ const FinalInvoiceDetail = () => {
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="unpaid">Unpaid</SelectItem>
+                          <SelectItem value="partially_paid">Partially Paid</SelectItem>
                           <SelectItem value="paid">Paid</SelectItem>
                           <SelectItem value="cancelled">Cancelled</SelectItem>
                           <SelectItem value="credited">Credited</SelectItem>
@@ -618,10 +646,25 @@ const FinalInvoiceDetail = () => {
                 <div>
                   <strong className="font-semibold">Status:</strong>{" "}
                   <Badge
-                    className={`${statusColor[invoice.status]} text-white px-2 py-0.5 text-xs font-medium`}
+                    className={`${statusColor[computedStatus]} text-white px-2 py-0.5 text-xs font-medium`}
                   >
-                    {invoice.status}
+                    {computedStatus}
                   </Badge>
+                </div>
+                
+                <div>
+                  <strong className="font-semibold">Total Amount:</strong>{" "}
+                  {formatCurrency(invoice.total)}
+                </div>
+                <div>
+                  <strong className="font-semibold">Amount Paid:</strong>{" "}
+                  {formatCurrency(amountPaid)}
+                </div>
+                <div>
+                  <strong className="font-semibold">Remaining Debt:</strong>{" "}
+                  <span className={clientDebt <= 0 ? "text-green-600 font-medium" : "text-amber-600 font-medium"}>
+                    {formatCurrency(clientDebt > 0 ? clientDebt : 0)}
+                  </span>
                 </div>
                 
                 {invoice.status === 'paid' && (
@@ -724,6 +767,38 @@ const FinalInvoiceDetail = () => {
             </CardContent>
           </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span>Payment History</span>
+                {canEdit && clientDebt > 0 && (
+                  <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm" className="ml-auto">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Payment
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px]">
+                      <DialogHeader>
+                        <DialogTitle>Record New Payment</DialogTitle>
+                      </DialogHeader>
+                      <PaymentForm 
+                        invoiceId={id || ''} 
+                        invoiceTotal={invoice.total} 
+                        remainingDebt={clientDebt}
+                        onSuccess={() => setIsPaymentDialogOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PaymentHistory invoiceId={id || ''} />
+            </CardContent>
+          </Card>
+
           {invoice.notes && (
             <Card>
               <CardHeader>
@@ -748,7 +823,7 @@ const FinalInvoiceDetail = () => {
                 </Button>
               )}
               
-              {invoice.status === 'unpaid' && canEdit && (
+              {computedStatus === 'unpaid' && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="default" className="bg-green-600 hover:bg-green-700">
@@ -780,6 +855,8 @@ const FinalInvoiceDetail = () => {
                           const data = {
                             status: 'paid',
                             paymentdate,
+                            amount_paid: invoice.total,
+                            client_debt: 0,
                             ...(paymentRef ? { paymentreference: paymentRef } : {})
                           };
                           statusUpdateMutation.mutate(data);
@@ -792,7 +869,28 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {invoice.status === 'unpaid' && canEdit && (
+              {computedStatus !== 'cancelled' && computedStatus !== 'credited' && canEdit && clientDebt > 0 && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="bg-blue-50 hover:bg-blue-100">
+                      <Plus className="mr-2 h-4 w-4 text-blue-600" />
+                      Add Payment
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Record New Payment</DialogTitle>
+                    </DialogHeader>
+                    <PaymentForm 
+                      invoiceId={id || ''} 
+                      invoiceTotal={invoice.total} 
+                      remainingDebt={clientDebt}
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              {computedStatus === 'unpaid' && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-red-50 hover:bg-red-100">
@@ -821,7 +919,7 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {canEdit && invoice.status === 'unpaid' && (
+              {canEdit && computedStatus === 'unpaid' && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
@@ -849,7 +947,7 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {(invoice.status === 'paid' || invoice.status === 'cancelled') && canEdit && (
+              {(computedStatus === 'paid' || computedStatus === 'partially_paid' || computedStatus === 'cancelled') && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
@@ -862,6 +960,7 @@ const FinalInvoiceDetail = () => {
                       <AlertDialogTitle>Revert to Unpaid</AlertDialogTitle>
                       <AlertDialogDescription>
                         This will revert the invoice status to unpaid.
+                        Any existing payment records will remain but the status will change.
                         Are you sure you want to proceed?
                       </AlertDialogDescription>
                     </AlertDialogHeader>

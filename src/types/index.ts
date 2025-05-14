@@ -1,3 +1,4 @@
+
 // Base types for our domain models
 
 export interface Client {
@@ -70,11 +71,25 @@ export interface ProformaInvoice extends BaseInvoice {
   stamp_tax?: number; // For cash payment tax
 }
 
+export interface InvoicePayment {
+  id: string;
+  invoiceId: string;
+  amount: number;
+  paymentDate: string;
+  paymentMethod: string;
+  reference: string;
+  notes?: string;
+  createdAt: string;
+}
+
 export interface FinalInvoice extends BaseInvoice {
-  status: 'unpaid' | 'paid' | 'cancelled' | 'credited';
+  status: 'unpaid' | 'paid' | 'partially_paid' | 'cancelled' | 'credited';
   proformaId?: string; // Reference to the source proforma invoice
   paymentdate?: string;
   paymentreference?: string;
+  amount_paid?: number;
+  client_debt?: number;
+  payments?: InvoicePayment[];
 }
 
 export interface DeliveryNote {

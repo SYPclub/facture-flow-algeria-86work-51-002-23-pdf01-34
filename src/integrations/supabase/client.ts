@@ -168,6 +168,180 @@ export const deleteFinalInvoice = async (id: string) => {
   }
 };
 
+// Invoice payment functions
+export const addInvoicePayment = async (invoiceId: string, paymentData: any) => {
+  try {
+    await beginTransaction();
+
+    // Add the payment record
+    const { data: payment, error: paymentError } = await supabase
+      .from('invoice_payments')
+      .insert({
+        invoiceid: invoiceId,
+        amount: paymentData.amount,
+        paymentdate: paymentData.paymentDate,
+        paymentmethod: paymentData.paymentMethod,
+        reference: paymentData.reference,
+        notes: paymentData.notes || null
+      })
+      .select()
+      .single();
+    
+    if (paymentError) {
+      await rollbackTransaction();
+      throw paymentError;
+    }
+    
+    // Get the invoice to calculate the new amount_paid and client_debt
+    const { data: invoice, error: invoiceError } = await supabase
+      .from('final_invoices')
+      .select('total, amount_paid, client_debt')
+      .eq('id', invoiceId)
+      .single();
+    
+    if (invoiceError) {
+      await rollbackTransaction();
+      throw invoiceError;
+    }
+    
+    // Calculate new values
+    const currentAmountPaid = invoice.amount_paid || 0;
+    const newAmountPaid = currentAmountPaid + paymentData.amount;
+    const newClientDebt = invoice.total - newAmountPaid;
+    
+    // Determine the new status based on the payment
+    let newStatus = 'unpaid';
+    if (newAmountPaid >= invoice.total) {
+      newStatus = 'paid';
+    } else if (newAmountPaid > 0) {
+      newStatus = 'partially_paid';
+    }
+    
+    // Update the invoice with the new amounts and status
+    const { error: updateError } = await supabase
+      .from('final_invoices')
+      .update({
+        amount_paid: newAmountPaid,
+        client_debt: newClientDebt > 0 ? newClientDebt : 0,
+        status: newStatus
+      })
+      .eq('id', invoiceId);
+    
+    if (updateError) {
+      await rollbackTransaction();
+      throw updateError;
+    }
+    
+    await commitTransaction();
+    return { success: true, payment };
+  } catch (error) {
+    console.error('Error adding invoice payment:', error);
+    await rollbackTransaction();
+    throw error;
+  }
+};
+
+export const getInvoicePayments = async (invoiceId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('invoice_payments')
+      .select('*')
+      .eq('invoiceid', invoiceId)
+      .order('paymentdate', { ascending: false });
+    
+    if (error) throw error;
+    
+    return data.map(payment => ({
+      id: payment.id,
+      invoiceId: payment.invoiceid,
+      amount: payment.amount,
+      paymentDate: payment.paymentdate,
+      paymentMethod: payment.paymentmethod,
+      reference: payment.reference,
+      notes: payment.notes,
+      createdAt: payment.createdat
+    }));
+  } catch (error) {
+    console.error('Error fetching invoice payments:', error);
+    throw error;
+  }
+};
+
+export const deleteInvoicePayment = async (paymentId: string, invoiceId: string) => {
+  try {
+    await beginTransaction();
+    
+    // Get the payment amount
+    const { data: payment, error: paymentQueryError } = await supabase
+      .from('invoice_payments')
+      .select('amount')
+      .eq('id', paymentId)
+      .single();
+    
+    if (paymentQueryError) {
+      await rollbackTransaction();
+      throw paymentQueryError;
+    }
+    
+    // Delete the payment
+    const { error: deleteError } = await supabase
+      .from('invoice_payments')
+      .delete()
+      .eq('id', paymentId);
+    
+    if (deleteError) {
+      await rollbackTransaction();
+      throw deleteError;
+    }
+    
+    // Get the invoice to recalculate values
+    const { data: invoice, error: invoiceError } = await supabase
+      .from('final_invoices')
+      .select('total, amount_paid')
+      .eq('id', invoiceId)
+      .single();
+    
+    if (invoiceError) {
+      await rollbackTransaction();
+      throw invoiceError;
+    }
+    
+    // Calculate new values
+    const newAmountPaid = (invoice.amount_paid || 0) - payment.amount;
+    const newClientDebt = invoice.total - newAmountPaid;
+    
+    // Determine the new status
+    let newStatus = 'unpaid';
+    if (newAmountPaid >= invoice.total) {
+      newStatus = 'paid';
+    } else if (newAmountPaid > 0) {
+      newStatus = 'partially_paid';
+    }
+    
+    // Update the invoice
+    const { error: updateError } = await supabase
+      .from('final_invoices')
+      .update({
+        amount_paid: newAmountPaid > 0 ? newAmountPaid : 0,
+        client_debt: newClientDebt > 0 ? newClientDebt : 0,
+        status: newStatus
+      })
+      .eq('id', invoiceId);
+    
+    if (updateError) {
+      await rollbackTransaction();
+      throw updateError;
+    }
+    
+    await commitTransaction();
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting invoice payment:', error);
+    await rollbackTransaction();
+    throw error;
+  }
+};
+
 // Update delivery note functions
 export const updateDeliveryNote = async (id: string, data: any) => {
   try {
