@@ -263,12 +263,12 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   
   autoTable(pdf, {
     startY: 100,
-    head: [['Product', 'Qty', 'unit', 'Unit Price', 'Tax %', 'Total']],
+    head: [['no', 'Product', 'Qty', 'unit', 'Unit Price', 'Tax %', 'Total']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
     columnStyles: {
-      0: { cellWidth: 70 },
+      1: { cellWidth: 70 },
     }
   });
   
@@ -401,12 +401,12 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   
   autoTable(pdf, {
     startY: 115,
-    head: [['Product', 'Quantity', 'Unit', 'Description']],
+    head: [['no' ,'Product', 'Quantity', 'Unit', 'Description']],
     body: tableRows,
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
     columnStyles: {
-      0: { cellWidth: 50 },
+      1: { cellWidth: 50 },
       3: { cellWidth: 80 }
     }
   });
