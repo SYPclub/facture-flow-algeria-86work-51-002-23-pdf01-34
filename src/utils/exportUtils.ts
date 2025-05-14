@@ -387,7 +387,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   }
   
   // Items table
-  const tableRows = deliveryNote.items.map(item , index) => [
+  const tableRows = deliveryNote.items.map(item, index) => [
     (index + 1).toString(),
     `${item.product?.name || 'N/A' } \n${item.product?.code || 'N/A'}`,
     item.quantity.toString() || 'N/A',
