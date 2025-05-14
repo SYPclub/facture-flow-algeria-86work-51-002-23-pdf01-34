@@ -250,9 +250,9 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   ], 140, 75);
   
   // Items table
-  let counter = 0;
+  let counterr = 0;
   const tableRows = invoice.items.map(item => [
-    (++counter).toString(),
+    (++counterr).toString(),
     `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -390,9 +390,9 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   }
   
   // Items table
-  let counter = 0;
+  let counterrr = 0;
   const tableRows = deliveryNote.items.map(item => [
-    (++counter).toString(),
+    (++counterrr).toString(),
     `${item.product?.name || 'N/A' } \n${item.product?.code || 'N/A'}`,
     item.quantity.toString() || 'N/A',
     item.unit.toString() || 'N/A',
