@@ -122,7 +122,7 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ invoiceId }) => {
         <TableBody>
           {payments.map((payment: InvoicePayment) => (
             <TableRow key={payment.id}>
-              <TableCell>{formatDate(payment.paymentDate)}</TableCell>
+              <TableCell>{formatDate(payment.payment_date)}</TableCell>
               <TableCell className="font-medium">
                 {formatCurrency(payment.amount)}
               </TableCell>
