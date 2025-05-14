@@ -65,12 +65,16 @@ const PaymentForm = ({
     mutationFn: (values: z.infer<typeof paymentFormSchema>) =>
       addInvoicePayment(invoiceId, values),
     onSuccess: () => {
+      // Force refetch to get the updated data
       queryClient.invalidateQueries({ queryKey: ['finalInvoice', invoiceId] });
       queryClient.invalidateQueries({ queryKey: ['invoicePayments', invoiceId] });
       toast({
         title: 'Payment Added',
         description: 'Payment has been recorded successfully',
       });
+      // Reset the form
+      form.reset();
+      // Call onSuccess callback if provided
       onSuccess?.();
     },
     onError: (error) => {
@@ -84,6 +88,7 @@ const PaymentForm = ({
   });
 
   const onSubmit = (values: z.infer<typeof paymentFormSchema>) => {
+    console.log('Submitting payment:', values);
     addPaymentMutation.mutate(values);
   };
 

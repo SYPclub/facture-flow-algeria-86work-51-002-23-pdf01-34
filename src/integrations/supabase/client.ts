@@ -192,6 +192,8 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
       throw paymentError;
     }
     
+    console.log('Payment added:', payment);
+    
     // Get the invoice to calculate the new amount_paid and client_debt
     const { data: invoice, error: invoiceError } = await supabase
       .from('final_invoices')
@@ -204,10 +206,18 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
       throw invoiceError;
     }
     
+    console.log('Current invoice data:', invoice);
+    
     // Calculate new values
     const currentAmountPaid = invoice.amount_paid || 0;
     const newAmountPaid = currentAmountPaid + paymentData.amount;
     const newClientDebt = invoice.total - newAmountPaid;
+    
+    console.log('Calculated new values:', {
+      currentAmountPaid,
+      newAmountPaid,
+      newClientDebt
+    });
     
     // Determine the new status based on the payment
     let newStatus = 'unpaid';
@@ -228,6 +238,7 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
       .eq('id', invoiceId);
     
     if (updateError) {
+      console.error('Error updating invoice:', updateError);
       await rollbackTransaction();
       throw updateError;
     }
