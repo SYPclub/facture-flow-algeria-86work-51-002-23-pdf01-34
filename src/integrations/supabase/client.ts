@@ -179,7 +179,7 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
       .insert({
         invoiceid: invoiceId,
         amount: paymentData.amount,
-        paymentdate: paymentData.paymentDate,
+        paymentdate: paymentData.payment_date,
         paymentmethod: paymentData.paymentMethod,
         reference: paymentData.reference,
         notes: paymentData.notes || null
@@ -255,7 +255,7 @@ export const getInvoicePayments = async (invoiceId: string) => {
       id: payment.id,
       invoiceId: payment.invoiceid,
       amount: payment.amount,
-      paymentDate: payment.paymentdate,
+      paymentDate: payment.payment_date,
       paymentMethod: payment.paymentmethod,
       reference: payment.reference,
       notes: payment.notes,
