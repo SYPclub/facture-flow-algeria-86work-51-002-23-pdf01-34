@@ -27,6 +27,8 @@ import DeliveryNotesPage from "@/pages/delivery/DeliveryNotesPage";
 import DeliveryNoteDetail from "@/pages/delivery/DeliveryNoteDetail";
 import NewDeliveryNote from "@/pages/delivery/NewDeliveryNote";
 import Etat104Page from "@/pages/reports/Etat104Page";
+import ClientsDebtPage from "@/pages/reports/ClientsDebtPage";
+import ClientDebtDetailPage from "@/pages/reports/ClientDebtDetailPage";
 import UsersPage from "@/pages/admin/UsersPage";
 import UserDetail from "@/pages/admin/UserDetail";
 import CompanyInfoPage from "@/pages/admin/CompanyInfoPage";
@@ -72,6 +74,8 @@ const App = () => (
               <Route path="/delivery-notes/edit/:id" element={<DeliveryNoteDetail />} />
               
               <Route path="/reports/etat104" element={<Etat104Page />} />
+              <Route path="/reports/clients-debt" element={<ClientsDebtPage />} />
+              <Route path="/reports/client-debt/:id" element={<ClientDebtDetailPage />} />
               
               <Route path="/admin/users" element={<UsersPage />} />
               <Route path="/admin/users/:id" element={<UserDetail />} />
