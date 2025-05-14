@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addInvoicePayment } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { Watch } from 'lucide-react';
 
 const paymentFormSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
@@ -49,6 +50,8 @@ const PaymentForm = ({
   onCancel,
 }: PaymentFormProps) => {
   const queryClient = useQueryClient();
+  const [previewAmountPaid, setPreviewAmountPaid] = useState(invoiceTotal - remainingDebt);
+  const [previewRemainingDebt, setPreviewRemainingDebt] = useState(remainingDebt);
 
   const form = useForm<z.infer<typeof paymentFormSchema>>({
     resolver: zodResolver(paymentFormSchema),
@@ -60,6 +63,25 @@ const PaymentForm = ({
       notes: '',
     },
   });
+
+  // Watch for payment amount changes to update preview values
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'amount' || name === undefined) {
+        const currentAmount = value.amount as number || 0;
+        const baseAmountPaid = invoiceTotal - remainingDebt;
+        
+        // Calculate preview values
+        const newAmountPaid = baseAmountPaid + currentAmount;
+        const newRemainingDebt = Math.max(0, invoiceTotal - newAmountPaid);
+        
+        setPreviewAmountPaid(newAmountPaid);
+        setPreviewRemainingDebt(newRemainingDebt);
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form, form.watch, invoiceTotal, remainingDebt]);
 
   const addPaymentMutation = useMutation({
     mutationFn: (values: z.infer<typeof paymentFormSchema>) =>
@@ -115,6 +137,30 @@ const PaymentForm = ({
               Remaining Debt:
             </span>
             <span className="font-medium">{formatCurrency(remainingDebt)}</span>
+          </div>
+        </div>
+
+        {/* Live calculation preview */}
+        <div className="bg-muted/50 p-3 rounded-md border border-muted">
+          <div className="flex items-center gap-2 mb-2 text-sm font-medium text-muted-foreground">
+            <Watch size={16} />
+            <span>Payment Preview</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div>
+              <span className="text-muted-foreground">After Payment:</span>
+            </div>
+            <div className="text-right"></div>
+            <div>
+              <span className="mr-2">Amount Paid:</span>
+              <span className="font-medium text-green-600">{formatCurrency(previewAmountPaid)}</span>
+            </div>
+            <div>
+              <span className="mr-2">Remaining Debt:</span>
+              <span className={`font-medium ${previewRemainingDebt > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+                {formatCurrency(previewRemainingDebt)}
+              </span>
+            </div>
           </div>
         </div>
 
