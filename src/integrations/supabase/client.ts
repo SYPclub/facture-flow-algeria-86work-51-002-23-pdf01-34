@@ -55,13 +55,6 @@ export const updateProformaInvoice = async (id: string, data: any) => {
   }
 };
 
-// Export all functions as a named export
-export const Br = {
-  updateProformaInvoice,
-};
-
-export default Br;
-
 export const updateProformaInvoiceItems = async (proformaId: string, items: any[]) => {
   try {
     // Start a transaction
@@ -197,7 +190,7 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
     // Get the invoice to calculate the new amount_paid and client_debt
     const { data: invoice, error: invoiceError } = await supabase
       .from('final_invoices')
-      .select('total, amount_paid, client_debt')
+      .select('total, amount_paid, client_debt, status')
       .eq('id', invoiceId)
       .single();
     
@@ -220,11 +213,15 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
     });
     
     // Determine the new status based on the payment
-    let newStatus = 'unpaid';
+    // Make sure we use only valid status values from the database constraint
+    let newStatus = invoice.status;
+    
     if (newAmountPaid >= invoice.total) {
       newStatus = 'paid';
-    } else if (newAmountPaid > 0) {
+    } else if (newAmountPaid > 0 && newAmountPaid < invoice.total) {
       newStatus = 'partially_paid';
+    } else if (newAmountPaid <= 0) {
+      newStatus = 'unpaid';
     }
     
     // Update the invoice with the new amounts and status
@@ -478,4 +475,8 @@ export const undoProformaConversion = async (proformaId: string, finalInvoiceId:
     console.error('Error undoing proforma conversion:', error);
     throw error;
   }
+};
+
+export const Br = {
+  updateProformaInvoice,
 };
