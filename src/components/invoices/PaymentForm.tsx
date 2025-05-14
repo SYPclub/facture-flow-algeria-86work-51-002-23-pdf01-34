@@ -64,6 +64,13 @@ const PaymentForm = ({
     },
   });
 
+  // Reset form whenever invoiceTotal or remainingDebt changes
+  useEffect(() => {
+    form.setValue('amount', remainingDebt);
+    setPreviewAmountPaid(invoiceTotal - remainingDebt);
+    setPreviewRemainingDebt(remainingDebt);
+  }, [form, invoiceTotal, remainingDebt]);
+
   // Watch for payment amount changes to update preview values
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
@@ -87,17 +94,32 @@ const PaymentForm = ({
     mutationFn: (values: z.infer<typeof paymentFormSchema>) =>
       addInvoicePayment(invoiceId, values),
     onSuccess: () => {
-      // Force refetch to get the updated data
+      // Force refetch to get the updated data - use exact query keys for maximum compatibility
       queryClient.invalidateQueries({ queryKey: ['finalInvoice', invoiceId] });
       queryClient.invalidateQueries({ queryKey: ['invoicePayments', invoiceId] });
-      toast({
-        title: 'Payment Added',
-        description: 'Payment has been recorded successfully',
+      
+      // Wait for queries to refresh before resetting form
+      Promise.all([
+        queryClient.refetchQueries({ queryKey: ['finalInvoice', invoiceId] }),
+        queryClient.refetchQueries({ queryKey: ['invoicePayments', invoiceId] })
+      ]).then(() => {
+        toast({
+          title: 'Payment Added',
+          description: 'Payment has been recorded successfully',
+        });
+        
+        // Reset the form with updated values
+        form.reset({
+          amount: 0,
+          payment_date: new Date().toISOString().split('T')[0],
+          paymentMethod: 'bank_transfer',
+          reference: '',
+          notes: '',
+        });
+        
+        // Call onSuccess callback if provided
+        onSuccess?.();
       });
-      // Reset the form
-      form.reset();
-      // Call onSuccess callback if provided
-      onSuccess?.();
     },
     onError: (error) => {
       console.error('Error adding payment:', error);
