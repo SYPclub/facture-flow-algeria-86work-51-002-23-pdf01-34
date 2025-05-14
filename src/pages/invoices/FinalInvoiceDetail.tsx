@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -62,7 +61,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { exportFinalInvoiceToPDF } from '@/utils/exportUtils';
 import {
   Form,
@@ -104,13 +103,48 @@ const FinalInvoiceDetail = () => {
   const canEdit = checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]);
   const isEditMode = window.location.pathname.includes('/edit/');
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [paymentSummary, setPaymentSummary] = useState({
+    amountPaid: 0,
+    clientDebt: 0
+  });
 
+  // Main invoice query
   const { data: invoice, isLoading } = useQuery({
     queryKey: ['finalInvoice', id],
     queryFn: () => mockDataService.getFinalInvoiceById(id!),
     enabled: !!id,
   });
 
+  // Get payment data
+  const { data: payments = [], refetch: refetchPayments } = useQuery({
+    queryKey: ['invoicePayments', id],
+    queryFn: () => getInvoicePayments(id!),
+    enabled: !!id,
+  });
+
+  // Calculate payment summary
+  useEffect(() => {
+    if (invoice) {
+      // If we have specific amount_paid and client_debt from database, use those
+      if (invoice.amount_paid !== undefined && invoice.client_debt !== undefined) {
+        setPaymentSummary({
+          amountPaid: invoice.amount_paid,
+          clientDebt: invoice.client_debt
+        });
+      } else {
+        // Otherwise calculate from payments
+        const totalPaid = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
+        const remainingDebt = Math.max(0, invoice.total - totalPaid);
+        
+        setPaymentSummary({
+          amountPaid: totalPaid,
+          clientDebt: remainingDebt
+        });
+      }
+    }
+  }, [invoice, payments]);
+
+  // Form handling
   const form = useForm({
     resolver: zodResolver(finalInvoiceFormSchema),
     defaultValues: {
@@ -131,10 +165,12 @@ const FinalInvoiceDetail = () => {
     }
   });
 
+  // Invoice update mutation
   const updateInvoiceMutation = useMutation({
     mutationFn: (data: any) => updateFinalInvoice(id || '', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
+      queryClient.invalidateQueries({ queryKey: ['invoicePayments', id] });
       toast({
         title: 'Invoice Updated',
         description: 'Invoice has been updated successfully'
@@ -151,6 +187,7 @@ const FinalInvoiceDetail = () => {
     }
   });
 
+  // Invoice deletion mutation
   const deleteInvoiceMutation = useMutation({
     mutationFn: () => deleteFinalInvoice(id || ''),
     onSuccess: () => {
@@ -171,12 +208,15 @@ const FinalInvoiceDetail = () => {
     }
   });
 
+  // Status update mutation
   const statusUpdateMutation = useMutation({
     mutationFn: (data: any) => {
       return updateFinalInvoice(id || '', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
+      queryClient.invalidateQueries({ queryKey: ['invoicePayments', id] });
+      refetchPayments();
       toast({
         title: 'Status Updated',
         description: 'Invoice status has been updated successfully'
@@ -192,17 +232,61 @@ const FinalInvoiceDetail = () => {
     }
   });
 
+  // Handle status update
   const handleUpdateStatus = (status: 'unpaid' | 'paid' | 'partially_paid' | 'cancelled' | 'credited', additionalData = {}) => {
-    if (!id) return;
-    const updateData = { status, ...additionalData };
+    if (!id || !invoice) return;
+    
+    let updateData = { status, ...additionalData };
+    
+    // If marking as paid, calculate the amount paid and client debt
+    if (status === 'paid' && !additionalData.amount_paid) {
+      updateData = {
+        ...updateData,
+        amount_paid: invoice.total,
+        client_debt: 0
+      };
+    }
+    
+    // If reverting to unpaid, handle payment data
+    if (status === 'unpaid') {
+      // Don't reset amount_paid if there are actual payments, just status
+      const totalPaid = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
+      if (totalPaid > 0) {
+        updateData = {
+          ...updateData,
+          // Keep the amount_paid from payments
+          amount_paid: totalPaid,
+          // Recalculate client debt
+          client_debt: Math.max(0, invoice.total - totalPaid)
+        };
+      } else {
+        // No payments, reset everything
+        updateData = {
+          ...updateData,
+          amount_paid: 0,
+          client_debt: invoice.total,
+          paymentdate: null,
+          paymentreference: null
+        };
+      }
+    }
+    
     statusUpdateMutation.mutate(updateData);
   };
 
+  // Mark as paid handler 
   const handleMarkAsPaid = () => {
+    if (!invoice) return;
+    
     const payment_date = new Date().toISOString().split('T')[0];
-    handleUpdateStatus('paid', { payment_date, amount_paid: invoice?.total || 0, client_debt: 0 });
+    handleUpdateStatus('paid', { 
+      payment_date, 
+      amount_paid: invoice.total, 
+      client_debt: 0 
+    });
   };
 
+  // Export to PDF handler
   const handleExportPDF = () => {
     if (!invoice) return;
     
@@ -224,52 +308,19 @@ const FinalInvoiceDetail = () => {
     }
   };
 
+  // Delete invoice handler
   const handleDeleteInvoice = () => {
     if (!id) return;
     deleteInvoiceMutation.mutate();
   };
 
+  // Form submission handler
   const onSubmit = (data: any) => {
     if (!id) return;
     updateInvoiceMutation.mutate(data);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex h-40 items-center justify-center">
-        <div className="flex items-center gap-2">
-          <span className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></span>
-          <span>Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!invoice) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex h-40 flex-col items-center justify-center gap-2">
-            <p className="text-center text-muted-foreground">
-              Invoice not found
-            </p>
-            <Button asChild variant="outline">
-              <Link to="/invoices/final">Return to List</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const statusColor = {
-    unpaid: "bg-amber-500",
-    paid: "bg-green-500",
-    partially_paid: "bg-blue-500",
-    cancelled: "bg-red-500",
-    credited: "bg-purple-500",
-  };
-
+  // Helper functions
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('fr-DZ', {
       style: 'currency',
@@ -290,10 +341,50 @@ const FinalInvoiceDetail = () => {
     return <CreditCard className="h-4 w-4 text-blue-600 mr-2" />;
   };
 
-  const amountPaid = invoice.amount_paid ?? 0;
-  const clientDebt = invoice.client_debt ?? invoice.total;
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <div className="flex items-center gap-2">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></span>
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-  // Special status computed from payment amounts
+  // Invoice not found state
+  if (!invoice) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex h-40 flex-col items-center justify-center gap-2">
+            <p className="text-center text-muted-foreground">
+              Invoice not found
+            </p>
+            <Button asChild variant="outline">
+              <Link to="/invoices/final">Return to List</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Status styling
+  const statusColor = {
+    unpaid: "bg-amber-500",
+    paid: "bg-green-500",
+    partially_paid: "bg-blue-500",
+    cancelled: "bg-red-500",
+    credited: "bg-purple-500",
+  };
+
+  // Calculate invoice status based on payments
+  const amountPaid = paymentSummary.amountPaid;
+  const clientDebt = paymentSummary.clientDebt;
+
+  // Compute status from payment amounts
   let computedStatus = invoice.status;
   if (amountPaid >= invoice.total) {
     computedStatus = 'paid';
@@ -393,7 +484,6 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Invoice Number:</strong>{" "}
                   {invoice.number}
                 </div>
-
                 <FormField
                   control={form.control}
                   name="issuedate"
@@ -787,7 +877,11 @@ const FinalInvoiceDetail = () => {
                         invoiceId={id || ''} 
                         invoiceTotal={invoice.total} 
                         remainingDebt={clientDebt}
-                        onSuccess={() => setIsPaymentDialogOpen(false)}
+                        onSuccess={() => {
+                          setIsPaymentDialogOpen(false);
+                          refetchPayments();
+                          queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
+                        }}
                       />
                     </DialogContent>
                   </Dialog>
@@ -795,7 +889,13 @@ const FinalInvoiceDetail = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <PaymentHistory invoiceId={id || ''} />
+              <PaymentHistory 
+                invoiceId={id || ''} 
+                onPaymentDeleted={() => {
+                  refetchPayments();
+                  queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
+                }}
+              />
             </CardContent>
           </Card>
 
@@ -854,7 +954,7 @@ const FinalInvoiceDetail = () => {
                           const paymentdate = new Date().toISOString().split('T')[0];
                           const data = {
                             status: 'paid',
-                            paymentdate,
+                            payment_date: paymentdate,
                             amount_paid: invoice.total,
                             client_debt: 0,
                             ...(paymentRef ? { paymentreference: paymentRef } : {})
@@ -885,6 +985,10 @@ const FinalInvoiceDetail = () => {
                       invoiceId={id || ''} 
                       invoiceTotal={invoice.total} 
                       remainingDebt={clientDebt}
+                      onSuccess={() => {
+                        refetchPayments();
+                        queryClient.invalidateQueries({ queryKey: ['finalInvoice', id] });
+                      }}
                     />
                   </DialogContent>
                 </Dialog>
@@ -967,7 +1071,7 @@ const FinalInvoiceDetail = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => handleUpdateStatus('unpaid', { paymentdate: null, paymentreference: null })}
+                        onClick={() => handleUpdateStatus('unpaid')}
                       >
                         Confirm
                       </AlertDialogAction>
