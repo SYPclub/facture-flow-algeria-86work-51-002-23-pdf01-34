@@ -163,6 +163,12 @@ const MainLayout = () => {
             href="/reports/etat104"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
           />
+          <SidebarItem 
+            icon={FileSpreadsheet} 
+            title="client debt" 
+            href="/reports/clients-debt"
+            allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
+          />
           
           <SidebarItem 
             icon={UserCog} 
