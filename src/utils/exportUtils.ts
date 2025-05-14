@@ -111,6 +111,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   // Items table (adjust Y position)
   let counter = 0;
   const tableY = companyInfo ? 100 : 96;
+  let counter = 0;
   const tableRows = proforma.items.map(item => [
     (++counter).toString(),  // Pre-increment counter for numbering
     `${item.product?.name}\n${item.product?.code}`,
@@ -131,7 +132,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     theme: 'striped',
     headStyles: { fillColor: [66, 66, 66] },
     columnStyles: {
-      0: { cellWidth: 40 },
+      1: { cellWidth: 40 },
     }
   });
   
@@ -249,7 +250,9 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   ], 140, 75);
   
   // Items table
+  let counter = 0;
   const tableRows = invoice.items.map(item => [
+    (++counter).toString(),
     `${item.product?.name}\n${item.product?.description || ''}`,
     item.quantity.toString(),
     item.unit.toString(),
@@ -387,7 +390,9 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   }
   
   // Items table
+  let counter = 0;
   const tableRows = deliveryNote.items.map(item => [
+    (++counter).toString(),
     `${item.product?.name || 'N/A' } \n${item.product?.code || 'N/A'}`,
     item.quantity.toString() || 'N/A',
     item.unit.toString() || 'N/A',
