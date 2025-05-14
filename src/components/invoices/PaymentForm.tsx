@@ -27,7 +27,7 @@ import { toast } from '@/components/ui/use-toast';
 
 const paymentFormSchema = z.object({
   amount: z.coerce.number().positive('Amount must be positive'),
-  paymentDate: z.string().min(1, 'Payment date is required'),
+  payment_date: z.string().min(1, 'Payment date is required'),
   paymentMethod: z.string().min(1, 'Payment method is required'),
   reference: z.string().optional(),
   notes: z.string().optional(),
@@ -54,7 +54,7 @@ const PaymentForm = ({
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
       amount: remainingDebt,
-      paymentDate: new Date().toISOString().split('T')[0],
+      payment_date: new Date().toISOString().split('T')[0],
       paymentMethod: 'bank_transfer',
       reference: '',
       notes: '',
@@ -149,7 +149,7 @@ const PaymentForm = ({
 
         <FormField
           control={form.control}
-          name="paymentDate"
+          name="payment_date"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Payment Date</FormLabel>

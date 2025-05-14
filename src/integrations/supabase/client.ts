@@ -179,7 +179,7 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
       .insert({
         invoiceid: invoiceId,
         amount: paymentData.amount,
-        paymentdate: paymentData.payment_date,
+        payment_date: paymentData.payment_date,
         paymentmethod: paymentData.paymentMethod,
         reference: paymentData.reference,
         notes: paymentData.notes || null
@@ -247,7 +247,7 @@ export const getInvoicePayments = async (invoiceId: string) => {
       .from('invoice_payments')
       .select('*')
       .eq('invoiceid', invoiceId)
-      .order('paymentdate', { ascending: false });
+      .order('payment_date', { ascending: false });
     
     if (error) throw error;
     
@@ -255,7 +255,7 @@ export const getInvoicePayments = async (invoiceId: string) => {
       id: payment.id,
       invoiceId: payment.invoiceid,
       amount: payment.amount,
-      paymentDate: payment.payment_date,
+      payment_date: payment.payment_date,
       paymentMethod: payment.paymentmethod,
       reference: payment.reference,
       notes: payment.notes,

@@ -75,7 +75,7 @@ export interface InvoicePayment {
   id: string;
   invoiceId: string;
   amount: number;
-  paymentDate: string;
+  payment_date: string;
   paymentMethod: string;
   reference: string;
   notes?: string;
@@ -85,7 +85,7 @@ export interface InvoicePayment {
 export interface FinalInvoice extends BaseInvoice {
   status: 'unpaid' | 'paid' | 'partially_paid' | 'cancelled' | 'credited';
   proformaId?: string; // Reference to the source proforma invoice
-  paymentdate?: string;
+  payment_date?: string;
   paymentreference?: string;
   amount_paid?: number;
   client_debt?: number;

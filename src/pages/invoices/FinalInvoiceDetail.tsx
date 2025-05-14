@@ -199,8 +199,8 @@ const FinalInvoiceDetail = () => {
   };
 
   const handleMarkAsPaid = () => {
-    const paymentdate = new Date().toISOString().split('T')[0];
-    handleUpdateStatus('paid', { paymentdate, amount_paid: invoice?.total || 0, client_debt: 0 });
+    const payment_date = new Date().toISOString().split('T')[0];
+    handleUpdateStatus('paid', { payment_date, amount_paid: invoice?.total || 0, client_debt: 0 });
   };
 
   const handleExportPDF = () => {
@@ -671,7 +671,7 @@ const FinalInvoiceDetail = () => {
                   <>
                     <div>
                       <strong className="font-semibold">Payment Date:</strong>{" "}
-                      {formatDate(invoice.paymentDate || '')}
+                      {formatDate(invoice.payment_date || '')}
                     </div>
                     {invoice.paymentReference && (
                       <div>
