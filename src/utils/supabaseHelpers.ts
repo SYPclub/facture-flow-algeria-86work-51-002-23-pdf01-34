@@ -1,6 +1,7 @@
+
 // Helper functions to map between database schema and our domain models
 
-import { User, UserRole } from '@/types';
+import { User, UserRole, InvoicePayment } from '@/types';
 
 /**
  * Maps a user from Supabase Auth to our domain User model
@@ -52,5 +53,39 @@ export const mapDomainProductToDb = (product: any): any => {
     unit: product.unit || '', // Added unit field with fallback to empty string
     createdat: product.createdAt,
     updatedat: product.updatedAt,
+  };
+};
+
+/**
+ * Maps an invoice payment from DB to domain model
+ */
+export const mapDbInvoicePaymentToDomainPayment = (dbPayment: any): InvoicePayment => {
+  if (!dbPayment) return null;
+  
+  return {
+    id: dbPayment.id,
+    invoiceId: dbPayment.invoiceid,
+    amount: dbPayment.amount,
+    paymentDate: dbPayment.payment_date,
+    paymentMethod: dbPayment.payment_method || 'bank_transfer',
+    reference: dbPayment.payment_reference || '',
+    notes: dbPayment.notes || '',
+    createdAt: dbPayment.created_at,
+  };
+};
+
+/**
+ * Maps a domain InvoicePayment model to database columns
+ */
+export const mapDomainInvoicePaymentToDb = (payment: InvoicePayment): any => {
+  return {
+    id: payment.id,
+    invoiceid: payment.invoiceId,
+    amount: payment.amount,
+    payment_date: payment.paymentDate,
+    payment_method: payment.paymentMethod,
+    payment_reference: payment.reference,
+    notes: payment.notes,
+    created_at: payment.createdAt,
   };
 };

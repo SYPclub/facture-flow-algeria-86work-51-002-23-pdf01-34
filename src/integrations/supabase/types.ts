@@ -355,30 +355,36 @@ export type Database = {
           amount: number
           created_at: string | null
           id: string
-          invoiceId: string
+          invoiceid: string
+          notes: string | null
           payment_date: string
+          payment_method: string
           payment_reference: string | null
         }
         Insert: {
           amount: number
           created_at?: string | null
           id?: string
-          invoiceId: string
+          invoiceid: string
+          notes?: string | null
           payment_date?: string
+          payment_method?: string
           payment_reference?: string | null
         }
         Update: {
           amount?: number
           created_at?: string | null
           id?: string
-          invoiceId?: string
+          invoiceid?: string
+          notes?: string | null
           payment_date?: string
+          payment_method?: string
           payment_reference?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "invoice_payments_invoiceId_fkey"
-            columns: ["invoiceId"]
+            columns: ["invoiceid"]
             isOneToOne: false
             referencedRelation: "final_invoices"
             referencedColumns: ["id"]
