@@ -542,19 +542,7 @@ const FinalInvoiceDetail = () => {
 
                 {form.watch('status') === 'paid' && (
                   <>
-                    <FormField
-                      control={form.control}
-                      name="paymentdate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Payment Date</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    
                     
                     <FormField
                       control={form.control}
@@ -729,10 +717,7 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Issue Date:</strong>{" "}
                   {formatDate(invoice.issuedate)}
                 </div>
-                <div>
-                  <strong className="font-semibold">Due Date:</strong>{" "}
-                  {formatDate(invoice.duedate)}
-                </div>
+                
                 <div>
                   <strong className="font-semibold">Status:</strong>{" "}
                   <Badge
@@ -759,10 +744,7 @@ const FinalInvoiceDetail = () => {
                 
                 {invoice.status === 'paid' && (
                   <>
-                    <div>
-                      <strong className="font-semibold">Payment Date:</strong>{" "}
-                      {formatDate(invoice.payment_date || '')}
-                    </div>
+                    
                     {invoice.paymentReference && (
                       <div>
                         <strong className="font-semibold">Payment Reference:</strong>{" "}
