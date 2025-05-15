@@ -40,8 +40,21 @@ export const rollbackTransaction = async () => {
 
 // Helper function to get current user ID
 export const getCurrentUserId = async (): Promise<string | null> => {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.user?.id;
+  const { data } = await  supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (currentSession?.user) {
+        const userData = currentSession.user;
+        const userMetadata = userData.user_metadata;
+        
+        setUser({
+          id: userData.id,
+          email: userData.email || '',
+          name: userMetadata?.name || '',
+        });
+      }
+      
+    });
+  return data.email;
 };
 
 // Helper function to check if user is admin
