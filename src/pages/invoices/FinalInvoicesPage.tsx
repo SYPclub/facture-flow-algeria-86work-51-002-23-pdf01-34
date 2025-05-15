@@ -28,10 +28,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { mockDataService } from '@/services/mockDataService';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { FileText, ChevronDown, Plus, Search, Truck } from 'lucide-react';
+import { FileText, ChevronDown, Plus, Search, Truck, User } from 'lucide-react';
 
 const FinalInvoicesPage = () => {
-  const { checkPermission } = useAuth();
+  const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   
@@ -85,6 +85,11 @@ const FinalInvoicesPage = () => {
     // For demo purposes we're just returning true for all unpaid/paid invoices
     const invoice = finalInvoices.find(i => i.id === invoiceId);
     return invoice && ['unpaid', 'paid'].includes(invoice.status);
+  };
+
+  // Check if document is owned by current user
+  const isOwnedByCurrentUser = (invoice: any) => {
+    return invoice.created_by_userid === user?.id;
   };
 
   return (
@@ -166,13 +171,14 @@ const FinalInvoicesPage = () => {
                     <TableHead>Client</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Creator</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredInvoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
+                    <TableRow key={invoice.id} className={isOwnedByCurrentUser(invoice) ? "bg-muted/20" : ""}>
                       <TableCell className="font-mono font-medium">
                         {invoice.number}
                       </TableCell>
@@ -186,6 +192,16 @@ const FinalInvoicesPage = () => {
                         <Badge variant={getStatusBadgeVariant(invoice.status)}>
                           {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {isOwnedByCurrentUser(invoice) ? (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            <span>You</span>
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Other user</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         {formatCurrency(invoice.total)}

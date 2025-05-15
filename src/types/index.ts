@@ -62,6 +62,7 @@ export interface BaseInvoice {
   total: number;
   createdAt: string;
   updatedAt: string;
+  created_by_userid?: string; // Added field for user who created the document
 }
 
 export interface ProformaInvoice extends BaseInvoice {
@@ -109,6 +110,7 @@ export interface DeliveryNote {
   drivername: string | null;
   truck_id?: string | null;
   delivery_company?: string | null;
+  created_by_userid?: string; // Added field for user who created the document
 }
 
 // User related types

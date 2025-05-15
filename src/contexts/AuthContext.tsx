@@ -20,6 +20,12 @@ export type User = {
   role: UserRole;
 };
 
+// Document type for ownership checks
+export type Document = {
+  id: string;
+  created_by_userid?: string;
+};
+
 // Auth context type
 interface AuthContextType {
   user: User | null;
@@ -30,6 +36,7 @@ interface AuthContextType {
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   checkPermission: (allowedRoles: UserRole[]) => boolean;
+  canAccessDocument: (document: Document | null) => boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
@@ -177,6 +184,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return allowedRoles.includes(user.role);
   };
 
+  // Check if user can access a document
+  const canAccessDocument = (document: Document | null): boolean => {
+    if (!user || !document) return false;
+    
+    // Admins can access all documents
+    if (user.role === UserRole.ADMIN) return true;
+    
+    // For other roles, check if they created the document
+    if (document.created_by_userid) {
+      return document.created_by_userid === user.id;
+    }
+    
+    // If created_by_userid is not set (legacy documents), allow access by default
+    return true;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -188,6 +211,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         checkPermission,
+        canAccessDocument,
         setUser,
       }}
     >

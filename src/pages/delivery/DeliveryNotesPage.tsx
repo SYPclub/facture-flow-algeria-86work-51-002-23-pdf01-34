@@ -28,10 +28,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { mockDataService } from '@/services/mockDataService';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
-import { Truck, ChevronDown, Search, Plus } from 'lucide-react';
+import { Truck, ChevronDown, Search, Plus, User } from 'lucide-react';
 
 const DeliveryNotesPage = () => {
-  const { checkPermission } = useAuth();
+  const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   
@@ -67,6 +67,11 @@ const DeliveryNotesPage = () => {
       default:
         return 'outline';
     }
+  };
+
+  // Check if document is owned by current user
+  const isOwnedByCurrentUser = (note: any) => {
+    return note.created_by_userid === user?.id;
   };
 
   return (
@@ -157,12 +162,13 @@ const DeliveryNotesPage = () => {
                     <TableHead>Related Invoice</TableHead>
                     <TableHead className="hidden md:table-cell">Issue Date</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Creator</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredDeliveryNotes.map((note) => (
-                    <TableRow key={note.id}>
+                    <TableRow key={note.id} className={isOwnedByCurrentUser(note) ? "bg-muted/20" : ""}>
                       <TableCell className="font-mono font-medium">
                         {note.number}
                       </TableCell>
@@ -185,6 +191,16 @@ const DeliveryNotesPage = () => {
                         <Badge variant={getStatusBadgeVariant(note.status)}>
                           {note.status.charAt(0).toUpperCase() + note.status.slice(1)}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {isOwnedByCurrentUser(note) ? (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            <span>You</span>
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Other user</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <Link
