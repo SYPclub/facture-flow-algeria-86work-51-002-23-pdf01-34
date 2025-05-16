@@ -152,7 +152,7 @@ const FinalInvoiceDetail = () => {
       issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
-      paymentdate: invoice?.paymentDate || '',
+      paymentdate: invoice?.paymentDate || null,
       paymentreference: invoice?.paymentReference || '',
     },
     values: {
@@ -160,7 +160,7 @@ const FinalInvoiceDetail = () => {
       issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
-      paymentdate: invoice?.paymentDate || '',
+      paymentdate: invoice?.paymentDate || null,
       paymentreference: invoice?.paymentReference || '',
     }
   });
