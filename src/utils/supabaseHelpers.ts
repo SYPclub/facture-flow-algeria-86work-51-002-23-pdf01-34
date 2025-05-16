@@ -69,7 +69,7 @@ export const getUserEmailById = async (userId: string): Promise<string | null> =
       // Try fallback to user metadata table if available
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('email')
+        .select('name')
         .eq('id', userId)
         .single();
         
