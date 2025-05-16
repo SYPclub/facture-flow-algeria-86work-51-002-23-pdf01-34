@@ -63,65 +63,25 @@ export const getCurrentUser = async (): Promise<User | null> => {
 export const getUserEmailById = async (userId: string): Promise<string | null> => {
   try {
     if (!userId) return null;
-    
-    // Try admin API first
-    const { data, error } = await supabase.auth.admin.getUserById(userId);
-    
-    if (!error && data.user) {
-      const mappedUser = mapSupabaseAuthUserToDomainUser(data.user);
-      return mappedUser.email;
+
+    // Check if it's the current user
+    const currentUser = await getCurrentUser();
+    if (currentUser?.id === userId) {
+      return currentUser.email;
     }
-    
-    // Fallback to public users table
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('id, email, name, created_at, user_metadata')
-      .eq('id', userId)
-      .single();
-    
-    if (userError) {
-      console.error('Error getting user from users table:', userError.message);
-      return null;
-    }
-    
-    // Construct auth-like user object for consistent mapping
-    const authUserLike = {
-      id: userData.id,
-      email: userData.email,
-      user_metadata: userData.user_metadata || { name: userData.name },
-      created_at: userData.created_at,
-    };
-     // First check session
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-    
-    if (sessionError) {
-      console.error('Error getting session for user:', sessionError.message);
-      return null;
-    }
-    
-    let userData;
-    
-    // If we have a session with user, use that
-    if (sessionData?.session?.user) {
-      userData = sessionData.session.user;
-    } else {
-      // Otherwise try getUser()
-      const { data: userData2, error } = await supabase.auth.getUser();
-      
-      if (error) {
-        console.error('Error getting current user profile:', error.message);
-        return null;
+
+    // Try to get user via session-based lookup
+    try {
+      const { data, error } = await supabase.auth.admin.getUserById(userId);
+      if (!error && data.user) {
+        return mapSupabaseAuthUserToDomainUser(data.user).email;
       }
-      
-      userData = userData2.user;
+    } catch (adminError) {
+      console.error('Admin API fallback failed:', adminError);
     }
-    
-    if (!userData) {
-      return null;
-    }
-    
-    const mappedUser = mapSupabaseAuthUserToDomainUser(userData);
-    return mappedUser.email;
+
+    // Final fallback to ID-based placeholder
+    return `user-${userId.slice(0, 6)}...`;
   } catch (error) {
     console.error('Exception in getUserEmailById:', error);
     return null;
@@ -133,57 +93,29 @@ export const getUserEmailById = async (userId: string): Promise<string | null> =
  */
 export const getUserEmailsById = async (userIds: string[]): Promise<Record<string, string>> => {
   try {
-    if (!userIds || userIds.length === 0) return {};
-    const uniqueIds = [...new Set(userIds.filter(id => !!id))];
-    if (uniqueIds.length === 0) return {};
+    if (!userIds?.length) return {};
+    const uniqueIds = [...new Set(userIds.filter(Boolean))];
     
-    console.log('Fetching emails for user IDs:', uniqueIds);
     const emailsMap: Record<string, string> = {};
-    
-    // Fetch users from the public table with necessary fields
-    const { data: usersData, error } = await supabase
-      .from('users')
-      .select('id, email, name, created_at, user_metadata')
-      .in('id', uniqueIds);
-    
-    if (!error && usersData?.length) {
-      usersData.forEach(user => {
-        const authUserLike = {
-          id: user.id,
-          email: user.email,
-          user_metadata: user.user_metadata || { name: user.name },
-          created_at: user.created_at,
-        };
-        const mappedUser = mapSupabaseAuthUserToDomainUser(authUserLike);
-        emailsMap[user.id] = mappedUser.email;
-      });
-    }
-    
-    // Check for missing IDs and fetch individually
-    const missingIds = uniqueIds.filter(id => !emailsMap[id]);
-    for (const userId of missingIds) {
+    const currentUser = await getCurrentUser();
+
+    await Promise.all(uniqueIds.map(async (userId) => {
       try {
-        // Use getUserEmailById to leverage existing logic
-        const email = await getUserEmailById(userId);
-        if (email) {
-          emailsMap[userId] = email;
-        } else {
-          // Fallback to mapped name if email not found
-          const { data: userData } = await supabase
-            .from('users')
-            .select('id, name, user_metadata')
-            .eq('id', userId)
-            .single();
-          
-          const name = userData?.name;
-          emailsMap[userId] = name; // Use derived name as fallback
+        // Current user optimization
+        if (currentUser?.id === userId) {
+          emailsMap[userId] = currentUser.email;
+          return;
         }
-      } catch (e) {
-        console.error(`Error fetching user ${userId}:`, e);
-        emailsMap[userId] = `User ${userId.substring(0, 8)}...`;
+
+        // Try direct email lookup
+        const email = await getUserEmailById(userId);
+        emailsMap[userId] = email || `user-${userId.slice(0, 6)}...`;
+      } catch (error) {
+        console.error(`Failed to fetch ${userId}:`, error);
+        emailsMap[userId] = `user-${userId.slice(0, 6)}...`;
       }
-    }
-    
+    }));
+
     return emailsMap;
   } catch (error) {
     console.error('Exception in getUserEmailsById:', error);
