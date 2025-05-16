@@ -88,7 +88,7 @@ import PaymentHistory from '@/components/invoices/PaymentHistory';
 
 const finalInvoiceFormSchema = z.object({
   notes: z.string().optional(),
-  issuedate: z.string(),
+  issuedate: z.string().optional(),
   duedate: z.string().optional(),
   status: z.string(),
   paymentdate: z.string().optional(),
@@ -149,7 +149,7 @@ const FinalInvoiceDetail = () => {
     resolver: zodResolver(finalInvoiceFormSchema),
     defaultValues: {
       notes: invoice?.notes || '',
-      issuedate: invoice?.issuedate || '',
+      issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
@@ -157,7 +157,7 @@ const FinalInvoiceDetail = () => {
     },
     values: {
       notes: invoice?.notes || '',
-      issuedate: invoice?.issuedate || '',
+      issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
