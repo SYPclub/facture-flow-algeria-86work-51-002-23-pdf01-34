@@ -498,19 +498,7 @@ const FinalInvoiceDetail = () => {
                   )}
                 />
                 
-                <FormField
-                  control={form.control}
-                  name="duedate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Due Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
 
                 <FormField
                   control={form.control}
