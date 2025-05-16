@@ -91,8 +91,36 @@ export const getUserEmailById = async (userId: string): Promise<string | null> =
       user_metadata: userData.user_metadata || { name: userData.name },
       created_at: userData.created_at,
     };
+     // First check session
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     
-    const mappedUser = mapSupabaseAuthUserToDomainUser(authUserLike);
+    if (sessionError) {
+      console.error('Error getting session for user:', sessionError.message);
+      return null;
+    }
+    
+    let userData;
+    
+    // If we have a session with user, use that
+    if (sessionData?.session?.user) {
+      userData = sessionData.session.user;
+    } else {
+      // Otherwise try getUser()
+      const { data: userData2, error } = await supabase.auth.getUser();
+      
+      if (error) {
+        console.error('Error getting current user profile:', error.message);
+        return null;
+      }
+      
+      userData = userData2.user;
+    }
+    
+    if (!userData) {
+      return null;
+    }
+    
+    const mappedUser = mapSupabaseAuthUserToDomainUser(userData);
     return mappedUser.email;
   } catch (error) {
     console.error('Exception in getUserEmailById:', error);
