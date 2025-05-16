@@ -206,7 +206,7 @@ const PaymentForm = ({
                     } else if (isNaN(value)) {
                       field.onChange(0);
                     } else {
-                      field.onChange(remainingDebt);
+                      field.onChange(Math.round(remainingDebt * 100) / 100);
                       toast({
                         title: "Maximum Payment",
                         description: "Payment cannot exceed remaining debt",
