@@ -109,7 +109,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
     await Promise.all(uniqueIds.map(async (userId) => {
       // Current user optimization
       if (currentUser?.id === userId) {
-        emailsMap[userId] = currentUser.email;
+        emailsMap[userId] = currentUser.name;
         return;
       }
 
