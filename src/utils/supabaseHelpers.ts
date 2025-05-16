@@ -70,24 +70,24 @@ export const getUserEmailById = async (userId: string): Promise<string | null> =
       return currentUser.email;
     }
 
-    // Try to get user via session-based lookup
-    try {
-      const { data, error } = await supabase.auth.admin.getUserById(userId);
-      if (!error && data.user) {
-        return mapSupabaseAuthUserToDomainUser(data.user).email;
-      }
-    } catch (adminError) {
-      console.error('Admin API fallback failed:', adminError);
+    // Try to get from public profiles table
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('email, name')
+      .eq('id', userId)
+      .single();
+
+    if (!error && data) {
+      return data.email || `user-${userId.slice(0, 6)}`;
     }
 
     // Final fallback to ID-based placeholder
-    return `user-${userId.slice(0, 6)}...`;
+    return `user-${userId.slice(0, 6)}`;
   } catch (error) {
-    console.error('Exception in getUserEmailById:', error);
-    return null;
+    console.error('Error in getUserEmailById:', error);
+    return `user-${userId.slice(0, 6)}`;
   }
 };
-
 /**
  * Get multiple user emails using auth API
  */
@@ -99,26 +99,28 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
     const emailsMap: Record<string, string> = {};
     const currentUser = await getCurrentUser();
 
-    await Promise.all(uniqueIds.map(async (userId) => {
-      try {
-        // Current user optimization
-        if (currentUser?.id === userId) {
-          emailsMap[userId] = currentUser.email;
-          return;
-        }
+    // Batch fetch all profiles
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, email, name')
+      .in('id', uniqueIds);
 
-        // Try direct email lookup
-        const email = await getUserEmailById(userId);
-        emailsMap[userId] = email || `user-${userId.slice(0, 6)}...`;
-      } catch (error) {
-        console.error(`Failed to fetch ${userId}:`, error);
-        emailsMap[userId] = `user-${userId.slice(0, 6)}...`;
+    // Process all users
+    await Promise.all(uniqueIds.map(async (userId) => {
+      // Current user optimization
+      if (currentUser?.id === userId) {
+        emailsMap[userId] = currentUser.email;
+        return;
       }
+
+      // Find in fetched profiles
+      const profile = profiles?.find(p => p.id === userId);
+      emailsMap[userId] = profile?.email || profile?.name || `user-${userId.slice(0, 6)}`;
     }));
 
     return emailsMap;
   } catch (error) {
-    console.error('Exception in getUserEmailsById:', error);
+    console.error('Error in getUserEmailsById:', error);
     return {};
   }
 };
