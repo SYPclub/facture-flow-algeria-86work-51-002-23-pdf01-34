@@ -36,7 +36,7 @@ const ProformaInvoicesPage = () => {
   const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [creatorEmails, deb] = useState<Record<string, string>>({});
+  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
   // Fetch proforma invoices
   const { data: proformaInvoices = [], isLoading, error } = useQuery({
     queryKey: ['proformaInvoices'],
