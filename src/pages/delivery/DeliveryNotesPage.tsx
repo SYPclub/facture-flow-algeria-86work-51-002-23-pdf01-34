@@ -226,8 +226,7 @@ const DeliveryNotesPage = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-xs">
-                          <Mail className="h-3 w-3 text-muted-foreground" />
-                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
+c                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
                             {getCreatorEmailDisplay(note)}
                           </span>
                         </div>
