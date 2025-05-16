@@ -107,8 +107,6 @@ const FinalInvoicesPage = () => {
     return invoice && ['unpaid', 'paid'].includes(invoice.status);
   };
 
-  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
-  
   // Check if document is owned by current user
   const isOwnedByCurrentUser = (invoice: any) => {
     return invoice.created_by_userid === user?.id;
