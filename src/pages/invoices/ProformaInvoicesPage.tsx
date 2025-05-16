@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import { getUserEmailsById } from '@/utils/supabaseHelpers';
+import { getUserEmailById } from '@/utils/supabaseHelpers';
 
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -34,12 +36,29 @@ const ProformaInvoicesPage = () => {
   const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  
+  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
   // Fetch proforma invoices
   const { data: proformaInvoices = [], isLoading, error } = useQuery({
     queryKey: ['proformaInvoices'],
     queryFn: () => mockDataService.getProformaInvoices(),
   });
+  useEffect(() => {
+    const fetchCreatorEmails = async () => {
+      if (proformaInvoices.length === 0) return;
+      
+      // Get unique user IDs from notes
+      const userIds = [...new Set(proformaInvoices
+        .filter(invoice => invoice.created_by_userid)
+        .map(invoice => invoice.created_by_userid))];
+      if (userIds.length === 0) return;
+      
+      // Fetch emails for all creators at once
+      const emailsMap = await getUserEmailsById(userIds);
+      setCreatorEmails(emailsMap);
+    };
+    
+    fetchCreatorEmails();
+  }, [proformaInvoices]);
 
   // Filter invoices based on search query and status filter
   const filteredInvoices = proformaInvoices.filter((invoice) => {
@@ -79,9 +98,20 @@ const ProformaInvoicesPage = () => {
     });
   };
 
+  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
+
   // Check if document is owned by current user
   const isOwnedByCurrentUser = (invoice: any) => {
     return invoice.created_by_userid === user?.id;
+  };
+
+  // Get creator email display
+  const getCreatorEmailDisplay = (invoice: any) => {
+    const userId = invoice.created_by_userid;
+    
+    if (!userId) return 'Unknown User';
+    
+    return creatorEmails[userId] || 'Loading...';
   };
 
   return (
@@ -186,14 +216,11 @@ const ProformaInvoicesPage = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {isOwnedByCurrentUser(invoice) ? (
-                          <Badge variant="outline" className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            <span>You</span>
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">Other user</span>
-                        )}
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className={isOwnedByCurrentUser(invoice) ? "font-medium" : ""}>
+                            {getCreatorEmailDisplay(invoice)}
+                          </span>
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         {formatCurrency(invoice.total)}

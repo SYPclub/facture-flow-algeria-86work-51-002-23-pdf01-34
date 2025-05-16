@@ -333,6 +333,7 @@ class MockDataService {
       
       proformas.push({
         id: invoice.id,
+        created_by_userid: invoice.created_by_userid,
         number: invoice.number,
         clientid: invoice.clientid,
         client,
@@ -442,6 +443,7 @@ class MockDataService {
     return {
       id: invoice.id,
       number: invoice.number,
+      created_by_userid: invoice.created_by_userid,
       clientid: invoice.clientid,
       client,
       issuedate: invoice.issuedate,
@@ -787,6 +789,7 @@ class MockDataService {
       
       finalInvoices.push({
         id: invoice.id,
+        created_by_userid: invoice.created_by_userid,
         number: invoice.number,
         clientid: invoice.clientid,
         client,
@@ -898,6 +901,7 @@ class MockDataService {
     return {
       id: invoice.id,
       number: invoice.number,
+      created_by_userid: invoice.created_by_userid,
       clientid: invoice.clientid,
       client,
       issuedate: invoice.issuedate,
