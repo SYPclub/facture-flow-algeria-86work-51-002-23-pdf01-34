@@ -147,7 +147,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
             .eq('id', userId)
             .single();
           
-          const name = userData?.user_metadata?.name || userData?.name || `User ${userId.substring(0, 8)}...`;
+          const name = userData?.name;
           emailsMap[userId] = name; // Use derived name as fallback
         }
       } catch (e) {
