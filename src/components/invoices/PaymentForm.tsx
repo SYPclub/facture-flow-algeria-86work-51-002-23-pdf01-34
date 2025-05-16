@@ -199,7 +199,8 @@ const PaymentForm = ({
                   placeholder="0.00"
                   {...field}
                   onChange={(e) => {
-                    const value = parseFloat(e.target.value);
+                    const value = Math.round(parseFloat(e.target.value) * 100) / 100;
+
                     if (!isNaN(value) && value <= remainingDebt) {
                       field.onChange(value);
                     } else if (isNaN(value)) {
