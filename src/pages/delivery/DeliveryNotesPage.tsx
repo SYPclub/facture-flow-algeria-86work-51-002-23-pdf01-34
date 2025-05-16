@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { getUserEmailsById } from '@/utils/supabaseHelpers';
 import { mockDataService } from '@/services/mockDataService';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { Truck, ChevronDown, Search, Plus, User } from 'lucide-react';
@@ -34,6 +35,7 @@ const DeliveryNotesPage = () => {
   const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
   
   const canCreate = checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]);
   
@@ -42,6 +44,25 @@ const DeliveryNotesPage = () => {
     queryKey: ['deliveryNotes'],
     queryFn: () => mockDataService.getDeliveryNotes(),
   });
+  useEffect(() => {
+    const fetchCreatorEmails = async () => {
+      if (deliveryNotes.length === 0) return;
+      
+      // Get unique user IDs from notes
+      const userIds = [...new Set(deliveryNotes
+        .filter(note => note.created_by_userid)
+        .map(note => note.created_by_userid))];
+      if (userIds.length === 0) return;
+      
+      // Fetch emails for all creators at once
+      const emailsMap = await getUserEmailsById(userIds);
+      setCreatorEmails(emailsMap);
+    };
+    
+    fetchCreatorEmails();
+  }, [deliveryNotes]);
+
+
 
   // Filter delivery notes based on search query and status filter
   const filteredDeliveryNotes = deliveryNotes.filter((note) => {
@@ -68,10 +89,21 @@ const DeliveryNotesPage = () => {
         return 'outline';
     }
   };
+  
 
+  
   // Check if document is owned by current user
   const isOwnedByCurrentUser = (note: any) => {
     return note.created_by_userid === user?.id;
+  };
+
+  // Get creator email display
+  const getCreatorEmailDisplay = (note: any) => {
+    const userId = note.created_by_userid;
+    
+    if (!userId) return 'Unknown User';
+    
+    return creatorEmails[userId] || 'Loading...';
   };
 
   return (
@@ -193,14 +225,12 @@ const DeliveryNotesPage = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {isOwnedByCurrentUser(note) ? (
-                          <Badge variant="outline" className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            <span>You</span>
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">Other user</span>
-                        )}
+                        <div className="flex items-center gap-1 text-xs">
+                          <Mail className="h-3 w-3 text-muted-foreground" />
+                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
+                            {getCreatorEmailDisplay(note)}
+                          </span>
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <Link

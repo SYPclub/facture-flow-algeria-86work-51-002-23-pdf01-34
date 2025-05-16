@@ -117,6 +117,7 @@ export type Database = {
       delivery_notes: {
         Row: {
           clientid: string
+          created_by_userid: string | null
           createdat: string | null
           delivery_company: string | null
           deliverydate: string | null
@@ -132,6 +133,7 @@ export type Database = {
         }
         Insert: {
           clientid: string
+          created_by_userid?: string | null
           createdat?: string | null
           delivery_company?: string | null
           deliverydate?: string | null
@@ -147,6 +149,7 @@ export type Database = {
         }
         Update: {
           clientid?: string
+          created_by_userid?: string | null
           createdat?: string | null
           delivery_company?: string | null
           deliverydate?: string | null
