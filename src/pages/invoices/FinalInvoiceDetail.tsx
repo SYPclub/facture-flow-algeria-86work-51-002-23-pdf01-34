@@ -89,7 +89,7 @@ import PaymentHistory from '@/components/invoices/PaymentHistory';
 const finalInvoiceFormSchema = z.object({
   notes: z.string().optional(),
   issuedate: z.string(),
-  duedate: z.string(),
+  duedate: z.string().optional(),
   status: z.string(),
   paymentdate: z.string().optional(),
   paymentreference: z.string().optional(),
@@ -150,7 +150,7 @@ const FinalInvoiceDetail = () => {
     defaultValues: {
       notes: invoice?.notes || '',
       issuedate: invoice?.issuedate || '',
-      duedate: invoice?.duedate || '',
+      duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
@@ -158,7 +158,7 @@ const FinalInvoiceDetail = () => {
     values: {
       notes: invoice?.notes || '',
       issuedate: invoice?.issuedate || '',
-      duedate: invoice?.duedate || '',
+      duedate: invoice?.duedate || null,
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
