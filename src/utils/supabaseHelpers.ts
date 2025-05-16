@@ -140,12 +140,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
           
           // Otherwise try the admin API (requires admin access)
           const email = await getUserEmailById(userId);
-          if (email) {
-            emailsMap[userId] = email;
-          } else {
-            // Set a placeholder if we couldn't find the email
-            emailsMap[userId] = `User ${userId.substring(0, 8)}...`;
-          }
+          emailsMap[userId] = email || ''; 
         } catch (e) {
           console.error(`Error fetching email for user ${userId}:`, e);
           emailsMap[userId] = `User ${userId.substring(0, 8)}...`;
