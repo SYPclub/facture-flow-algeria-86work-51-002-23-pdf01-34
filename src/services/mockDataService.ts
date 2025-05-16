@@ -338,7 +338,7 @@ class MockDataService {
         clientid: invoice.clientid,
         client,
         issuedate: invoice.issuedate,
-        duedate: invoice.duedate,
+        duedate: invoice.duedate ||  null,
         items,
         notes: invoice.notes || '',
         subtotal: invoice.subtotal,
