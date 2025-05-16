@@ -56,7 +56,83 @@ export const getCurrentUser = async (): Promise<User | null> => {
     return null;
   }
 };
+/**
+ * Get a user's email by their ID using auth API
+ * (Works for current user, admins can see others)
+ */
+export const getUserEmailById = async (userId: string): Promise<string | null> => {
+  try {
+    if (!userId) return null;
 
+    // First check if it's the current user
+    const currentUser = await getCurrentUser();
+    if (currentUser?.id === userId) {
+      return currentUser.email;
+    }
+
+    // Check admin status
+    const isAdmin = await isUserAdmin();
+    if (!isAdmin) {
+      console.log('Non-admin user cannot fetch other users emails');
+      return null;
+    }
+
+    // Admin fallback to auth API
+    const { data, error } = await supabase.auth.admin.getUserById(userId);
+    
+    if (error || !data.user) {
+      console.error('Error getting user email by ID:', error?.message);
+      return null;
+    }
+    
+    return data.user.email || null;
+  } catch (error) {
+    console.error('Exception in getUserEmailById:', error);
+    return null;
+  }
+};
+
+/**
+ * Get multiple user emails using auth API
+ */
+export const getUserEmailsById = async (userIds: string[]): Promise<Record<string, string>> => {
+  try {
+    if (!userIds?.length) return {};
+
+    const currentUser = await getCurrentUser();
+    const isAdmin = await isUserAdmin();
+    const emailsMap: Record<string, string> = {};
+
+    await Promise.all(userIds.map(async (userId) => {
+      try {
+        // Current user can see their own email
+        if (currentUser?.id === userId) {
+          emailsMap[userId] = currentUser.email;
+          return;
+        }
+
+        // Admins can see others via auth API
+        if (isAdmin) {
+          const { data } = await supabase.auth.admin.getUserById(userId);
+          emailsMap[userId] = data.user?.email || `user_${userId.slice(0, 8)}`;
+          return;
+        }
+
+        // Non-admins get placeholder for others
+        emailsMap[userId] = `user_${userId.slice(0, 8)}`;
+      } catch (e) {
+        console.error(`Error processing user ${userId}:`, e);
+        emailsMap[userId] = `user_${userId.slice(0, 8)}`;
+      }
+    }));
+
+    return emailsMap;
+  } catch (error) {
+    console.error('Exception in getUserEmailsById:', error);
+    return {};
+  }
+};
+/**
 export const getUserEmailById = async (userId: string): Promise<string | null> => {
   try {
     if (!userId) return null;
@@ -155,7 +231,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
   }
 };
 
-/**
+
 
 export const getCurrentUserId = async (): Promise<string | null> => {
   try {
