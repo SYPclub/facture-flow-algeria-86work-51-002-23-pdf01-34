@@ -226,7 +226,7 @@ const DeliveryNotesPage = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-xs">
-c                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
+                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
                             {getCreatorEmailDisplay(note)}
                           </span>
                         </div>
