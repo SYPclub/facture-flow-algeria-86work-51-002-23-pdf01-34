@@ -78,10 +78,10 @@ export const getUserEmailById = async (userId: string): Promise<string | null> =
         return null;
       }
       
-      return userData?.email || null;
+      return userData?.name || null;
     }
     
-    return data?.user?.email || null;
+    return data?.user?.name || null;
   } catch (error) {
     console.error('Exception in getUserEmailById:', error);
     return null;
@@ -111,7 +111,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
     if (!error && usersData && usersData.length > 0) {
       // Populate the map with found users
       usersData.forEach(user => {
-        emailsMap[user.id] = user.email;
+        emailsMap[user.id] = user.name;
       });
       
       console.log(`Found ${usersData.length} user emails from users table`);
@@ -134,7 +134,7 @@ export const getUserEmailsById = async (userIds: string[]): Promise<Record<strin
           // Try to get user from the session if it's the current user
           const currentUser = await getCurrentUser();
           if (currentUser && currentUser.id === userId) {
-            emailsMap[userId] = currentUser.email;
+            emailsMap[userId] = currentUser.name;
             continue;
           }
           
