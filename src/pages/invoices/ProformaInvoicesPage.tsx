@@ -36,7 +36,7 @@ const ProformaInvoicesPage = () => {
   const { checkPermission, user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
+  const [creatorEmails, deb] = useState<Record<string, string>>({});
   // Fetch proforma invoices
   const { data: proformaInvoices = [], isLoading, error } = useQuery({
     queryKey: ['proformaInvoices'],
@@ -98,7 +98,6 @@ const ProformaInvoicesPage = () => {
     });
   };
 
-  const [creatorEmails, setCreatorEmails] = useState<Record<string, string>>({});
 
   // Check if document is owned by current user
   const isOwnedByCurrentUser = (invoice: any) => {
