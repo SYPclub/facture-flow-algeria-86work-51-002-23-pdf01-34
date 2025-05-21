@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 import { FinalInvoice, ProformaInvoice, DeliveryNote, Client } from '@/types';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import n2words from 'n2words';
+import { fabric } from 'fabric';
 
 export const convertNumberToFrenchWords = (num: number): string => {
   return n2words(num, { lang: 'fr' });
@@ -128,6 +129,137 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.text(statusText, docTypeX + 5, 44);
   
   return { yPos: 50, companyInfo };
+};
+
+// Check if we have a custom template
+const getCustomTemplate = (type: 'invoice' | 'proforma' | 'delivery' | 'report'): any => {
+  try {
+    // Check localStorage for custom templates
+    const savedTemplates = localStorage.getItem('pdfTemplates') 
+      ? JSON.parse(localStorage.getItem('pdfTemplates') || '{}')
+      : {};
+      
+    // Find a template of the requested type
+    const templateId = Object.keys(savedTemplates).find(key => 
+      savedTemplates[key].type === type && savedTemplates[key].data
+    );
+    
+    if (templateId) {
+      return savedTemplates[templateId].data;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error loading template:", error);
+    return null;
+  }
+};
+
+// Render a template if available
+const renderCustomTemplate = async (
+  pdf: jsPDF, 
+  templateData: any, 
+  data: any,
+  companyInfo: any
+): Promise<boolean> => {
+  if (!templateData) return false;
+  
+  try {
+    // Create a temporary canvas to render the template
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 794; // A4 width at 96dpi
+    tempCanvas.height = 1123; // A4 height at 96dpi
+    
+    const canvas = new fabric.Canvas(tempCanvas);
+    
+    // Load the template
+    canvas.loadFromJSON(templateData, async () => {
+      // Replace placeholders with actual data
+      canvas.getObjects().forEach(obj => {
+        if (obj.type === 'text' || obj.type === 'textbox') {
+          const textObj = obj as fabric.Text;
+          let text = textObj.text || '';
+          
+          // Replace placeholders with actual data
+          text = text.replace(/\{\{client\.name\}\}/g, data.client?.name || '');
+          text = text.replace(/\{\{client\.address\}\}/g, data.client?.address || '');
+          text = text.replace(/\{\{client\.taxid\}\}/g, data.client?.taxid || '');
+          text = text.replace(/\{\{client\.phone\}\}/g, data.client?.phone || '');
+          
+          text = text.replace(/\{\{number\}\}/g, data.number || '');
+          text = text.replace(/\{\{date\}\}/g, data.issuedate ? formatDate(data.issuedate) : '');
+          text = text.replace(/\{\{duedate\}\}/g, data.duedate ? formatDate(data.duedate) : '');
+          
+          text = text.replace(/\{\{subtotal\}\}/g, formatCurrency(data.subtotal || 0));
+          text = text.replace(/\{\{taxTotal\}\}/g, formatCurrency(data.taxTotal || 0));
+          text = text.replace(/\{\{total\}\}/g, formatCurrency(data.total || 0));
+          text = text.replace(/\{\{total_in_words\}\}/g, formatCurrencyInFrenchWords(data.total || 0));
+          
+          textObj.set({ text });
+        }
+      });
+      
+      // Convert to image
+      const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+      
+      // Add to PDF
+      pdf.addImage(dataURL, 'PNG', 0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height);
+      
+      // Check if we need to add items table
+      const hasItemsTable = canvas.getObjects().some(obj => {
+        if (obj.type === 'text' || obj.type === 'textbox') {
+          const textObj = obj as fabric.Text;
+          return textObj.text?.includes('{{items_table}}');
+        }
+        return false;
+      });
+      
+      // If items table placeholder exists, render the table
+      if (hasItemsTable && data.items) {
+        // Find placeholder position through a group that contains the text
+        let tableY = 280; // Default position
+        
+        // Prepare table data based on document type
+        let tableHeaders = [];
+        let tableRows: any[] = [];
+        
+        if (data.items && Array.isArray(data.items)) {
+          if (data.type === 'delivery') {
+            tableHeaders = ['No', 'Product', 'Quantity', 'Unit', 'Description'];
+            let counter = 0;
+            tableRows = data.items.map((item: any) => [
+              (++counter).toString(),
+              `${item.product?.name || ''}\n${item.product?.code || ''}`,
+              item.quantity.toString(),
+              item.unit ? item.unit.toString() : '-',
+              item.product?.description || ''
+            ]);
+          } else {
+            tableHeaders = ['No', 'Product', 'Qty', 'Unit Price', 'Tax %', 'Total Excl.', 'Tax', 'Total'];
+            let counter = 0;
+            tableRows = data.items.map((item: any) => [
+              (++counter).toString(),
+              `${item.product?.name || ''}\n${item.product?.code || ''}`,
+              item.quantity.toString(),
+              formatCurrency(item.unitprice),
+              `${item.taxrate}%`,
+              formatCurrency(item.totalExcl),
+              formatCurrency(item.totalTax),
+              formatCurrency(item.total)
+            ]);
+          }
+        }
+        
+        // Add items table
+        addStylizedTable(pdf, tableHeaders, tableRows, tableY);
+      }
+    });
+    
+    return true;
+  } catch (error) {
+    console.error("Error rendering custom template:", error);
+    return false;
+  }
 };
 
 // Add client info section with styled design
@@ -355,6 +487,29 @@ const addFooter = (pdf: jsPDF) => {
 export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   const pdf = new jsPDF();
   
+  // First try to use a custom template
+  const customTemplate = getCustomTemplate('proforma');
+  
+  if (customTemplate) {
+    // Add header first for company info
+    const { companyInfo } = await addHeader(pdf, "PROFORMA INVOICE", proforma.number, proforma.status);
+    
+    // Try to render using custom template
+    const customRendered = await renderCustomTemplate(pdf, customTemplate, {
+      ...proforma, 
+      type: 'proforma',
+      companyInfo
+    }, companyInfo);
+    
+    if (customRendered) {
+      // Save the PDF and exit
+      pdf.save(`Proforma_${proforma.number}.pdf`);
+      return true;
+    }
+  }
+  
+  // Fallback to default template
+  
   // Add header
   const { yPos } = await addHeader(pdf, "PROFORMA INVOICE", proforma.number, proforma.status);
   
@@ -404,6 +559,29 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
 // FINAL INVOICE EXPORT
 export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   const pdf = new jsPDF();
+  
+  // First try to use a custom template
+  const customTemplate = getCustomTemplate('invoice');
+  
+  if (customTemplate) {
+    // Add header first for company info
+    const { companyInfo } = await addHeader(pdf, "INVOICE", invoice.number, invoice.status);
+    
+    // Try to render using custom template
+    const customRendered = await renderCustomTemplate(pdf, customTemplate, {
+      ...invoice, 
+      type: 'invoice',
+      companyInfo
+    }, companyInfo);
+    
+    if (customRendered) {
+      // Save the PDF and exit
+      pdf.save(`Invoice_${invoice.number}.pdf`);
+      return true;
+    }
+  }
+  
+  // Fallback to default template
   
   // Add header
   const { yPos } = await addHeader(pdf, "INVOICE", invoice.number, invoice.status);
@@ -479,6 +657,29 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
 // DELIVERY NOTE EXPORT
 export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   const pdf = new jsPDF();
+  
+  // First try to use a custom template
+  const customTemplate = getCustomTemplate('delivery');
+  
+  if (customTemplate) {
+    // Add header first for company info
+    const { companyInfo } = await addHeader(pdf, "DELIVERY NOTE", deliveryNote.number, deliveryNote.status);
+    
+    // Try to render using custom template
+    const customRendered = await renderCustomTemplate(pdf, customTemplate, {
+      ...deliveryNote, 
+      type: 'delivery',
+      companyInfo
+    }, companyInfo);
+    
+    if (customRendered) {
+      // Save the PDF and exit
+      pdf.save(`DeliveryNote_${deliveryNote.number}.pdf`);
+      return true;
+    }
+  }
+  
+  // Fallback to default template
   
   // Add header
   const { yPos } = await addHeader(pdf, "DELIVERY NOTE", deliveryNote.number, deliveryNote.status);
@@ -586,6 +787,33 @@ export const exportEtat104ToPDF = async (
   grandTotal: number
 ) => {
   const pdf = new jsPDF();
+  
+  // First try to use a custom template
+  const customTemplate = getCustomTemplate('report');
+  
+  if (customTemplate) {
+    // Try to render using custom template
+    const { companyInfo } = await addHeader(pdf, "REPORT", `${month}/${year}`, "Generated");
+    
+    const customRendered = await renderCustomTemplate(pdf, customTemplate, {
+      clientSummaries,
+      year,
+      month,
+      totalAmount,
+      totalTax,
+      grandTotal,
+      type: 'report',
+      companyInfo
+    }, companyInfo);
+    
+    if (customRendered) {
+      // Save the PDF and exit
+      pdf.save(`Etat104_${month}_${year}.pdf`);
+      return true;
+    }
+  }
+  
+  // Fallback to default template
   
   // Add company header
   const companyInfo = await fetchCompanyInfo();
@@ -797,3 +1025,74 @@ function getStatusColor(status: string): string {
       return "#94A3B8"; // Gray
   }
 }
+
+// Save the templates to localStorage
+export const saveTemplate = (
+  templateId: string,
+  templateName: string,
+  templateType: string,
+  templateData: any
+): boolean => {
+  try {
+    // Get existing templates or initialize
+    const savedTemplates = localStorage.getItem('pdfTemplates') 
+      ? JSON.parse(localStorage.getItem('pdfTemplates') || '{}')
+      : {};
+    
+    // Save the template
+    savedTemplates[templateId] = {
+      name: templateName,
+      type: templateType,
+      data: templateData,
+    };
+    
+    localStorage.setItem('pdfTemplates', JSON.stringify(savedTemplates));
+    return true;
+  } catch (error) {
+    console.error("Error saving template:", error);
+    return false;
+  }
+};
+
+// Get saved templates
+export const getSavedTemplates = (): { 
+  id: string; 
+  name: string; 
+  type: string;
+}[] => {
+  try {
+    const savedTemplates = localStorage.getItem('pdfTemplates') 
+      ? JSON.parse(localStorage.getItem('pdfTemplates') || '{}')
+      : {};
+    
+    return Object.keys(savedTemplates).map(key => ({
+      id: key,
+      name: savedTemplates[key].name || 'Unnamed Template',
+      type: savedTemplates[key].type || 'invoice',
+    }));
+  } catch (error) {
+    console.error("Error getting templates:", error);
+    return [];
+  }
+};
+
+// Delete template
+export const deleteTemplate = (templateId: string): boolean => {
+  try {
+    const savedTemplates = localStorage.getItem('pdfTemplates') 
+      ? JSON.parse(localStorage.getItem('pdfTemplates') || '{}')
+      : {};
+    
+    if (savedTemplates[templateId]) {
+      delete savedTemplates[templateId];
+      localStorage.setItem('pdfTemplates', JSON.stringify(savedTemplates));
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error("Error deleting template:", error);
+    return false;
+  }
+};
+
