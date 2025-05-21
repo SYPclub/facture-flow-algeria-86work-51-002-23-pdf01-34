@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -525,7 +524,6 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     item.unit ? item.unit.toString() : '-',
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
-    `${item.discount}%`,
     formatCurrency(item.totalExcl),
     formatCurrency(item.totalTax),
     formatCurrency(item.total)
@@ -534,7 +532,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   // Add items table
   const tableY = addStylizedTable(
     pdf,
-    ['No', 'Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total'],
+    ['No', 'Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Total Excl.', 'Tax Amount', 'Total'],
     tableRows,
     clientY
   );
@@ -1094,5 +1092,4 @@ export const deleteTemplate = (templateId: string): boolean => {
     console.error("Error deleting template:", error);
     return false;
   }
-};
-
+}

@@ -38,10 +38,13 @@ import {
   Redo,
   Trash2,
   Copy,
+  ArrowDown,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import { useAuth } from '@/contexts/AuthContext';
+import Building from '@/components/ui/building';
+import { User } from 'lucide-react';
 
 interface TemplateType {
   id: string;
@@ -888,4 +891,3 @@ const PDFDesignerPage: React.FC = () => {
 };
 
 export default PDFDesignerPage;
-
