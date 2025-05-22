@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import {
@@ -592,7 +591,7 @@ const PDFDesignerPage: React.FC = () => {
       console.log("Saving template data:", templateJSON);
       
       // Use the exportUtils saveTemplate function
-      const result = saveTemplate(selectedTemplate, templateName, templateType, templateJSON);
+      const result = saveTemplate(selectedTemplate, templateName, templateType as 'invoice' | 'proforma' | 'delivery' | 'report', templateJSON);
       
       if (result) {
         toast({
@@ -776,6 +775,43 @@ const PDFDesignerPage: React.FC = () => {
     setHistoryPosition(newPosition);
   };
   
+  // Export exportUtils.ts file
+  const exportExportUtilsFile = () => {
+    try {
+      // Get the content of the exportUtils.ts file
+      fetch('/src/utils/exportUtils.ts')
+        .then(response => response.text())
+        .then(fileContent => {
+          // Create a blob with the file content
+          const blob = new Blob([fileContent], { type: 'text/plain' });
+          
+          // Create an anchor element and trigger download
+          const downloadLink = document.createElement('a');
+          downloadLink.href = URL.createObjectURL(blob);
+          downloadLink.download = 'exportUtils.ts';
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          
+          toast({
+            title: "File Exported",
+            description: "exportUtils.ts has been downloaded successfully"
+          });
+        })
+        .catch(error => {
+          console.error("Error fetching exportUtils.ts:", error);
+          throw new Error("Failed to fetch exportUtils.ts");
+        });
+    } catch (error) {
+      console.error("Error exporting file:", error);
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: "Failed to export exportUtils.ts file"
+      });
+    }
+  };
+  
   // Export to PDF
   const exportToPDF = () => {
     if (!canvas) return;
@@ -783,7 +819,7 @@ const PDFDesignerPage: React.FC = () => {
     try {
       // Save the template first
       const templateJSON = canvas.toJSON();
-      const saved = saveTemplate(selectedTemplate, templateName, templateType, templateJSON);
+      const saved = saveTemplate(selectedTemplate, templateName, templateType as 'invoice' | 'proforma' | 'delivery' | 'report', templateJSON);
       
       if (saved) {
         toast({
@@ -816,7 +852,7 @@ const PDFDesignerPage: React.FC = () => {
           <Button onClick={handleSaveTemplate}>
             <Save className="h-4 w-4 mr-2" /> Save Template
           </Button>
-          <Button variant="secondary" onClick={exportToPDF}>
+          <Button variant="secondary" onClick={exportExportUtilsFile}>
             <Download className="h-4 w-4 mr-2" /> Export Template
           </Button>
         </div>
