@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import {
@@ -45,6 +46,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Building from '@/components/ui/building';
 import { User } from 'lucide-react';
 import { saveTemplate } from '@/utils/exportUtils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TemplateType {
   id: string;
@@ -64,7 +66,7 @@ const PDFDesignerPage: React.FC = () => {
   ]);
   
   const [selectedTemplate, setSelectedTemplate] = useState<string>('invoice-default');
-  const [templateType, setTemplateType] = useState<string>('invoice');
+  const [templateType, setTemplateType] = useState<'invoice' | 'proforma' | 'delivery' | 'report'>('invoice');
   const [templateName, setTemplateName] = useState<string>('Default Invoice');
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [historyPosition, setHistoryPosition] = useState<number>(0);
@@ -239,6 +241,15 @@ const PDFDesignerPage: React.FC = () => {
       lockUniScaling: false,
     });
     
+    // Add a special data-field attribute to identify this as a placeholder
+    clientGroup.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          dataField: 'client-info'
+        });
+      };
+    })(clientGroup.toObject);
+    
     canvas.add(clientGroup);
     recordHistory();
     canvas.renderAll();
@@ -280,6 +291,15 @@ const PDFDesignerPage: React.FC = () => {
       hasControls: true,
       lockUniScaling: false,
     });
+    
+    // Add a special data-field attribute
+    invoiceGroup.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          dataField: 'invoice-details'
+        });
+      };
+    })(invoiceGroup.toObject);
     
     canvas.add(invoiceGroup);
     recordHistory();
@@ -388,6 +408,15 @@ const PDFDesignerPage: React.FC = () => {
       lockUniScaling: false,
     });
     
+    // Add a special data-field attribute
+    tableGroup.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          dataField: 'items-table'
+        });
+      };
+    })(tableGroup.toObject);
+    
     canvas.add(tableGroup);
     recordHistory();
     canvas.renderAll();
@@ -491,6 +520,15 @@ const PDFDesignerPage: React.FC = () => {
       lockUniScaling: false,
     });
     
+    // Add a special data-field attribute
+    totalsGroup.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          dataField: 'totals-section'
+        });
+      };
+    })(totalsGroup.toObject);
+    
     canvas.add(totalsGroup);
     recordHistory();
     canvas.renderAll();
@@ -575,6 +613,15 @@ const PDFDesignerPage: React.FC = () => {
       hasControls: true,
     });
     
+    // Add a special data-field attribute
+    footerGroup.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          dataField: 'footer'
+        });
+      };
+    })(footerGroup.toObject);
+    
     canvas.add(footerGroup);
     recordHistory();
     canvas.renderAll();
@@ -586,13 +633,36 @@ const PDFDesignerPage: React.FC = () => {
     
     try {
       // Save canvas data
-      const templateJSON = canvas.toJSON();
-      console.log("Saving template data:", templateJSON);
+      const templateJSON = canvas.toJSON(['dataField']);
+      console.log("Saving template data with placeholders:", templateJSON);
       
       // Use the exportUtils saveTemplate function
-      const result = saveTemplate(selectedTemplate, templateName, templateType as 'invoice' | 'proforma' | 'delivery' | 'report', templateJSON);
+      const result = saveTemplate(selectedTemplate, templateName, templateType, templateJSON);
       
       if (result) {
+        // Also store in Supabase if available
+        try {
+          if (user?.id) {
+            const { error } = await supabase.from('pdf_templates').upsert({
+              template_id: selectedTemplate,
+              name: templateName,
+              type: templateType,
+              template_data: JSON.stringify(templateJSON),
+              user_id: user.id
+            });
+            
+            if (error) {
+              console.error("Supabase save error:", error);
+              // Continue with local storage save
+            } else {
+              console.log("Template saved to Supabase");
+            }
+          }
+        } catch (supabaseError) {
+          console.error("Supabase error:", supabaseError);
+          // Continue with local storage notification
+        }
+        
         toast({
           title: "Template Saved",
           description: "Your template has been saved successfully"
@@ -604,7 +674,7 @@ const PDFDesignerPage: React.FC = () => {
           setTemplates([...templates, {
             id: selectedTemplate,
             name: templateName,
-            type: templateType as 'invoice' | 'proforma' | 'delivery' | 'report',
+            type: templateType,
           }]);
         }
       } else {
@@ -626,7 +696,7 @@ const PDFDesignerPage: React.FC = () => {
     
     // Generate unique ID
     const newId = `template-${Date.now()}`;
-    const newTemplate = {
+    const newTemplate: TemplateType = {
       id: newId,
       name: 'New Template',
       type: 'invoice',
@@ -640,7 +710,6 @@ const PDFDesignerPage: React.FC = () => {
     // Clear canvas
     canvas.clear();
     
-    
     recordHistory();
     
     toast({
@@ -650,12 +719,11 @@ const PDFDesignerPage: React.FC = () => {
   };
   
   // Load default template
-  const loadDefaultTemplate = (type: string) => {
+  const loadDefaultTemplate = (type: 'invoice' | 'proforma' | 'delivery' | 'report') => {
     if (!canvas) return;
     
     // Clear canvas
     canvas.clear();
-    
     
     // Basic template setup based on type
     // In a real app, you'd load predefined templates from your database
@@ -745,7 +813,7 @@ const PDFDesignerPage: React.FC = () => {
     const newHistory = canvasHistory.slice(0, historyPosition + 1);
     
     // Add current state to history
-    newHistory.push(JSON.stringify(canvas.toJSON()));
+    newHistory.push(JSON.stringify(canvas.toJSON(['dataField'])));
     
     // Update history
     setCanvasHistory(newHistory);
@@ -777,7 +845,7 @@ const PDFDesignerPage: React.FC = () => {
   // Export exportUtils.ts file
   const exportExportUtilsFile = () => {
     try {
-      // Get the content of the exportUtils.ts file
+      // Create a blob with the content of exportUtils.ts
       fetch('/src/utils/exportUtils.ts')
         .then(response => response.text())
         .then(fileContent => {
@@ -817,8 +885,8 @@ const PDFDesignerPage: React.FC = () => {
     
     try {
       // Save the template first
-      const templateJSON = canvas.toJSON();
-      const saved = saveTemplate(selectedTemplate, templateName, templateType as 'invoice' | 'proforma' | 'delivery' | 'report', templateJSON);
+      const templateJSON = canvas.toJSON(['dataField']);
+      const saved = saveTemplate(selectedTemplate, templateName, templateType, templateJSON);
       
       if (saved) {
         toast({
@@ -895,7 +963,7 @@ const PDFDesignerPage: React.FC = () => {
                 <label htmlFor="template-type" className="text-sm font-medium">
                   Template Type
                 </label>
-                <Select value={templateType} onValueChange={setTemplateType}>
+                <Select value={templateType} onValueChange={(value: 'invoice' | 'proforma' | 'delivery' | 'report') => setTemplateType(value)}>
                   <SelectTrigger id="template-type">
                     <SelectValue placeholder="Select template type" />
                   </SelectTrigger>

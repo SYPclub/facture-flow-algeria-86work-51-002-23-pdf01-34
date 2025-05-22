@@ -41,21 +41,8 @@ export const rollbackTransaction = async () => {
 
 // Helper function to get current user ID
 export const getCurrentUserId = async (): Promise<string | null> => {
-  const { data } = await  supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      if (currentSession?.user) {
-        const userData = currentSession.user;
-        const userMetadata = userData.user_metadata;
-        
-        setUser({
-          id: userData.id,
-          email: userData.email || '',
-          name: userMetadata?.name || '',
-        });
-      }
-      
-    });
-  return data.email;
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user?.id || null;
 };
 
 // Helper function to check if user is admin
@@ -454,12 +441,11 @@ export const deleteDeliveryNote = async (id: string) => {
   }
 };
 
-// Invoice payment functions - TODO: Update this when invoice_payments table is added to schema
-
+// Invoice payment functions
 export const addInvoicePayment = async (invoiceId: string, paymentData: any) => {
   try {
     await beginTransaction();
-
+    
     // Add the payment record
     const { data: payment, error: paymentError } = await supabase
       .from('invoice_payments')
@@ -553,16 +539,7 @@ export const getInvoicePayments = async (invoiceId: string) => {
     
     if (error) throw error;
     
-    return data.map(payment => ({
-      id: payment.id,
-      invoiceId: payment.invoiceid,
-      amount: payment.amount,
-      payment_date: payment.payment_date,
-      paymentMethod: payment.paymentmethod,
-      reference: payment.reference,
-      notes: payment.notes,
-      createdAt: payment.createdat
-    }));
+    return data;
   } catch (error) {
     console.error('Error fetching invoice payments:', error);
     throw error;
@@ -644,7 +621,6 @@ export const deleteInvoicePayment = async (paymentId: string, invoiceId: string)
   }
 };
 
-
 // Function to handle disconnecting a proforma from a final invoice
 export const undoProformaConversion = async (proformaId: string, finalInvoiceId: string) => {
   try {
@@ -662,8 +638,4 @@ export const undoProformaConversion = async (proformaId: string, finalInvoiceId:
     console.error('Error undoing proforma conversion:', error);
     throw error;
   }
-};
-
-export const Br = {
-  updateProformaInvoice,
 };
