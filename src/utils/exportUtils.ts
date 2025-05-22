@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { FinalInvoice, ProformaInvoice, DeliveryNote, Client } from '@/types';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import n2words from 'n2words';
-import { Canvas, Image, Text, Textbox } from 'fabric';
+import { Canvas, Group, Text, Textbox } from 'fabric';
 
 // Original export functions and related helper functions
 export const convertNumberToFrenchWords = (num: number): string => {
@@ -174,89 +174,110 @@ const renderCustomTemplate = async (
     const canvas = new Canvas(tempCanvas);
     
     // Load the template
-    canvas.loadFromJSON(templateData, async () => {
-      // Replace placeholders with actual data
-      canvas.getObjects().forEach(obj => {
-        if (obj.type === 'text' || obj.type === 'textbox') {
-          const textObj = obj as Text | Textbox;
-          let text = textObj.text || '';
-          
-          // Replace placeholders with actual data
-          text = text.replace(/\{\{client\.name\}\}/g, data.client?.name || '');
-          text = text.replace(/\{\{client\.address\}\}/g, data.client?.address || '');
-          text = text.replace(/\{\{client\.taxid\}\}/g, data.client?.taxid || '');
-          text = text.replace(/\{\{client\.phone\}\}/g, data.client?.phone || '');
-          
-          text = text.replace(/\{\{number\}\}/g, data.number || '');
-          text = text.replace(/\{\{date\}\}/g, data.issuedate ? formatDate(data.issuedate) : '');
-          text = text.replace(/\{\{duedate\}\}/g, data.duedate ? formatDate(data.duedate) : '');
-          
-          text = text.replace(/\{\{subtotal\}\}/g, formatCurrency(data.subtotal || 0));
-          text = text.replace(/\{\{taxTotal\}\}/g, formatCurrency(data.taxTotal || 0));
-          text = text.replace(/\{\{total\}\}/g, formatCurrency(data.total || 0));
-          text = text.replace(/\{\{total_in_words\}\}/g, formatCurrencyInFrenchWords(data.total || 0));
-          
-          textObj.set({ text });
-        }
-      });
-      
-      // Convert to image
-      const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
-      
-      // Add to PDF
-      pdf.addImage(dataURL, 'PNG', 0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height);
-      
-      // Check if we need to add items table
-      const hasItemsTable = canvas.getObjects().some(obj => {
-        if (obj.type === 'text' || obj.type === 'textbox') {
-          const textObj = obj as Text | Textbox;
-          return textObj.text?.includes('{{items_table}}');
-        }
-        return false;
-      });
-      
-      // If items table placeholder exists, render the table
-      if (hasItemsTable && data.items) {
-        // Find placeholder position through a group that contains the text
-        let tableY = 280; // Default position
-        
-        // Prepare table data based on document type
-        let tableHeaders = [];
-        let tableRows: any[] = [];
-        
-        if (data.items && Array.isArray(data.items)) {
-          if (data.type === 'delivery') {
-            tableHeaders = ['No', 'Product', 'Quantity', 'Unit', 'Description'];
-            let counter = 0;
-            tableRows = data.items.map((item: any) => [
-              (++counter).toString(),
-              `${item.product?.name || ''}\n${item.product?.code || ''}`,
-              item.quantity.toString(),
-              item.unit ? item.unit.toString() : '-',
-              item.product?.description || ''
-            ]);
-          } else {
-            tableHeaders = ['No', 'Product', 'Qty', 'Unit Price', 'Tax %', 'Total Excl.', 'Tax', 'Total'];
-            let counter = 0;
-            tableRows = data.items.map((item: any) => [
-              (++counter).toString(),
-              `${item.product?.name || ''}\n${item.product?.code || ''}`,
-              item.quantity.toString(),
-              formatCurrency(item.unitprice),
-              `${item.taxrate}%`,
-              formatCurrency(item.totalExcl),
-              formatCurrency(item.totalTax),
-              formatCurrency(item.total)
-            ]);
+    return new Promise((resolve) => {
+      canvas.loadFromJSON(templateData, () => {
+        // Replace placeholders with actual data
+        canvas.getObjects().forEach(obj => {
+          if (obj instanceof Text || obj instanceof Textbox) {
+            let text = obj.text || '';
+            
+            // Replace placeholders with actual data
+            text = text.replace(/\{\{client\.name\}\}/g, data.client?.name || '');
+            text = text.replace(/\{\{client\.address\}\}/g, data.client?.address || '');
+            text = text.replace(/\{\{client\.taxid\}\}/g, data.client?.taxid || '');
+            text = text.replace(/\{\{client\.phone\}\}/g, data.client?.phone || '');
+            
+            text = text.replace(/\{\{number\}\}/g, data.number || '');
+            text = text.replace(/\{\{date\}\}/g, data.issuedate ? formatDate(data.issuedate) : '');
+            text = text.replace(/\{\{duedate\}\}/g, data.duedate ? formatDate(data.duedate) : '');
+            
+            text = text.replace(/\{\{subtotal\}\}/g, formatCurrency(data.subtotal || 0));
+            text = text.replace(/\{\{taxTotal\}\}/g, formatCurrency(data.taxTotal || 0));
+            text = text.replace(/\{\{total\}\}/g, formatCurrency(data.total || 0));
+            text = text.replace(/\{\{total_in_words\}\}/g, formatCurrencyInFrenchWords(data.total || 0));
+            
+            obj.set({ text });
           }
+        });
+        
+        // Convert to image
+        const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+        
+        // Add to PDF
+        pdf.addImage(dataURL, 'PNG', 0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height);
+        
+        // Check if we need to add items table
+        const hasItemsTable = canvas.getObjects().some(obj => {
+          if (obj instanceof Text || obj instanceof Textbox) {
+            return obj.text?.includes('{{items_table}}');
+          }
+          return false;
+        });
+        
+        // If items table placeholder exists, render the table
+        if (hasItemsTable && data.items) {
+          // Find placeholder position through a group that contains the text
+          let tableY = 280; // Default position
+          
+          // Try to get position from the object containing the table placeholder
+          canvas.getObjects().forEach(obj => {
+            if (obj instanceof Text || obj instanceof Textbox) {
+              if (obj.text?.includes('{{items_table}}')) {
+                tableY = obj.top || tableY;
+              }
+            } else if (obj instanceof Group) {
+              // Look inside groups for the text
+              const objects = obj.getObjects();
+              for (let i = 0; i < objects.length; i++) {
+                const groupObj = objects[i];
+                if (groupObj instanceof Text || groupObj instanceof Textbox) {
+                  if (groupObj.text?.includes('{{items_table}}')) {
+                    tableY = (obj.top || 0) + (groupObj.top || 0);
+                    break;
+                  }
+                }
+              }
+            }
+          });
+          
+          // Prepare table data based on document type
+          let tableHeaders = [];
+          let tableRows: any[] = [];
+          
+          if (data.items && Array.isArray(data.items)) {
+            if (data.type === 'delivery') {
+              tableHeaders = ['No', 'Product', 'Quantity', 'Unit', 'Description'];
+              let counter = 0;
+              tableRows = data.items.map((item: any) => [
+                (++counter).toString(),
+                `${item.product?.name || ''}\n${item.product?.code || ''}`,
+                item.quantity.toString(),
+                item.unit ? item.unit.toString() : '-',
+                item.product?.description || ''
+              ]);
+            } else {
+              tableHeaders = ['No', 'Product', 'Qty', 'Unit Price', 'Tax %', 'Total Excl.', 'Tax', 'Total'];
+              let counter = 0;
+              tableRows = data.items.map((item: any) => [
+                (++counter).toString(),
+                `${item.product?.name || ''}\n${item.product?.code || ''}`,
+                item.quantity.toString(),
+                formatCurrency(item.unitprice),
+                `${item.taxrate}%`,
+                formatCurrency(item.totalExcl),
+                formatCurrency(item.totalTax),
+                formatCurrency(item.total)
+              ]);
+            }
+          }
+          
+          // Add items table
+          addStylizedTable(pdf, tableHeaders, tableRows, tableY);
         }
         
-        // Add items table
-        addStylizedTable(pdf, tableHeaders, tableRows, tableY);
-      }
+        resolve(true);
+      });
     });
-    
-    return true;
   } catch (error) {
     console.error("Error rendering custom template:", error);
     return false;
@@ -495,6 +516,8 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     // Add header first for company info
     const { companyInfo } = await addHeader(pdf, "PROFORMA INVOICE", proforma.number, proforma.status);
     
+    console.log("Attempting to render custom proforma template...");
+    
     // Try to render using custom template
     const customRendered = await renderCustomTemplate(pdf, customTemplate, {
       ...proforma, 
@@ -503,9 +526,12 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     }, companyInfo);
     
     if (customRendered) {
+      console.log("Custom proforma template rendered successfully");
       // Save the PDF and exit
       pdf.save(`Proforma_${proforma.number}.pdf`);
       return true;
+    } else {
+      console.log("Failed to render custom proforma template, falling back to default");
     }
   }
   
@@ -567,6 +593,8 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     // Add header first for company info
     const { companyInfo } = await addHeader(pdf, "INVOICE", invoice.number, invoice.status);
     
+    console.log("Attempting to render custom invoice template...");
+    
     // Try to render using custom template
     const customRendered = await renderCustomTemplate(pdf, customTemplate, {
       ...invoice, 
@@ -575,9 +603,12 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     }, companyInfo);
     
     if (customRendered) {
+      console.log("Custom invoice template rendered successfully");
       // Save the PDF and exit
       pdf.save(`Invoice_${invoice.number}.pdf`);
       return true;
+    } else {
+      console.log("Failed to render custom invoice template, falling back to default");
     }
   }
   
@@ -665,6 +696,8 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     // Add header first for company info
     const { companyInfo } = await addHeader(pdf, "DELIVERY NOTE", deliveryNote.number, deliveryNote.status);
     
+    console.log("Attempting to render custom delivery note template...");
+    
     // Try to render using custom template
     const customRendered = await renderCustomTemplate(pdf, customTemplate, {
       ...deliveryNote, 
@@ -673,9 +706,12 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     }, companyInfo);
     
     if (customRendered) {
+      console.log("Custom delivery note template rendered successfully");
       // Save the PDF and exit
       pdf.save(`DeliveryNote_${deliveryNote.number}.pdf`);
       return true;
+    } else {
+      console.log("Failed to render custom delivery note template, falling back to default");
     }
   }
   
@@ -1034,6 +1070,8 @@ export const saveTemplate = (
   templateData: any
 ): boolean => {
   try {
+    console.log("Saving template:", templateId, templateName, templateType);
+    
     // Get existing templates or initialize
     const savedTemplates = localStorage.getItem('pdfTemplates') 
       ? JSON.parse(localStorage.getItem('pdfTemplates') || '{}')
@@ -1047,6 +1085,7 @@ export const saveTemplate = (
     };
     
     localStorage.setItem('pdfTemplates', JSON.stringify(savedTemplates));
+    console.log("Template saved successfully");
     return true;
   } catch (error) {
     console.error("Error saving template:", error);
