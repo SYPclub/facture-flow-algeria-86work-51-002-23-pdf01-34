@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Canvas, Image as FabricImage, Line, Rect, Circle, Group, Text, Textbox } from 'fabric';
+import { fabric } from 'fabric';
 import {
   Card,
   CardContent,
@@ -74,20 +74,20 @@ const PDFDesignerPage: React.FC = () => {
   const { user } = useAuth();
   
   // Initialize the canvas
-  useEffect(() => {
+   useEffect(() => {
     if (!canvasRef.current) return;
     
-    const fabricCanvas = new Canvas(canvasRef.current, {
+    const fabricCanvas = new fabric.Canvas(canvasRef.current, { // Use fabric.Canvas
       width: CANVAS_WIDTH,
       height: CANVAS_HEIGHT,
       backgroundColor: '#ffffff',
       preserveObjectStacking: true,
     });
     
-    // Add grid background to visualize the A4 paper
+    // Add grid background
     const gridSize = 20;
     for (let i = gridSize; i < CANVAS_WIDTH; i += gridSize) {
-      fabricCanvas.add(new Line([i, 0, i, CANVAS_HEIGHT], {
+      fabricCanvas.add(new fabric.Line([i, 0, i, CANVAS_HEIGHT], { // Use fabric.Line
         stroke: '#e0e0e0',
         selectable: false,
         evented: false,
@@ -95,7 +95,7 @@ const PDFDesignerPage: React.FC = () => {
     }
     
     for (let i = gridSize; i < CANVAS_HEIGHT; i += gridSize) {
-      fabricCanvas.add(new Line([0, i, CANVAS_WIDTH, i], {
+      fabricCanvas.add(new fabric.Line([0, i, CANVAS_WIDTH, i], {
         stroke: '#e0e0e0',
         selectable: false,
         evented: false,
@@ -103,11 +103,8 @@ const PDFDesignerPage: React.FC = () => {
     }
     
     setCanvas(fabricCanvas);
-    
-    // Initialize history with empty canvas
     setCanvasHistory([JSON.stringify(fabricCanvas.toJSON())]);
     
-    // Cleanup
     return () => {
       fabricCanvas.dispose();
     };
@@ -133,7 +130,7 @@ const PDFDesignerPage: React.FC = () => {
     try {
       const companyInfo = await fetchCompanyInfo();
       
-      const companyText = new Text(companyInfo?.businessName || 'YOUR COMPANY NAME', {
+      const companyText = new fabric.Text(companyInfo?.businessName || 'YOUR COMPANY NAME', {
         left: 50,
         top: 50,
         fontFamily: 'Arial',
@@ -141,7 +138,7 @@ const PDFDesignerPage: React.FC = () => {
         fontWeight: 'bold',
       });
       
-      const addressText = new Text([
+      const addressText = new fabric.Text([
         companyInfo?.address || 'Company Address',
         `NIF: ${companyInfo?.taxid || 'N/A'} | RC: ${companyInfo?.commerceRegNumber || 'N/A'}`,
         `Tel: ${companyInfo?.phone || 'N/A'} | Email: ${companyInfo?.email || 'info@company.com'}`
@@ -175,7 +172,7 @@ const PDFDesignerPage: React.FC = () => {
   const addClientInfo = () => {
     if (!canvas) return;
     
-    const clientRect = new Rect({
+    const clientRect = new fabric.Rect({
       left: 50,
       top: 150,
       width: 200,
@@ -187,7 +184,7 @@ const PDFDesignerPage: React.FC = () => {
       ry: 5,
     });
     
-    const clientHeader = new Text('CLIENT INFORMATION', {
+    const clientHeader = new fabric.Text('CLIENT INFORMATION', {
       left: 60,
       top: 160,
       fontFamily: 'Arial',
@@ -196,14 +193,14 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#1e40af',
     });
     
-    const clientText = new Text('{{client.name}}\n{{client.address}}\n{{client.taxid}}\n{{client.phone}}', {
+    const clientText = new fabric.Text('{{client.name}}\n{{client.address}}\n{{client.taxid}}\n{{client.phone}}', {
       left: 60,
       top: 180,
       fontFamily: 'Arial',
       fontSize: 10,
     });
     
-    const clientGroup = new Group([clientRect, clientHeader, clientText], {
+    const clientGroup = new fabric.Group([clientRect, clientHeader, clientText], {
       left: 50,
       top: 150,
       hasControls: true,
@@ -219,7 +216,7 @@ const PDFDesignerPage: React.FC = () => {
   const addInvoiceDetails = () => {
     if (!canvas) return;
     
-    const invoiceRect = new Rect({
+    const invoiceRect = new fabric.Rect({
       width: 200,
       height: 100,
       fill: '#f0f9ff',
@@ -229,7 +226,7 @@ const PDFDesignerPage: React.FC = () => {
       ry: 5,
     });
     
-    const invoiceHeader = new Text('INVOICE DETAILS', {
+    const invoiceHeader = new fabric.Text('INVOICE DETAILS', {
       left: 10,
       top: 10,
       fontFamily: 'Arial',
@@ -238,14 +235,14 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#1e40af',
     });
     
-    const invoiceText = new Text('Number: {{number}}\nDate: {{date}}\nDue: {{duedate}}', {
+    const invoiceText = new fabric.Text('Number: {{number}}\nDate: {{date}}\nDue: {{duedate}}', {
       left: 10,
       top: 30,
       fontFamily: 'Arial',
       fontSize: 10,
     });
     
-    const invoiceGroup = new Group([invoiceRect, invoiceHeader, invoiceText], {
+    const invoiceGroup = new fabric.Group([invoiceRect, invoiceHeader, invoiceText], {
       left: CANVAS_WIDTH - 250,
       top: 150,
       hasControls: true,
@@ -268,7 +265,7 @@ const PDFDesignerPage: React.FC = () => {
     const rowHeight = 25;
     
     // Create header background
-    const headerBg = new Rect({
+    const headerBg = new fabric.Rect({
       width: tableWidth,
       height: headerHeight,
       fill: '#3b82f6',
@@ -277,7 +274,7 @@ const PDFDesignerPage: React.FC = () => {
     
     // Create header texts
     const headerTexts = tableHeaders.map((header, i) => {
-      return new Text(header, {
+      return new fabric.Text(header, {
         left: i * cellWidth + cellWidth / 2,
         top: headerHeight / 2,
         fontFamily: 'Arial',
@@ -292,7 +289,7 @@ const PDFDesignerPage: React.FC = () => {
     
     // Create data row background (3 sample rows)
     const rowBgs = Array.from({ length: 3 }).map((_, i) => {
-      return new Rect({
+      return new fabric.Rect({
         top: headerHeight + i * rowHeight,
         width: tableWidth,
         height: rowHeight,
@@ -302,19 +299,19 @@ const PDFDesignerPage: React.FC = () => {
     });
     
     // Create table borders
-    const borderLeft = new Line([0, 0, 0, headerHeight + 3 * rowHeight], {
+    const borderLeft = new fabric.Line([0, 0, 0, headerHeight + 3 * rowHeight], {
       stroke: '#d1d5db',
       selectable: false,
     });
     
-    const borderRight = new Line([tableWidth, 0, tableWidth, headerHeight + 3 * rowHeight], {
+    const borderRight = new fabric.Line([tableWidth, 0, tableWidth, headerHeight + 3 * rowHeight], {
       stroke: '#d1d5db',
       selectable: false,
     });
     
     const horizontalLines = Array.from({ length: 4 }).map((_, i) => {
       const y = i * rowHeight + (i === 0 ? 0 : headerHeight);
-      return new Line([0, y, tableWidth, y], {
+      return new fabric.Line([0, y, tableWidth, y], {
         stroke: '#d1d5db',
         selectable: false,
       });
@@ -322,14 +319,14 @@ const PDFDesignerPage: React.FC = () => {
     
     const verticalLines = Array.from({ length: tableHeaders.length - 1 }).map((_, i) => {
       const x = (i + 1) * cellWidth;
-      return new Line([x, 0, x, headerHeight + 3 * rowHeight], {
+      return new fabric.Line([x, 0, x, headerHeight + 3 * rowHeight], {
         stroke: '#d1d5db',
         selectable: false,
       });
     });
     
     // Create table placeholder text
-    const placeholderText = new Text('{{items_table}}', {
+    const placeholderText = new fabric.Text('{{items_table}}', {
       left: tableWidth / 2,
       top: headerHeight + (3 * rowHeight) / 2,
       fontFamily: 'Arial',
@@ -352,7 +349,7 @@ const PDFDesignerPage: React.FC = () => {
       placeholderText
     ];
     
-    const tableGroup = new Group(tableElements, {
+    const tableGroup = new fabric.Group(tableElements, {
       left: 50,
       top: 280,
       hasControls: true,
@@ -368,7 +365,7 @@ const PDFDesignerPage: React.FC = () => {
   const addTotalsSection = () => {
     if (!canvas) return;
     
-    const totalsRect = new Rect({
+    const totalsRect = new fabric.Rect({
       width: 200,
       height: 120,
       fill: '#f3f4f6',
@@ -378,7 +375,7 @@ const PDFDesignerPage: React.FC = () => {
       ry: 3,
     });
     
-    const subtotalText = new Text('Subtotal:', {
+    const subtotalText = new fabric.Text('Subtotal:', {
       left: 10,
       top: 10,
       fontFamily: 'Arial',
@@ -386,7 +383,7 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#374151',
     });
     
-    const subtotalValueText = new Text('{{subtotal}}', {
+    const subtotalValueText = new fabric.Text('{{subtotal}}', {
       left: 180,
       top: 10,
       fontFamily: 'Arial',
@@ -395,7 +392,7 @@ const PDFDesignerPage: React.FC = () => {
       originX: 'right',
     });
     
-    const taxText = new Text('Tax:', {
+    const taxText = new fabric.Text('Tax:', {
       left: 10,
       top: 30,
       fontFamily: 'Arial',
@@ -403,7 +400,7 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#374151',
     });
     
-    const taxValueText = new Text('{{taxTotal}}', {
+    const taxValueText = new fabric.Text('{{taxTotal}}', {
       left: 180,
       top: 30,
       fontFamily: 'Arial',
@@ -412,12 +409,12 @@ const PDFDesignerPage: React.FC = () => {
       originX: 'right',
     });
     
-    const separatorLine = new Line([10, 60, 190, 60], {
+    const separatorLine = new fabric.Line([10, 60, 190, 60], {
       stroke: '#374151',
       strokeWidth: 0.5,
     });
     
-    const totalText = new Text('Total:', {
+    const totalText = new fabric.Text('Total:', {
       left: 10,
       top: 70,
       fontFamily: 'Arial',
@@ -426,7 +423,7 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#3b82f6',
     });
     
-    const totalValueText = new Text('{{total}}', {
+    const totalValueText = new fabric.Text('{{total}}', {
       left: 180,
       top: 70,
       fontFamily: 'Arial',
@@ -436,7 +433,7 @@ const PDFDesignerPage: React.FC = () => {
       originX: 'right',
     });
     
-    const totalInWordsText = new Text('Amount in words: {{total_in_words}}', {
+    const totalInWordsText = new fabric.Text('Amount in words: {{total_in_words}}', {
       left: 10,
       top: 95,
       fontFamily: 'Arial',
@@ -445,7 +442,7 @@ const PDFDesignerPage: React.FC = () => {
       fill: '#047857',
     });
     
-    const totalsGroup = new Group([
+    const totalsGroup = new fabric.Group([
       totalsRect,
       subtotalText,
       subtotalValueText,
@@ -471,7 +468,7 @@ const PDFDesignerPage: React.FC = () => {
   const addTextField = () => {
     if (!canvas) return;
     
-    const text = new Textbox('Edit this text', {
+    const text = new fabric.Textbox('Edit this text', {
       left: 50,
       top: 50,
       fontFamily: 'Arial',
@@ -493,7 +490,7 @@ const PDFDesignerPage: React.FC = () => {
     let obj;
     
     if (shape === 'rect') {
-      obj = new Rect({
+      obj = new fabric.Rect({
         left: 100,
         top: 100,
         width: 100,
@@ -505,7 +502,7 @@ const PDFDesignerPage: React.FC = () => {
         ry: 5,
       });
     } else {
-      obj = new Circle({
+      obj = new fabric.Circle({
         left: 100,
         top: 100,
         radius: 30,
@@ -525,7 +522,7 @@ const PDFDesignerPage: React.FC = () => {
   const addFooter = () => {
     if (!canvas) return;
     
-    const footerText = new Text('Thank you for your business', {
+    const footerText = new fabric.Text('Thank you for your business', {
       left: CANVAS_WIDTH / 2,
       top: CANVAS_HEIGHT - 50,
       fontFamily: 'Arial',
@@ -535,12 +532,12 @@ const PDFDesignerPage: React.FC = () => {
       originX: 'center',
     });
     
-    const footerLine = new Line([50, CANVAS_HEIGHT - 70, CANVAS_WIDTH - 50, CANVAS_HEIGHT - 70], {
+    const footerLine = new fabric.Line([50, CANVAS_HEIGHT - 70, CANVAS_WIDTH - 50, CANVAS_HEIGHT - 70], {
       stroke: '#e5e7eb',
       strokeWidth: 1,
     });
     
-    const footerGroup = new Group([footerLine, footerText], {
+    const footerGroup = new fabric.Group([footerLine, footerText], {
       left: 0,
       top: 0,
       hasControls: true,
@@ -638,7 +635,7 @@ const PDFDesignerPage: React.FC = () => {
         addTablePlaceholder();
         addTotalsSection();
       } else if (type === 'delivery') {
-        const deliveryTitle = new Text('DELIVERY NOTE', {
+        const deliveryTitle = new fabric.Text('DELIVERY NOTE', {
           left: CANVAS_WIDTH - 250,
           top: 150,
           fontFamily: 'Arial',
@@ -649,7 +646,7 @@ const PDFDesignerPage: React.FC = () => {
         canvas.add(deliveryTitle);
         addTablePlaceholder();
       } else if (type === 'report') {
-        const reportTitle = new Text('REPORT', {
+        const reportTitle = new fabric.Text('REPORT', {
           left: CANVAS_WIDTH / 2,
           top: 150,
           fontFamily: 'Arial',
