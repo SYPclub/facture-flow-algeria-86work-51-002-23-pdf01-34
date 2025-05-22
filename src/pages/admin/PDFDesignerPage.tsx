@@ -640,7 +640,7 @@ const PDFDesignerPage: React.FC = () => {
     
     // Clear canvas
     canvas.clear();
-    canvas.backgroundColor = '#ffffff';
+    
     
     recordHistory();
     
@@ -656,7 +656,7 @@ const PDFDesignerPage: React.FC = () => {
     
     // Clear canvas
     canvas.clear();
-    canvas.backgroundColor = '#ffffff';
+    
     
     // Basic template setup based on type
     // In a real app, you'd load predefined templates from your database
