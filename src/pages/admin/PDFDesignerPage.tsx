@@ -66,7 +66,7 @@ const PDFDesignerPage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>('invoice-default');
   const [templateType, setTemplateType] = useState<string>('invoice');
   const [templateName, setTemplateName] = useState<string>('Default Invoice');
-  const [canvas, setCanvas] = useState<FabricCanvas | null>(null);
+  const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [historyPosition, setHistoryPosition] = useState<number>(0);
   const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
   
@@ -77,7 +77,7 @@ const PDFDesignerPage: React.FC = () => {
   useEffect(() => {
     if (!canvasRef.current) return;
     
-    const fabricCanvas = new FabricCanvas(canvasRef.current, {
+    const fabricCanvas = new Canvas(canvasRef.current, {
       width: CANVAS_WIDTH,
       height: CANVAS_HEIGHT,
       backgroundColor: '#ffffff',
