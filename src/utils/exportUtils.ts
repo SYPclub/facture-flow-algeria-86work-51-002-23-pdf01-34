@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { FinalInvoice, ProformaInvoice, DeliveryNote, Client } from '@/types';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import n2words from 'n2words';
-import { Canvas, Group, Text, Textbox } from 'fabric';
+import { fabric } from 'fabric';
 
 // Original export functions and related helper functions
 export const convertNumberToFrenchWords = (num: number): string => {
@@ -166,19 +166,21 @@ const renderCustomTemplate = async (
   if (!templateData) return false;
   
   try {
+    console.log("Rendering custom template with data:", data);
+    
     // Create a temporary canvas to render the template
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = 794; // A4 width at 96dpi
     tempCanvas.height = 1123; // A4 height at 96dpi
     
-    const canvas = new Canvas(tempCanvas);
+    const canvas = new fabric.Canvas(tempCanvas);
     
     // Load the template
     return new Promise((resolve) => {
       canvas.loadFromJSON(templateData, () => {
         // Replace placeholders with actual data
         canvas.getObjects().forEach(obj => {
-          if (obj instanceof Text || obj instanceof Textbox) {
+          if (obj instanceof fabric.Text || obj instanceof fabric.Textbox) {
             let text = obj.text || '';
             
             // Replace placeholders with actual data
@@ -208,7 +210,7 @@ const renderCustomTemplate = async (
         
         // Check if we need to add items table
         const hasItemsTable = canvas.getObjects().some(obj => {
-          if (obj instanceof Text || obj instanceof Textbox) {
+          if (obj instanceof fabric.Text || obj instanceof fabric.Textbox) {
             return obj.text?.includes('{{items_table}}');
           }
           return false;
@@ -221,16 +223,16 @@ const renderCustomTemplate = async (
           
           // Try to get position from the object containing the table placeholder
           canvas.getObjects().forEach(obj => {
-            if (obj instanceof Text || obj instanceof Textbox) {
+            if (obj instanceof fabric.Text || obj instanceof fabric.Textbox) {
               if (obj.text?.includes('{{items_table}}')) {
                 tableY = obj.top || tableY;
               }
-            } else if (obj instanceof Group) {
+            } else if (obj instanceof fabric.Group) {
               // Look inside groups for the text
-              const objects = obj.getObjects();
+              const objects = obj._objects || [];
               for (let i = 0; i < objects.length; i++) {
                 const groupObj = objects[i];
-                if (groupObj instanceof Text || groupObj instanceof Textbox) {
+                if (groupObj instanceof fabric.Text || groupObj instanceof fabric.Textbox) {
                   if (groupObj.text?.includes('{{items_table}}')) {
                     tableY = (obj.top || 0) + (groupObj.top || 0);
                     break;
