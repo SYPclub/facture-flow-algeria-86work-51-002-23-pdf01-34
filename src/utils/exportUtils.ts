@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -797,3 +796,13 @@ function getStatusColor(status: string): string {
       return "#94A3B8"; // Gray
   }
 }
+
+// Helper function to open a new window with HTML content for printing
+export const openPrintableInvoice = (
+  invoiceType: 'final' | 'proforma',
+  invoiceId: string
+) => {
+  // Open a new tab/window with the printable invoice route
+  const url = `/print/invoice/${invoiceType}/${invoiceId}`;
+  window.open(url, '_blank');
+};

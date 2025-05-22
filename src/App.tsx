@@ -32,6 +32,7 @@ import ClientDebtDetailPage from "@/pages/reports/ClientDebtDetailPage";
 import UsersPage from "@/pages/admin/UsersPage";
 import UserDetail from "@/pages/admin/UserDetail";
 import CompanyInfoPage from "@/pages/admin/CompanyInfoPage";
+import PrintableInvoice from "@/pages/invoices/PrintableInvoice";
 
 // Layout
 import MainLayout from "@/components/layouts/MainLayout";
@@ -48,6 +49,9 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            
+            {/* Printable route without layout */}
+            <Route path="/print/invoice/:type/:id" element={<PrintableInvoice />} />
             
             <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
               <Route path="/" element={<Dashboard />} />
