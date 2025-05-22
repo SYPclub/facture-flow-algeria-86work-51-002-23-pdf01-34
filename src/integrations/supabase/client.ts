@@ -41,16 +41,21 @@ export const rollbackTransaction = async () => {
 
 // Helper function to get current user ID
 export const getCurrentUserId = async (): Promise<string | null> => {
-  try {
-    const { data } = await supabase.auth.getSession();
-    if (data.session?.user) {
-      return data.session.user.id;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error getting current user ID:', error);
-    return null;
-  }
+  const { data } = await  supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      if (currentSession?.user) {
+        const userData = currentSession.user;
+        const userMetadata = userData.user_metadata;
+        
+        setUser({
+          id: userData.id,
+          email: userData.email || '',
+          name: userMetadata?.name || '',
+        });
+      }
+      
+    });
+  return data.email;
 };
 
 // Helper function to check if user is admin
@@ -450,7 +455,7 @@ export const deleteDeliveryNote = async (id: string) => {
 };
 
 // Invoice payment functions - TODO: Update this when invoice_payments table is added to schema
-/*
+
 export const addInvoicePayment = async (invoiceId: string, paymentData: any) => {
   try {
     await beginTransaction();
@@ -638,7 +643,7 @@ export const deleteInvoicePayment = async (paymentId: string, invoiceId: string)
     throw error;
   }
 };
-*/
+
 
 // Function to handle disconnecting a proforma from a final invoice
 export const undoProformaConversion = async (proformaId: string, finalInvoiceId: string) => {

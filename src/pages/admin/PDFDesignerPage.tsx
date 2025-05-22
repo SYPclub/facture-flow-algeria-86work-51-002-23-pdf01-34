@@ -80,7 +80,6 @@ const PDFDesignerPage: React.FC = () => {
     const fabricCanvas = new fabric.Canvas(canvasRef.current, {
       width: CANVAS_WIDTH,
       height: CANVAS_HEIGHT,
-      backgroundColor: '#ffffff',
       preserveObjectStacking: true,
     });
     
