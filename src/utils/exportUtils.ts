@@ -1,11 +1,13 @@
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { FinalInvoice, ProformaInvoice, DeliveryNote, Client } from '@/types';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import n2words from 'n2words';
-import { fabric } from 'fabric';
+import { Canvas, Image, Text, Textbox } from 'fabric';
 
+// Original export functions and related helper functions
 export const convertNumberToFrenchWords = (num: number): string => {
   return n2words(num, { lang: 'fr' });
 };
@@ -169,14 +171,14 @@ const renderCustomTemplate = async (
     tempCanvas.width = 794; // A4 width at 96dpi
     tempCanvas.height = 1123; // A4 height at 96dpi
     
-    const canvas = new fabric.Canvas(tempCanvas);
+    const canvas = new Canvas(tempCanvas);
     
     // Load the template
     canvas.loadFromJSON(templateData, async () => {
       // Replace placeholders with actual data
       canvas.getObjects().forEach(obj => {
         if (obj.type === 'text' || obj.type === 'textbox') {
-          const textObj = obj as fabric.Text;
+          const textObj = obj as Text | Textbox;
           let text = textObj.text || '';
           
           // Replace placeholders with actual data
@@ -207,7 +209,7 @@ const renderCustomTemplate = async (
       // Check if we need to add items table
       const hasItemsTable = canvas.getObjects().some(obj => {
         if (obj.type === 'text' || obj.type === 'textbox') {
-          const textObj = obj as fabric.Text;
+          const textObj = obj as Text | Textbox;
           return textObj.text?.includes('{{items_table}}');
         }
         return false;

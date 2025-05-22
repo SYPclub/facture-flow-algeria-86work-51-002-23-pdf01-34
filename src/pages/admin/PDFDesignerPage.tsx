@@ -1,5 +1,6 @@
+
 import React, { useEffect, useRef, useState } from 'react';
-import { Canvas as FabricCanvas, Image as FabricImage, Line, Rect, Circle, Group, Text, Textbox } from 'fabric';
+import { Canvas, Image as FabricImage, Line, Rect, Circle, Group, Text, Textbox } from 'fabric';
 import {
   Card,
   CardContent,
