@@ -33,6 +33,7 @@ import UsersPage from "@/pages/admin/UsersPage";
 import UserDetail from "@/pages/admin/UserDetail";
 import CompanyInfoPage from "@/pages/admin/CompanyInfoPage";
 import PrintableInvoice from "@/pages/invoices/PrintableInvoice";
+import PDFTemplateDesigner from "@/pages/admin/PDFTemplateDesigner";
 
 // Layout
 import MainLayout from "@/components/layouts/MainLayout";
@@ -84,6 +85,7 @@ const App = () => (
               <Route path="/admin/users" element={<UsersPage />} />
               <Route path="/admin/users/:id" element={<UserDetail />} />
               <Route path="/admin/company-info" element={<CompanyInfoPage />} />
+              <Route path="/admin/pdf-templates" element={<PDFTemplateDesigner />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />

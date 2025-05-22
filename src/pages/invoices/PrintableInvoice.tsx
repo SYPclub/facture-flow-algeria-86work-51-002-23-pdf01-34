@@ -119,19 +119,32 @@ const PrintableInvoice = () => {
 
         setInvoice(fullInvoice);
 
-        // Fetch template
+        // Fetch template - get the default template for the document type
         const templateType = type === 'final' ? 'invoice' : 'proforma';
         const { data: templateData } = await supabase
           .from('pdf_templates')
           .select('template_html')
           .eq('type', templateType)
+          .eq('is_default', true)
           .single();
 
         if (templateData?.template_html) {
           setTemplate(templateData.template_html);
         } else {
-          // Use default template if none found
-          setTemplate(generateDefaultTemplate());
+          // If no default template is found, try to get any template for this type
+          const { data: anyTemplate } = await supabase
+            .from('pdf_templates')
+            .select('template_html')
+            .eq('type', templateType)
+            .limit(1)
+            .single();
+
+          if (anyTemplate?.template_html) {
+            setTemplate(anyTemplate.template_html);
+          } else {
+            // Use default template if none found
+            setTemplate(generateDefaultTemplate());
+          }
         }
 
         setLoading(false);
@@ -224,6 +237,7 @@ const PrintableInvoice = () => {
     rendered = rendered.replace(/{{invoice\.taxtotal}}/g, invoice.taxtotal?.toFixed(2) || '0.00');
     rendered = rendered.replace(/{{invoice\.total}}/g, invoice.total?.toFixed(2) || '0.00');
     rendered = rendered.replace(/{{invoice\.notes}}/g, invoice.notes || '');
+    rendered = rendered.replace(/{{invoice\.status}}/g, invoice.status || '');
     
     // Replace client fields
     if (invoice.client) {
