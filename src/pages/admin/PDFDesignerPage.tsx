@@ -601,7 +601,9 @@ const PDFDesignerPage: React.FC = () => {
     
     // Clear canvas
     canvas.clear();
-    canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
+    canvas.setBackgroundColor('#ffffff', () => {
+      canvas.renderAll();
+    });
     
     recordHistory();
     
