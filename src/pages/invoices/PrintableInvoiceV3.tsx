@@ -310,7 +310,7 @@ const PrintableInvoiceV3 = () => {
         // Generate HTML for each item
         invoice.items.forEach(item => {
           let itemRow = rowTemplate;
-          itemRow = itemRow.replace(/{{description}}/g, item.description || '');
+          itemRow = itemRow.replace(/{{description}}/g, item.product?.name || '');
           itemRow = itemRow.replace(/{{quantity}}/g, String(item.quantity) || '1');
           itemRow = itemRow.replace(/{{unit_price}}/g, item.unit_price?.toFixed(2) || '0.00');
           itemRow = itemRow.replace(/{{tax_rate}}/g, item.tax_rate?.toString() || '0');

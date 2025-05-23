@@ -7,6 +7,8 @@ import { useCompanyInfo } from "@/hooks/useCompanyInfo";
 
 interface InvoiceItem {
   id: string;
+  name: string;
+  code: string;
   description: string;
   quantity: number;
   unit_price: number;
@@ -88,6 +90,8 @@ const PrintableInvoice = () => {
           .from('products')
           .select(`
             id,
+            name,
+            code,
             description,
             unitprice,
             taxrate,
@@ -103,6 +107,8 @@ const PrintableInvoice = () => {
         // Format items
         const formattedItems = items.map(item => ({
           id: item.id,
+          name: item.name,
+          code: item.code,
           description: item.description,
           quantity: item.quantity || 1,
           unit_price: item.unitprice,
@@ -189,7 +195,7 @@ const PrintableInvoice = () => {
           <tbody>
             {{#each invoice.items}}
             <tr>
-              <td data-field="item.description">{{description}}</td>
+              <td data-field="item.description">{{name}}</td>
               <td data-field="item.quantity">{{quantity}}</td>
               <td data-field="item.unit_price">{{unit_price}}</td>
               <td data-field="item.tax_rate">{{tax_rate}}%</td>
@@ -263,7 +269,7 @@ const PrintableInvoice = () => {
         // Generate HTML for each item
         invoice.items.forEach(item => {
           let itemRow = rowTemplate;
-          itemRow = itemRow.replace(/{{description}}/g, item.description || '');
+          itemRow = itemRow.replace(/{{description}}/g, item.name || '');
           itemRow = itemRow.replace(/{{quantity}}/g, String(item.quantity) || '1');
           itemRow = itemRow.replace(/{{unit_price}}/g, item.unit_price?.toFixed(2) || '0.00');
           itemRow = itemRow.replace(/{{tax_rate}}/g, item.tax_rate?.toString() || '0');
