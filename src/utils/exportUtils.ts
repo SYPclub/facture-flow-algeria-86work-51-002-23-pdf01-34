@@ -802,7 +802,7 @@ export const openPrintableInvoice = (
   invoiceType: 'final' | 'proforma',
   invoiceId: string
 ) => {
-  // Open a new tab/window with the printable invoice route
-  const url = `/print/invoice/${invoiceType}/${invoiceId}`;
+  // Open a new tab/window with the printable invoice route - using v3 version
+  const url = `/print/v3/${invoiceType}/${invoiceId}`;
   window.open(url, '_blank');
 };

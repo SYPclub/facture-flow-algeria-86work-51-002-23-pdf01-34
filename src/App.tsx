@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,7 +33,8 @@ import UsersPage from "@/pages/admin/UsersPage";
 import UserDetail from "@/pages/admin/UserDetail";
 import CompanyInfoPage from "@/pages/admin/CompanyInfoPage";
 import PrintableInvoice from "@/pages/invoices/PrintableInvoice";
-import PDFTemplateDesigner from "@/pages/admin/PDFTemplateDesigner";
+import PrintableInvoiceV3 from "@/pages/invoices/PrintableInvoiceV3";
+import PDFTemplates from "@/pages/admin/PDFTemplates";
 
 // Layout
 import MainLayout from "@/components/layouts/MainLayout";
@@ -50,8 +52,9 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Printable route without layout */}
+            {/* Printable routes without layout */}
             <Route path="/print/invoice/:type/:id" element={<PrintableInvoice />} />
+            <Route path="/print/v3/:type/:id" element={<PrintableInvoiceV3 />} />
             
             <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
               <Route path="/" element={<Dashboard />} />
@@ -84,7 +87,7 @@ const App = () => (
               <Route path="/admin/users" element={<UsersPage />} />
               <Route path="/admin/users/:id" element={<UserDetail />} />
               <Route path="/admin/company-info" element={<CompanyInfoPage />} />
-              <Route path="/admin/pdf-templates" element={<PDFTemplateDesigner />} />
+              <Route path="/admin/pdf-templates" element={<PDFTemplates />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
