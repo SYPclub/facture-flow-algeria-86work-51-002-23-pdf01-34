@@ -116,12 +116,16 @@ const PrintableInvoiceV3 = () => {
           .from(itemsTableName)
           .select(`
             *,
-            product:productid (
-              name,
-              description,
-              code
+            item:itemid (
+              *,
+              product:productid (
+                name,
+                description,
+                code
+              )
             )
           `)
+
           .eq(itemsRelationKey, id);
 
         if (itemsError) {
