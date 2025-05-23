@@ -256,7 +256,7 @@ const PDFTemplateDesigner: React.FC = () => {
       }
 
       const { data, error } = await supabase
-        .from(proforma_invoices)
+        .from(tableName)
         .select('id, number, client:clientid (name)')
         .limit(10);
 
