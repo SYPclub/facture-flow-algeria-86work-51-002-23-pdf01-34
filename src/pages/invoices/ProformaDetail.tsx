@@ -1244,6 +1244,14 @@ const ProformaDetail = () => {
                 <Printer className="mr-2 h-4 w-4" />
                 Print / Download
               </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate(`/print/v3/proforma/${id}`)}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Print V3
+              </Button>
+
               
               {canEdit && proforma.status === 'draft' && (
                 <AlertDialog>
