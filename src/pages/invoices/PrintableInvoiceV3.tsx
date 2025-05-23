@@ -138,7 +138,7 @@ const PrintableInvoiceV3 = () => {
         // Format items
         const formattedItems = items.map(item => ({
           id: item.id,
-          name: item.name,
+          name: item.product?.name,
           code: item.code,
           description: item.product?.name || item.description || "",
           quantity: item.quantity || 1,

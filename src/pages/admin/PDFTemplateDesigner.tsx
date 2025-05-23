@@ -96,7 +96,7 @@ const PDFTemplateDesigner: React.FC = () => {
           description: "Loop through invoice items",
           example: `{{#each invoice.items}}
   <tr>
-    <td>{{description}}</td>
+    <td>{{name}}</td>
     <td>{{quantity}}</td>
     <td>{{unit_price}}</td>
     <td>{{total}}</td>
@@ -169,7 +169,7 @@ const PDFTemplateDesigner: React.FC = () => {
           <tbody>
             {{#each invoice.items}}
             <tr>
-              <td data-field="item.description">{{description}}</td>
+              <td data-field="item.name">{{name}}</td>
               <td data-field="item.quantity">{{quantity}}</td>
               ${type !== 'delivery_note' ? '<td data-field="item.unit_price">{{unit_price}}</td>' : ''}
               ${type !== 'delivery_note' ? '<td data-field="item.tax_rate">{{tax_rate}}%</td>' : ''}
@@ -431,7 +431,7 @@ const PDFTemplateDesigner: React.FC = () => {
         
         document.items.forEach(item => {
           let itemHtml = itemTemplate;
-          itemHtml = itemHtml.replace(/{{description}}/g, item.description || '');
+          itemHtml = itemHtml.replace(/{{name}}/g, item.name || '');
           itemHtml = itemHtml.replace(/{{quantity}}/g, String(item.quantity) || '1');
           itemHtml = itemHtml.replace(/{{unit_price}}/g, formatCurrency(item.unitprice) || '0.00');
           itemHtml = itemHtml.replace(/{{tax_rate}}/g, item.taxrate?.toString() || '0');
