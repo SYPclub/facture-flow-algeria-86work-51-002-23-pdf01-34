@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { CompanyInfoHeader } from "@/components/exports/CompanyInfoHeader";
+import CompanyInfoHeader from "@/components/exports/CompanyInfoHeader";
 import { useCompanyInfo } from "@/hooks/useCompanyInfo";
 
 interface InvoiceItem {
