@@ -1054,6 +1054,13 @@ const FinalInvoiceDetail = () => {
                 <Printer className="mr-2 h-4 w-4" />
                 Print / Download
               </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate(`/print/v3/final/${id}`)}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Print V3
+              </Button>
             </CardContent>
           </Card>
         </>
