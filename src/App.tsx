@@ -35,6 +35,7 @@ import CompanyInfoPage from "@/pages/admin/CompanyInfoPage";
 import PrintableInvoice from "@/pages/invoices/PrintableInvoice";
 import PrintableInvoiceV3 from "@/pages/invoices/PrintableInvoiceV3";
 import PDFTemplates from "@/pages/admin/PDFTemplates";
+import PDFTemplateDesigner from "@/pages/admin/PDFTemplateDesigner";
 
 // Layout
 import MainLayout from "@/components/layouts/MainLayout";
@@ -88,6 +89,8 @@ const App = () => (
               <Route path="/admin/users/:id" element={<UserDetail />} />
               <Route path="/admin/company-info" element={<CompanyInfoPage />} />
               <Route path="/admin/pdf-templates" element={<PDFTemplates />} />
+              <Route path="/admin/pdf-template/design/:id" element={<PDFTemplateDesigner />} />
+              <Route path="/admin/pdf-template/new" element={<PDFTemplateDesigner />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />

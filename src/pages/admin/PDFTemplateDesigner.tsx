@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,37 +18,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Save, FileText, Eye, Code, Wand2, PanelLeft } from "lucide-react";
-
-// Types
-interface PDFTemplate {
-  id?: string;
-  type: 'invoice' | 'proforma' | 'delivery_note';
-  template_html: string;
-  name?: string;
-  created_at?: string;
-  updated_at?: string;
-  is_default?: boolean;
-}
-
-interface TemplateDocument {
-  id: string;
-  number: string;
-  clientName?: string;
-}
-
-interface VariableCategory {
-  name: string;
-  description: string;
-  variables: Array<{
-    name: string;
-    description: string;
-    example: string;
-  }>;
-}
+import { Save, FileText, Eye, Code, Wand2, PanelLeft, ArrowLeft } from "lucide-react";
+import { PDFTemplate, TemplateDocument, VariableCategory } from "@/types/pdf-templates";
 
 const PDFTemplateDesigner: React.FC = () => {
   const { toast } = useToast();
+  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // State
   const [templateType, setTemplateType] = useState<'invoice' | 'proforma' | 'delivery_note'>('proforma');
@@ -61,6 +39,26 @@ const PDFTemplateDesigner: React.FC = () => {
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [previewHtml, setPreviewHtml] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Get template type from query string if available (for new templates)
+    const typeFromQuery = searchParams.get('type');
+    if (typeFromQuery && (typeFromQuery === 'invoice' || typeFromQuery === 'proforma' || typeFromQuery === 'delivery_note')) {
+      setTemplateType(typeFromQuery);
+    }
+
+    // If template ID is provided, load the template
+    if (id) {
+      loadTemplate(id);
+    } else {
+      // Otherwise set a default template based on type
+      setTemplateHtml(getDefaultTemplate(templateType));
+      setTemplateName(`New ${templateType} Template`);
+    }
+
+    // Load sample documents
+    fetchSampleDocuments();
+  }, [id, templateType]);
 
   // Variable categories and examples to help users build templates
   const variableCategories: VariableCategory[] = [
@@ -109,6 +107,37 @@ const PDFTemplateDesigner: React.FC = () => {
     }
   ];
 
+  // Load a specific template
+  const loadTemplate = async (templateId: string) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('pdf_templates')
+        .select('*')
+        .eq('id', templateId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setTemplateType(data.type);
+        setTemplateHtml(data.template_html);
+        setTemplateName(data.name || '');
+        setIsDefault(!!data.is_default);
+        setSelectedTemplateId(data.id);
+      }
+    } catch (error) {
+      console.error('Error loading template:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load template',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Default templates
   const getDefaultTemplate = (type: 'invoice' | 'proforma' | 'delivery_note') => {
     return `
@@ -132,7 +161,7 @@ const PDFTemplateDesigner: React.FC = () => {
             <tr>
               <th>Description</th>
               <th>Quantity</th>
-              <th>Unit Price</th>
+              ${type !== 'delivery_note' ? '<th>Unit Price</th>' : ''}
               ${type !== 'delivery_note' ? '<th>Tax</th>' : ''}
               ${type !== 'delivery_note' ? '<th>Total</th>' : ''}
             </tr>
@@ -188,55 +217,6 @@ const PDFTemplateDesigner: React.FC = () => {
     `;
   };
 
-  // Load templates on component mount or when template type changes
-  useEffect(() => {
-    fetchTemplates();
-    fetchSampleDocuments();
-  }, [templateType]);
-
-  // Fetch templates from database
-  const fetchTemplates = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('pdf_templates')
-        .select('*')
-        .eq('type', templateType);
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        setTemplates(data);
-        // Select the default template if any
-        const defaultTemplate = data.find(t => t.is_default);
-        if (defaultTemplate) {
-          setSelectedTemplateId(defaultTemplate.id || null);
-          setTemplateHtml(defaultTemplate.template_html);
-          setTemplateName(defaultTemplate.name || '');
-          setIsDefault(!!defaultTemplate.is_default);
-        } else {
-          // Otherwise, select the first template
-          setSelectedTemplateId(data[0].id || null);
-          setTemplateHtml(data[0].template_html);
-          setTemplateName(data[0].name || '');
-          setIsDefault(!!data[0].is_default);
-        }
-      } else {
-        // Create a new template with defaults if none exists
-        resetTemplate();
-      }
-    } catch (error) {
-      console.error('Error fetching templates:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to fetch templates',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Fetch sample documents for preview
   const fetchSampleDocuments = async () => {
     try {
@@ -286,25 +266,6 @@ const PDFTemplateDesigner: React.FC = () => {
     }
   };
 
-  // Load template when selected template changes
-  const handleTemplateChange = (id: string) => {
-    const selectedTemplate = templates.find(t => t.id === id);
-    if (selectedTemplate) {
-      setSelectedTemplateId(id);
-      setTemplateHtml(selectedTemplate.template_html);
-      setTemplateName(selectedTemplate.name || '');
-      setIsDefault(!!selectedTemplate.is_default);
-    }
-  };
-
-  // Reset template to default
-  const resetTemplate = () => {
-    setSelectedTemplateId(null);
-    setTemplateHtml(getDefaultTemplate(templateType));
-    setTemplateName(`Default ${templateType.charAt(0).toUpperCase() + templateType.slice(1)} Template`);
-    setIsDefault(true);
-  };
-
   // Save template
   const saveTemplate = async () => {
     try {
@@ -328,17 +289,19 @@ const PDFTemplateDesigner: React.FC = () => {
 
       let result;
 
-      if (selectedTemplateId) {
+      if (id) {
         // Update existing template
         result = await supabase
           .from('pdf_templates')
           .update(templateData)
-          .eq('id', selectedTemplateId);
+          .eq('id', id);
       } else {
         // Create new template
         result = await supabase
           .from('pdf_templates')
-          .insert(templateData);
+          .insert(templateData)
+          .select('*')
+          .single();
       }
 
       if (result.error) throw result.error;
@@ -349,16 +312,16 @@ const PDFTemplateDesigner: React.FC = () => {
           .from('pdf_templates')
           .update({ is_default: false })
           .eq('type', templateType)
-          .neq('id', selectedTemplateId || '');
+          .neq('id', id || result.data?.id || '');
       }
 
       toast({
         title: 'Success',
-        description: `Template ${selectedTemplateId ? 'updated' : 'created'} successfully`,
+        description: `Template ${id ? 'updated' : 'created'} successfully`,
       });
 
-      // Refresh templates
-      fetchTemplates();
+      // Navigate back to templates list
+      navigate('/admin/pdf-templates');
     } catch (error) {
       console.error('Error saving template:', error);
       toast({
@@ -472,7 +435,7 @@ const PDFTemplateDesigner: React.FC = () => {
           itemHtml = itemHtml.replace(/{{quantity}}/g, String(item.quantity) || '1');
           itemHtml = itemHtml.replace(/{{unit_price}}/g, formatCurrency(item.unitprice) || '0.00');
           itemHtml = itemHtml.replace(/{{tax_rate}}/g, item.taxrate?.toString() || '0');
-          itemHtml = itemHtml.replace(/{{total}}/g, formatCurrency(item.total) || '0.00');
+          itemHtml = itemHtml.replace(/{{total}}/g, formatCurrency(item.total || (item.quantity * item.unitprice)) || '0.00');
           
           itemsHtml += itemHtml;
         });
@@ -497,15 +460,14 @@ const PDFTemplateDesigner: React.FC = () => {
   // Format helpers
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('fr-DZ');
+    return new Date(dateString).toLocaleDateString();
   };
 
   const formatCurrency = (amount?: number) => {
     if (amount === undefined || amount === null) return '0.00';
-    return amount.toLocaleString('fr-DZ', { 
-      style: 'currency', 
-      currency: 'DZD',
-      minimumFractionDigits: 2
+    return amount.toLocaleString(undefined, { 
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
   };
 
@@ -516,22 +478,23 @@ const PDFTemplateDesigner: React.FC = () => {
   const insertSnippet = (snippet: string) => {
     setTemplateHtml(prevHTML => prevHTML + snippet);
   };
-
-  // Tab switch handler
-  const handleTabChange = (value: string) => {
-    if (value === 'invoice') {
-      setTemplateType('invoice');
-    } else if (value === 'proforma') {
-      setTemplateType('proforma');
-    } else if (value === 'delivery') {
-      setTemplateType('delivery_note');
-    }
-  };
   
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">PDF Template Designer</h1>
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/admin/pdf-templates')}
+            size="sm"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Templates
+          </Button>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {id ? 'Edit Template' : 'Create New Template'}
+          </h1>
+        </div>
         <div className="space-x-2">
           <Button 
             variant="outline" 
@@ -552,14 +515,6 @@ const PDFTemplateDesigner: React.FC = () => {
         </div>
       </div>
       
-      <Tabs defaultValue="proforma" onValueChange={handleTabChange}>
-        <TabsList>
-          <TabsTrigger value="proforma">Proforma Template</TabsTrigger>
-          <TabsTrigger value="invoice">Invoice Template</TabsTrigger>
-          <TabsTrigger value="delivery">Delivery Note Template</TabsTrigger>
-        </TabsList>
-      </Tabs>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {!previewMode ? (
           <>
@@ -592,32 +547,21 @@ const PDFTemplateDesigner: React.FC = () => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="templateSelect">Load Template</Label>
-                    <div className="flex space-x-2">
-                      <Select 
-                        value={selectedTemplateId || ''} 
-                        onValueChange={handleTemplateChange}
-                        disabled={templates.length === 0}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a template" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {templates.map(template => (
-                            <SelectItem key={template.id} value={template.id || ''}>
-                              {template.name} {template.is_default ? '(Default)' : ''}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        variant="secondary"
-                        onClick={resetTemplate}
-                      >
-                        <Wand2 className="mr-2 h-4 w-4" />
-                        New Template
-                      </Button>
-                    </div>
+                    <Label htmlFor="templateType">Template Type</Label>
+                    <Select 
+                      value={templateType} 
+                      onValueChange={(value: 'invoice' | 'proforma' | 'delivery_note') => setTemplateType(value)}
+                      disabled={!!id}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select template type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="invoice">Invoice</SelectItem>
+                        <SelectItem value="proforma">Proforma Invoice</SelectItem>
+                        <SelectItem value="delivery_note">Delivery Note</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>

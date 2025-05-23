@@ -256,11 +256,19 @@ export default function PDFTemplates() {
     fetchInvoiceForPreview();
   };
 
+  const goToTemplateDesigner = (templateId?: string) => {
+    if (templateId) {
+      window.location.href = `/admin/pdf-template/design/${templateId}`;
+    } else {
+      window.location.href = `/admin/pdf-template/new?type=${activeTab}`;
+    }
+  };
+
   return (
     <div className="container py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">PDF Templates</h1>
-        <Button onClick={createNewTemplate}>Create New Template</Button>
+        <Button onClick={() => goToTemplateDesigner()}>Create New Template</Button>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -278,7 +286,7 @@ export default function PDFTemplates() {
           ) : templates.length === 0 ? (
             <div className="text-center p-8 border rounded-lg">
               <p className="mb-4">No templates found for this document type.</p>
-              <Button onClick={createNewTemplate}>Create First Template</Button>
+              <Button onClick={() => goToTemplateDesigner()}>Create First Template</Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -301,6 +309,9 @@ export default function PDFTemplates() {
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => duplicateTemplate(template)}>
                       <Copy size={16} className="mr-1" /> Duplicate
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => goToTemplateDesigner(template.id)}>
+                      <Pencil size={16} className="mr-1" /> Edit
                     </Button>
                     {!template.is_default && (
                       <Button variant="outline" size="sm" onClick={() => setDefaultTemplate(template.id!)}>
