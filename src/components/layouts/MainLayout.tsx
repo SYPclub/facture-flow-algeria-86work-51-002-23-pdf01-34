@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,8 +15,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
-  Building,
-  FileCode
+  Building
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -187,12 +185,6 @@ const MainLayout = () => {
               icon={Building} 
               title="Company Info" 
               href="/admin/company-info"
-              allowedRoles={[UserRole.ADMIN]}
-            />
-            <SidebarItem 
-              icon={FileCode} 
-              title="PDF Templates" 
-              href="/admin/pdf-templates"
               allowedRoles={[UserRole.ADMIN]}
             />
           </SidebarItem>
