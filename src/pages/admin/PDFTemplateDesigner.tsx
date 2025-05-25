@@ -20,14 +20,12 @@ import {
 } from "@/components/ui/accordion";
 import { Save, FileText, Eye, Code, Wand2, PanelLeft, ArrowLeft } from "lucide-react";
 import { PDFTemplate, TemplateDocument, VariableCategory } from "@/types/pdf-templates";
-import { useCompanyInfo } from "@/hooks/useCompanyInfo";
 
 const PDFTemplateDesigner: React.FC = () => {
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { companyInfo } = useCompanyInfo();
 
   // State
   const [templateType, setTemplateType] = useState<'invoice' | 'proforma' | 'delivery_note'>('proforma');
@@ -64,19 +62,6 @@ const PDFTemplateDesigner: React.FC = () => {
 
   // Variable categories and examples to help users build templates
   const variableCategories: VariableCategory[] = [
-    {
-      name: "Company Information",
-      description: "Your company details",
-      variables: [
-        { name: "company.header", description: "Complete company header (automatically generated)", example: "Company name, address, NIF, RC, phone, email" },
-        { name: "company.name", description: "Company business name", example: companyInfo?.businessName || "Your Company Name" },
-        { name: "company.address", description: "Company address", example: companyInfo?.address || "Company Address" },
-        { name: "company.taxid", description: "Company tax ID (NIF)", example: companyInfo?.taxid || "N/A" },
-        { name: "company.commerceRegNumber", description: "Commerce registration number", example: companyInfo?.commerceRegNumber || "N/A" },
-        { name: "company.phone", description: "Company phone", example: companyInfo?.phone || "N/A" },
-        { name: "company.email", description: "Company email", example: companyInfo?.email || "info@company.com" }
-      ]
-    },
     {
       name: "Invoice Data",
       description: "Basic invoice information",
@@ -153,13 +138,11 @@ const PDFTemplateDesigner: React.FC = () => {
     }
   };
 
-  // Default templates with company header placeholder
+  // Default templates
   const getDefaultTemplate = (type: 'invoice' | 'proforma' | 'delivery_note') => {
     return `
       <div class="invoice-container">
-        <div class="company-header">
-          {{company.header}}
-        </div>
+        <div class="company-header"></div>
         <div class="invoice-details">
           <h1>${type === 'invoice' ? 'INVOICE' : type === 'proforma' ? 'PROFORMA INVOICE' : 'DELIVERY NOTE'}</h1>
           <div data-field="invoice.number">No: {{invoice.number}}</div>
@@ -351,29 +334,6 @@ const PDFTemplateDesigner: React.FC = () => {
     }
   };
 
-  // Generate company header HTML
-  const generateCompanyHeader = () => {
-    if (!companyInfo) {
-      return `
-        <div class="text-center mb-4">
-          <h2 class="text-xl font-bold">YOUR COMPANY NAME</h2>
-          <p>Company Address</p>
-          <p>NIF: N/A | RC: N/A</p>
-          <p>Tél: N/A | Email: info@company.com</p>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="text-center mb-4">
-        <h2 class="text-xl font-bold">${companyInfo.businessName || 'YOUR COMPANY NAME'}</h2>
-        <p>${companyInfo.address || 'Company Address'}</p>
-        <p>NIF: ${companyInfo.taxid || 'N/A'} | RC: ${companyInfo.commerceRegNumber || 'N/A'}</p>
-        <p>Tél: ${companyInfo.phone || 'N/A'} | Email: ${companyInfo.email || 'info@company.com'}</p>
-      </div>
-    `;
-  };
-
   // Generate preview using sample document data
   const generatePreview = async () => {
     if (!selectedDocumentId) {
@@ -441,15 +401,6 @@ const PDFTemplateDesigner: React.FC = () => {
 
       // Create preview HTML using template and document data
       let html = templateHtml;
-      
-      // Replace company header and individual company fields
-      html = html.replace(/{{company\.header}}/g, generateCompanyHeader());
-      html = html.replace(/{{company\.name}}/g, companyInfo?.businessName || 'YOUR COMPANY NAME');
-      html = html.replace(/{{company\.address}}/g, companyInfo?.address || 'Company Address');
-      html = html.replace(/{{company\.taxid}}/g, companyInfo?.taxid || 'N/A');
-      html = html.replace(/{{company\.commerceRegNumber}}/g, companyInfo?.commerceRegNumber || 'N/A');
-      html = html.replace(/{{company\.phone}}/g, companyInfo?.phone || 'N/A');
-      html = html.replace(/{{company\.email}}/g, companyInfo?.email || 'info@company.com');
       
       // Replace simple fields
       html = html.replace(/{{invoice\.number}}/g, document.number || '');
