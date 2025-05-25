@@ -91,7 +91,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.setFont("helvetica", "bold");
   pdf.setTextColor(29, 53, 87);
   pdf.setFontSize(22);
-  pdf.text(companyInfo?.businessName || 'YOUR COMPANY NAME', 65, 20);
+  pdf.text(companyInfo?.businessName || 'YOUR COMPANY NAME', 40, 20);
   
   // Add smaller company details below the name
   pdf.setFont("helvetica", "normal");
