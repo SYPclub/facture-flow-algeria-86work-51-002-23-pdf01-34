@@ -53,13 +53,13 @@ const ClientsPage = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Clients</h1>
           <p className="text-muted-foreground">
-            Manage your client information
+            Gérer votre client information
           </p>
         </div>
         {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]) && (
           <Button asChild>
             <Link to="/clients/new">
-              <Plus className="mr-2 h-4 w-4" /> Add New Client
+              <Plus className="mr-2 h-4 w-4" /> Ajouter un nouveau client
             </Link>
           </Button>
         )}
@@ -67,14 +67,14 @@ const ClientsPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Client List</CardTitle>
-          <CardDescription>View and manage your clients</CardDescription>
+          <CardTitle>Liste des clients</CardTitle>
+          <CardDescription>Visualisez et gérez vos clients</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search clients..."
+              placeholder="Recherche de clients..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -87,15 +87,15 @@ const ClientsPage = () => {
             </div>
           ) : error ? (
             <div className="flex h-40 items-center justify-center">
-              <p className="text-red-500">Error loading clients</p>
+              <p className="text-red-500">Erreur de chargement des clients</p>
             </div>
           ) : filteredClients.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-2">
               <Users className="h-10 w-10 text-muted-foreground/50" />
               <p className="text-center text-muted-foreground">
                 {searchQuery
-                  ? "No clients found matching your search"
-                  : "No clients added yet"}
+                  ? "Aucun client ne correspond à votre recherche"
+                  : "Aucun client n'a encore été ajouté"}
               </p>
             </div>
           ) : (
@@ -103,10 +103,10 @@ const ClientsPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Tax ID (NIF)</TableHead>
+                    <TableHead>Nom</TableHead>
+                    <TableHead>NIF</TableHead>
                     <TableHead>NIS</TableHead>
-                    <TableHead>Contact Info</TableHead>
+                    <TableHead>Contact</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -127,7 +127,7 @@ const ClientsPage = () => {
                           to={`/clients/${client.id}`}
                           className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
                         >
-                          View Details
+                          Voir les détails
                         </Link>
                       </TableCell>
                     </TableRow>

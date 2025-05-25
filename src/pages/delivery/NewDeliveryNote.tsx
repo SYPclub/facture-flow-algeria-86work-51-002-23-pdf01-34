@@ -261,10 +261,10 @@ const NewDeliveryNote = () => {
         <CardContent className="pt-6">
           <div className="flex h-40 flex-col items-center justify-center gap-2">
             <p className="text-center text-muted-foreground">
-              You don't have permission to create delivery notes
+              Vous n'avez pas l'autorisation de créer des bons de livraison
             </p>
             <Button asChild variant="outline">
-              <Link to="/delivery-notes">Return to List</Link>
+              <Link to="/delivery-notes">Retour à la liste</Link>
             </Button>
           </div>
         </CardContent>
@@ -282,7 +282,7 @@ const NewDeliveryNote = () => {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">
-            Create New Delivery Note
+            az
           </h1>
         </div>
       </div>
@@ -291,8 +291,8 @@ const NewDeliveryNote = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Client Information</CardTitle>
-              <CardDescription>Select the client for this delivery note</CardDescription>
+              <CardTitle>Informations sur le client</CardTitle>
+              <CardDescription>Sélectionner le client pour ce bon de livraison</CardDescription>
             </CardHeader>
             <CardContent>
               <FormField
@@ -308,7 +308,7 @@ const NewDeliveryNote = () => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a client" />
+                          <SelectValue placeholder="Sélectionner un client" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -328,8 +328,8 @@ const NewDeliveryNote = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Delivery Details</CardTitle>
-              <CardDescription>Information about the delivery</CardDescription>
+              <CardTitle>Détails de la livraison</CardTitle>
+              <CardDescription>Informations sur la livraison</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField
@@ -337,7 +337,7 @@ const NewDeliveryNote = () => {
                 name="issuedate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Issue Date</FormLabel>
+                    <FormLabel>Date d'émission</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -352,11 +352,11 @@ const NewDeliveryNote = () => {
                   name="drivername"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Driver Name</FormLabel>
+                      <FormLabel>Nom du conducteur</FormLabel>
                       <FormControl>
                         <Input 
                           {...field} 
-                          placeholder="Enter driver name"
+                          placeholder="Saisir le nom du conducteur"
                         />
                       </FormControl>
                       <FormMessage />
@@ -371,10 +371,10 @@ const NewDeliveryNote = () => {
                     <FormItem>
                       <FormLabel className="flex items-center">
                         <Truck className="mr-2 h-4 w-4" />
-                        Truck ID
+                        ID du camion
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter truck ID or license plate" {...field} />
+                        <Input placeholder="Saisir le numéro d'identification du camion ou la plaque d'immatriculation" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -386,9 +386,9 @@ const NewDeliveryNote = () => {
                   name="delivery_company"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Delivery Company</FormLabel>
+                      <FormLabel>Société de livraison</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter delivery company name" {...field} />
+                        <Input placeholder="Saisir le nom de l'entreprise de livraison" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -404,7 +404,7 @@ const NewDeliveryNote = () => {
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Enter any additional information or delivery instructions"
+                        placeholder="Saisir toute information supplémentaire ou instruction de livraison"
                         className="min-h-[120px]"
                         {...field} 
                       />
@@ -419,11 +419,11 @@ const NewDeliveryNote = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Items</CardTitle>
-                <CardDescription>Products to be delivered</CardDescription>
+                <CardTitle>Articles</CardTitle>
+                <CardDescription>Produits à livrer</CardDescription>
               </div>
               <Button type="button" onClick={addItem} variant="outline" size="sm">
-                <Plus className="mr-2 h-4 w-4" /> Add Item
+                <Plus className="mr-2 h-4 w-4" /> Ajouter un article
               </Button>
             </CardHeader>
             <CardContent>
@@ -431,9 +431,9 @@ const NewDeliveryNote = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Unit</TableHead>
+                      <TableHead>Produit</TableHead>
+                      <TableHead>Quantité</TableHead>
+                      <TableHead>Unité</TableHead>
                       <TableHead className="w-[100px]"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -446,7 +446,7 @@ const NewDeliveryNote = () => {
                             onValueChange={(value) => updateItemProduct(index, value)}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a product">
+                              <SelectValue placeholder="Sélectionner un produit">
                                 {item.productId && products.find(p => p.id === item.productId)?.name}
                               </SelectValue>
                             </SelectTrigger>
@@ -460,7 +460,7 @@ const NewDeliveryNote = () => {
                           </Select>
                           {form.formState.errors.items?.[index]?.productId && (
                             <p className="text-xs text-destructive mt-1">
-                              Product is required
+                              Le produit est nécessaire
                             </p>
                           )}
                         </TableCell>
@@ -478,7 +478,7 @@ const NewDeliveryNote = () => {
                           />
                           {form.formState.errors.items?.[index]?.quantity && (
                             <p className="text-xs text-destructive mt-1">
-                              Valid quantity is required
+                              Une quantité valide est requise
                             </p>
                           )}
                         </TableCell>
@@ -511,18 +511,18 @@ const NewDeliveryNote = () => {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" asChild>
-              <Link to="/delivery-notes">Cancel</Link>
+              <Link to="/delivery-notes">Annuler</Link>
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
               {createMutation.isPending ? (
                 <>
                   <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
-                  Creating...
+                  Création...
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Create Delivery Note
+                  Créer un bon de livraison
                 </>
               )}
             </Button>

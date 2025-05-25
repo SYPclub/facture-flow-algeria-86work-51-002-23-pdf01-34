@@ -150,13 +150,13 @@ const PaymentForm = ({
         <div className="flex justify-between items-center mb-2">
           <div>
             <span className="text-sm text-muted-foreground mr-2">
-              Invoice Total:
+              Total de la facture:
             </span>
             <span className="font-medium">{formatCurrency(invoiceTotal)}</span>
           </div>
           <div>
             <span className="text-sm text-muted-foreground mr-2">
-              Remaining Debt:
+              Dette restante:
             </span>
             <span className="font-medium">{formatCurrency(remainingDebt)}</span>
           </div>
@@ -166,19 +166,19 @@ const PaymentForm = ({
         <div className="bg-muted/50 p-3 rounded-md border border-muted">
           <div className="flex items-center gap-2 mb-2 text-sm font-medium text-muted-foreground">
             <Watch size={16} />
-            <span>Payment Preview</span>
+            <span>Aperçu du paiement</span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div>
-              <span className="text-muted-foreground">After Payment:</span>
+              <span className="text-muted-foreground">Après le paiement:</span>
             </div>
             <div className="text-right"></div>
             <div>
-              <span className="mr-2">Amount Paid:</span>
+              <span className="mr-2">Montant payé:</span>
               <span className="font-medium text-green-600">{formatCurrency(previewAmountPaid)}</span>
             </div>
             <div>
-              <span className="mr-2">Remaining Debt:</span>
+              <span className="mr-2">Dette restante:</span>
               <span className={`font-medium ${previewRemainingDebt > 0 ? 'text-amber-600' : 'text-green-600'}`}>
                 {formatCurrency(previewRemainingDebt)}
               </span>
@@ -191,7 +191,7 @@ const PaymentForm = ({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount</FormLabel>
+              <FormLabel>Montant</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -208,8 +208,8 @@ const PaymentForm = ({
                     } else {
                       field.onChange(Math.round(remainingDebt * 100) / 100);
                       toast({
-                        title: "Maximum Payment",
-                        description: "Payment cannot exceed remaining debt",
+                        title: "Paiement maximum",
+                        description: "Le paiement ne peut excéder la dette restante",
                         variant: "default",
                       });
                     }
@@ -226,7 +226,7 @@ const PaymentForm = ({
           name="payment_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Payment Date</FormLabel>
+              <FormLabel>Date de paiement</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -240,22 +240,22 @@ const PaymentForm = ({
           name="paymentMethod"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Payment Method</FormLabel>
+              <FormLabel>Mode de paiement</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select payment method" />
+                    <SelectValue placeholder="Sélectionner le mode de paiement" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                  <SelectItem value="check">Check</SelectItem>
-                  <SelectItem value="card">Card</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="cash">Cash - Argent liquide</SelectItem>
+                  <SelectItem value="bank_transfer">Virement</SelectItem>
+                  <SelectItem value="check">cheque</SelectItem>
+                  <SelectItem value="card">ccp</SelectItem>
+                  <SelectItem value="other">Autres</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -271,7 +271,7 @@ const PaymentForm = ({
               <FormLabel>Reference (Optional)</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Check number, transaction ID, etc."
+                  placeholder="Numéro de chèque, numéro d'identification de la transaction, etc.."
                   {...field}
                   value={field.value || ''}
                 />
@@ -289,7 +289,7 @@ const PaymentForm = ({
               <FormLabel>Notes (Optional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Additional information about this payment"
+                  placeholder="Informations complémentaires sur ce paiement"
                   rows={3}
                   {...field}
                   value={field.value || ''}
@@ -310,7 +310,7 @@ const PaymentForm = ({
             type="submit"
             disabled={addPaymentMutation.isPending}
           >
-            {addPaymentMutation.isPending ? "Processing..." : "Add Payment"}
+            {addPaymentMutation.isPending ? "Traitement..." : "Ajouter un paiement"}
           </Button>
         </div>
       </form>

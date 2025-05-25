@@ -86,12 +86,12 @@ const ClientDebtDetailPage = () => {
     return (
       <div className="container mx-auto py-6">
         <Card className="p-6 text-center">
-          <h2 className="text-xl font-semibold">Client not found</h2>
+          <h2 className="text-xl font-semibold">Client non trouvé</h2>
           <p className="mt-2 text-muted-foreground">
-            The requested client information could not be found.
+            Les informations demandées sur le client n'ont pas été trouvées.
           </p>
           <Button asChild className="mt-4">
-            <Link to="/reports/clients-debt">Back to Clients</Link>
+            <Link to="/reports/clients-debt">Retour aux clients</Link>
           </Button>
         </Card>
       </div>
@@ -105,7 +105,7 @@ const ClientDebtDetailPage = () => {
       <div className="mb-6">
         <Button variant="outline" asChild size="sm">
           <Link to="/reports/clients-debt">
-            <ChevronRight className="h-4 w-4 mr-2 rotate-180" /> Back to Clients Debt
+            <ChevronRight className="h-4 w-4 mr-2 rotate-180" /> Retour à la dette des clients
           </Link>
         </Button>
       </div>
@@ -113,14 +113,14 @@ const ClientDebtDetailPage = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">{client.name}</h1>
-          <p className="text-muted-foreground">Tax ID: {client.taxid}</p>
+          <p className="text-muted-foreground">NIF: {client.taxid}</p>
         </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Invoiced</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Total facturé</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">
@@ -131,7 +131,7 @@ const ClientDebtDetailPage = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Paid</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Total payé</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-green-600">
@@ -142,7 +142,7 @@ const ClientDebtDetailPage = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Debt</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">Total de la dette</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-red-600">
@@ -154,20 +154,20 @@ const ClientDebtDetailPage = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Invoice History</CardTitle>
+          <CardTitle>Historique des factures</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Invoice No.</TableHead>
-                  <TableHead>Issue Date</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Paid</TableHead>
-                  <TableHead>Debt</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Numéro de facture.</TableHead>
+                  <TableHead>Date d'émission</TableHead>
+                  <TableHead>Date d'échéance</TableHead>
+                  <TableHead>Montant</TableHead>
+                  <TableHead>Payé</TableHead>
+                  <TableHead>Dette</TableHead>
+                  <TableHead>Statut</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -175,7 +175,7 @@ const ClientDebtDetailPage = () => {
                 {invoices.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-4 text-muted-foreground">
-                      No invoices found for this client
+                      Aucune facture trouvée pour ce client
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -206,7 +206,7 @@ const ClientDebtDetailPage = () => {
                         >
                           <Link to={`/invoices/final/${invoice.id}`}>
                             <ArrowRight className="h-4 w-4 mr-2" />
-                            View Invoice
+                            Voir la facture
                           </Link>
                         </Button>
                       </TableCell>

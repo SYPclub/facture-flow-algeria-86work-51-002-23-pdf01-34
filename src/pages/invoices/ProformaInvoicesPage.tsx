@@ -117,15 +117,15 @@ const ProformaInvoicesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Proforma Invoices</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Factures pro forma</h1>
           <p className="text-muted-foreground">
-            Create and manage proforma invoices
+            Créer et gérer des factures pro forma
           </p>
         </div>
         {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]) && (
           <Button asChild>
             <Link to="/invoices/proforma/new">
-              <Plus className="mr-2 h-4 w-4" /> New Proforma
+              <Plus className="mr-2 h-4 w-4" /> Nouveau proforma
             </Link>
           </Button>
         )}
@@ -134,8 +134,8 @@ const ProformaInvoicesPage = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>Proforma List</CardTitle>
-            <CardDescription>View and manage your proforma invoices</CardDescription>
+            <CardTitle>Liste pro forma</CardTitle>
+            <CardDescription>Visualisez et gérez vos factures pro forma</CardDescription>
           </div>
           <div className="mt-4 sm:mt-0">
             <DropdownMenu>
@@ -146,11 +146,11 @@ const ProformaInvoicesPage = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setStatusFilter(null)}>All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('draft')}>Draft</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('sent')}>Sent</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('approved')}>Approved</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('rejected')}>Rejected</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter(null)}>Tous</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('draft')}>Projet</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('sent')}>Envoyé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('approved')}>Approuvé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('rejected')}>Rejeté</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -159,7 +159,7 @@ const ProformaInvoicesPage = () => {
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search proforma invoices..."
+              placeholder="Recherche de factures pro forma..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -172,15 +172,15 @@ const ProformaInvoicesPage = () => {
             </div>
           ) : error ? (
             <div className="flex h-40 items-center justify-center">
-              <p className="text-red-500">Error loading proforma invoices</p>
+              <p className="text-red-500">Erreur de chargement des factures proforma</p>
             </div>
           ) : filteredInvoices.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-2">
               <FileText className="h-10 w-10 text-muted-foreground/50" />
               <p className="text-center text-muted-foreground">
                 {searchQuery || statusFilter
-                  ? "No proforma invoices found matching your criteria"
-                  : "No proforma invoices created yet"}
+                  ? "Aucune facture proforma ne correspond à vos critères"
+                  : "Aucune facture proforma n'a encore été créée"}
               </p>
             </div>
           ) : (
@@ -188,11 +188,11 @@ const ProformaInvoicesPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Number</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead>Client</TableHead>
-                    <TableHead className="hidden md:table-cell">Issue Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Creator</TableHead>
+                    <TableHead className="hidden md:table-cell">Date d'émission</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Créateur</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -204,7 +204,7 @@ const ProformaInvoicesPage = () => {
                         {invoice.number}
                       </TableCell>
                       <TableCell>
-                        {invoice.client?.name || 'Unknown Client'}
+                        {invoice.client?.name || 'Client inconnu'}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {invoice.issuedate}
@@ -229,7 +229,7 @@ const ProformaInvoicesPage = () => {
                           to={`/invoices/proforma/${invoice.id}`}
                           className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
                         >
-                          View 
+                          Voir 
                         </Link>
                       </TableCell>
                     </TableRow>
