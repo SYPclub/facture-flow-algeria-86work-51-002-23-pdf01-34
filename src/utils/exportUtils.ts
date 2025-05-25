@@ -351,10 +351,10 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
 //  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
   pdf.setDrawColor(220, 220, 220);
   pdf.line(
+        rectHeight,
         startY + 7,
         rectHeight,
-        rectWidth,
-        rectHeight
+        rectWidth
       );
   // Add text (centered in the rectangle)
   pdf.setTextColor(darkGreen);
