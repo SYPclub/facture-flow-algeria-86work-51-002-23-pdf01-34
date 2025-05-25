@@ -126,7 +126,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
 const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: any, startY: number) => {
   // Colors
   const lightBlue = "#457B9D";  // Light blue background
-  const darkBlue = "#003049";   // Dark blue for accent
+  const darkBlue = "#F1FAEE";   // Dark blue for accent
   const darkGray = "#374151";   // Dark gray for text
 
   // Client section box with light blue background
@@ -208,7 +208,7 @@ const addStylizedTable = (pdf: jsPDF, headers: string[], rows: any[][], startY: 
       lineColor: [220, 220, 220]
     },
     alternateRowStyles: {
-      fillColor: [168, 218, 220] // lightGray in RGB
+      fillColor: [241, 250, 238] // lightGray in RGB
     },
     margin: { left: 14, right: 14 },
     didDrawPage: function(data) {
@@ -316,7 +316,7 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
 
 // Add amount in words section
 const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
-  const lightGreen = "#E63946";  // Light green background
+  const lightGreen = "#F1FAEE";  // Light green background
   const darkGreen = "#1D3557";   // Dark green for text
   
   // Draw background
