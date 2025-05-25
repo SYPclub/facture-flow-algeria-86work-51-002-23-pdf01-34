@@ -74,7 +74,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   if (logoBase64) {
       try {
         // Add logo to the left of the company name
-        pdf.addImage(logoBase64, 'PNG', 160, 10, 30, 30); // Adjust dimensions as needed
+        pdf.addImage(logoBase64, 'PNG', 130, 10, 30, 30); // Adjust dimensions as needed
       } catch (error) {
         console.error('Error adding logo:', error);
       }
@@ -113,15 +113,17 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   const docTypeWidth = pdf.getStringUnitWidth(docTypeText) * 12 / pdf.internal.scaleFactor;
   const docTypeX = pdf.internal.pageSize.width - 14 - docTypeWidth - 10; // 10 = padding
   const docTypeXX = 80;
+  const docTypeYY = 50;
 
-  drawRoundedRect(pdf, docTypeXX, 20, docTypeWidth + 10, 10, 2, primaryColor);
-  pdf.text(docTypeText, docTypeXX + 5, 27);
+
+  drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 10, 2, primaryColor);
+  pdf.text(docTypeText, docTypeXX + 5, docTypeYY+7);
   
   // Add document number below document type
   pdf.setFont("helvetica", "normal");
   pdf.setTextColor(70, 70, 70);
   pdf.setFontSize(10);
-  pdf.text(`No: ${documentNumber}`, docTypeXX, 35);
+  pdf.text(`No: ${documentNumber}`, docTypeXX, docTypeYY+15);
   
   // Add status badge with appropriate color
   pdf.setFont("helvetica", "bold");
@@ -131,9 +133,9 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   const statusText = status.toUpperCase();
   const statusWidth = pdf.getStringUnitWidth(statusText) * 10 / pdf.internal.scaleFactor;
   
-  drawRoundedRect(pdf, docTypeXX, 38, statusWidth + 10, 8, 2, statusColor);
+  drawRoundedRect(pdf, docTypeXX, docTypeYY+18, statusWidth + 10, 8, 2, statusColor);
   pdf.setTextColor(255, 255, 255);
-  pdf.text(statusText, docTypeXX + 5, 44);
+  pdf.text(statusText, docTypeXX + 5, docTypeYY+24);
   
   return { yPos: logoBase64 ? 60 : 50, companyInfo };
 };
