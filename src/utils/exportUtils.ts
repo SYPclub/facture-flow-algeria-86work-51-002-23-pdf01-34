@@ -116,28 +116,10 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   const docTypeYY = 50;
 
 
-  drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 10, 2, primaryColor);
+  drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 13, 2, primaryColor);
   pdf.text([docTypeText, ` No: ${documentNumber}`], docTypeXX + 5, docTypeYY + 7);
   
-  // Add document number below document type
-  pdf.setFont("helvetica", "normal");
-  pdf.setTextColor(70, 70, 70);
-  pdf.setFontSize(10);
-  pdf.text(`No: ${documentNumber}`, docTypeXX, docTypeYY+15);
-  
-  // Add status badge with appropriate color
-  pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(10);
-  
-  const statusColor = getStatusColor(status);
-  const statusText = status.toUpperCase();
-  const statusWidth = pdf.getStringUnitWidth(statusText) * 10 / pdf.internal.scaleFactor;
-  
-  drawRoundedRect(pdf, docTypeXX, docTypeYY+18, statusWidth + 10, 8, 2, statusColor);
-  pdf.setTextColor(255, 255, 255);
-  pdf.text(statusText, docTypeXX + 5, docTypeYY+24);
-  
-  return { yPos: docTypeYY+30, companyInfo };
+  return { yPos: docTypeYY+16, companyInfo };
 };
 
 // Add client info section with styled design
