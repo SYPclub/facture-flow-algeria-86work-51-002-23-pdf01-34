@@ -329,7 +329,7 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
 
 const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   const lightGreen = "#457B9D";  // Light green background
-  const darkGreen = "#F1FAEE";   // Text color
+  const darkGreen = "#003049";   // Text color
   
   // Set font properties first to calculate text width
   pdf.setFont("helvetica", "bold");
@@ -345,7 +345,7 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   // Set rectangle dimensions
   const padding = 10; // 5px padding on each side
   const rectWidth = textWidth + padding;
-  const rectHeight = 12;
+  const rectHeight = 17;
   
   // Draw background (now with dynamic width)
 //  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
