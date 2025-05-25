@@ -117,7 +117,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
 
 
   drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 10, 2, primaryColor);
-  pdf.text([docTypeText, ` No: ${documentNumber}`], docTypeX + 5, docTypeY + 7);
+  pdf.text([docTypeText, ` No: ${documentNumber}`], docTypeXX + 5, docTypeYY + 7);
   
   // Add document number below document type
   pdf.setFont("helvetica", "normal");
