@@ -345,16 +345,16 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   // Set rectangle dimensions
   const padding = 10; // 5px padding on each side
   const rectWidth = textWidth + padding;
-  const rectHeight = 17;
+  const rectHeight = 19;
   
   // Draw backgroun d (now with dynamic width)
 //  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
   pdf.setDrawColor(220, 220, 220);
   pdf.line(
         rectWidth,
-        startY + 7,
+        startY + 9,
         rectHeight,
-        startY + 7
+        startY + 9
       );
   // Add text (centered in the rectangle)
   pdf.setTextColor(darkGreen);
