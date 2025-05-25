@@ -311,7 +311,7 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
   const splitNotes = pdf.splitTextToSize(notes, 170);
   pdf.text(splitNotes, 19, startY + 15);
   
-  return startY + 30;
+  return startY + 33;
 };
 
 // Add amount in words section
