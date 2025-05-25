@@ -81,11 +81,10 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
     }
   // Add colored header banner
   const gradientHeight = 2;
-  const pdftHeight = pdf.internal.pageSize.Height-2;
 
   pdf.setFillColor(hexToRgb(primaryColor).r, hexToRgb(primaryColor).g, hexToRgb(primaryColor).b);
   pdf.rect(0, 0, pdf.internal.pageSize.width, gradientHeight, 'F');
-  pdf.rect( pdftHeight ,  pdftHeight, pdf.internal.pageSize.width, gradientHeight, 'F');
+  pdf.rect( 500 ,  500, pdf.internal.pageSize.width, gradientHeight, 'F');
   // Add company name in large font with custom positioning
   pdf.setFont("helvetica", "bold");
   pdf.setTextColor(50, 50, 50);
