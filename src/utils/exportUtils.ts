@@ -316,8 +316,8 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
 
 // Add amount in words section
 const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
-  const lightGreen = "#ECFCCB";  // Light green background
-  const darkGreen = "#3F6212";   // Dark green for text
+  const lightGreen = "#E63946";  // Light green background
+  const darkGreen = "#1D3557";   // Dark green for text
   
   // Draw background
   drawRoundedRect(pdf, 14, startY, 180, 12, 3, lightGreen);
