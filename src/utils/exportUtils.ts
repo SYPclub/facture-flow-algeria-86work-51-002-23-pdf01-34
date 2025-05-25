@@ -156,7 +156,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
     `Address: ${client?.address || 'Address'}`,
     `RC: ${client?.rc || '-'}`,
     `NIF: ${client?.taxid || '-'}`,
-    `NIS: ${client?.nis || '-'}`
+    `NIS: ${client?.nis || '-'}`,
     `AI: ${client?.ai || '-'}`,
     `RIB: ${client?.rib || '-'}  ville : ${client?.city || 'City'}`,      
     `Tel: ${client?.phone || 'N/A'} | Email: ${client?.email || 'N/A'}`
