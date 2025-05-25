@@ -59,6 +59,7 @@ class MockDataService {
           nis: clientData.nis || null,
           ai: clientData.ai || null,
           rib: clientData.rib || null,
+          rc: clientData.rc || null,
           ccp: clientData.ccp || null,
           contact: clientData.contact || null,
           telcontact: clientData.telcontact || null
@@ -91,6 +92,7 @@ class MockDataService {
           nis: clientData.nis || null,
           ai: clientData.ai || null,
           rib: clientData.rib || null,
+          rc: clientData.rc || null,
           ccp: clientData.ccp || null,
           contact: clientData.contact || null,
           telcontact: clientData.telcontact || null

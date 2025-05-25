@@ -40,6 +40,7 @@ const clientSchema = z.object({
   city: z.string().min(2, 'City must be at least 2 characters'),
   // New fields - all optional
   nis: z.string().optional().nullable(),
+  rc: z.string().optional().nullable(),
   ai: z.string().optional().nullable(),
   rib: z.string().optional().nullable(),
   ccp: z.string().optional().nullable(),
@@ -82,6 +83,7 @@ const ClientDetail = () => {
           city: '',
           nis: '',
           ai: '',
+          rc: '',
           rib: '',
           ccp: '',
           contact: '',
@@ -98,6 +100,7 @@ const ClientDetail = () => {
           nis: client?.nis || '',
           ai: client?.ai || '',
           rib: client?.rib || '',
+          rc: client?.rc || '',
           ccp: client?.ccp || '',
           contact: client?.contact || '',
           telcontact: client?.telcontact || '',
@@ -117,6 +120,7 @@ const ClientDetail = () => {
         nis: client.nis || '',
         ai: client.ai || '',
         rib: client.rib || '',
+        rc: client?.rc || '',
         ccp: client.ccp || '',
         contact: client.contact || '',
         telcontact: client.telcontact || '',
@@ -137,6 +141,7 @@ const ClientDetail = () => {
         nis: data.nis || null,
         ai: data.ai || null,
         rib: data.rib || null,
+        rc: data.rc || null,
         ccp: data.ccp || null,
         contact: data.contact || null,
         telcontact: data.telcontact || null
@@ -173,6 +178,7 @@ const ClientDetail = () => {
         nis: data.nis || null,
         ai: data.ai || null,
         rib: data.rib || null,
+        rc: data.rc || null,
         ccp: data.ccp || null,
         contact: data.contact || null,
         telcontact: data.telcontact || null
@@ -324,7 +330,7 @@ const ClientDetail = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <FormField
                   control={form.control}
                   name="name"
@@ -342,7 +348,23 @@ const ClientDetail = () => {
                     </FormItem>
                   )}
                 />
-                
+                <FormField
+                  control={form.control}
+                  name="rc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Numéro de register de commerce (RC)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Saisir le rc" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="taxid"

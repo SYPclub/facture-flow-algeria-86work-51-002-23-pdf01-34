@@ -13,6 +13,7 @@ export interface Client {
   createdAt: string;
   updatedAt: string;
   // New fields
+  rc:string | null;
   nis: string | null;
   ai: string | null;
   rib: string | null;

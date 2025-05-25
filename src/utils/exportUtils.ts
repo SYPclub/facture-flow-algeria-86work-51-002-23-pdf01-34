@@ -153,8 +153,13 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   
   const clientInfo = [
     `${client?.name || 'Client Name'}`,
-    `NIF: ${client?.taxid || 'N/A'}${client?.nis ? ` | NIS: ${client.nis}` : ''}`,
-    `${client?.address || 'Address'}, ${client?.city || 'City'}`,
+    `${client?.address || 'Address'}`,
+    `RC: ${client?.rc || 'RC: -'}`,
+    `NIF: ${client?.taxid || 'NIF: -'}`,
+    `NIS: ${client?.nis || 'RC: -'}`,
+    `AI: ${client?.ai || 'RC: -'}`,
+    `RIB: ${client?.rib || 'RC: -'}`,      
+    `${client?.city || 'City'}`,
     `Tel: ${client?.phone || 'N/A'} | Email: ${client?.email || 'N/A'}`
   ];
   
@@ -368,7 +373,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   const pdf = new jsPDF();
   
   // Add header
-  const { yPos } = await addHeader(pdf, "PROFORMA INVOICE", proforma.number, proforma.status);
+  const { yPos } = await addHeader(pdf, "FACTURE PROFORMA", proforma.number, proforma.status);
   
   // Add client info section
   const clientY = addClientInfo(pdf, proforma.client, proforma, yPos);
@@ -418,7 +423,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   const pdf = new jsPDF();
   
   // Add header
-  const { yPos } = await addHeader(pdf, "INVOICE", invoice.number, invoice.status);
+  const { yPos } = await addHeader(pdf, "FACTURE", invoice.number, invoice.status);
   
   // Add client info section
   const clientY = addClientInfo(pdf, invoice.client, invoice, yPos);
@@ -493,7 +498,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   const pdf = new jsPDF();
   
   // Add header
-  const { yPos } = await addHeader(pdf, "DELIVERY NOTE", deliveryNote.number, deliveryNote.status);
+  const { yPos } = await addHeader(pdf, "BON DE COMMANDE", deliveryNote.number, deliveryNote.status);
   
   // Add client info section
   let nextY = addClientInfo(pdf, deliveryNote.client, deliveryNote, yPos);
