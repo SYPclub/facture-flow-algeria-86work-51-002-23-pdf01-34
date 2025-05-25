@@ -74,7 +74,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   if (logoBase64) {
       try {
         // Add logo to the left of the company name
-        pdf.addImage(logoBase64, 'PNG', 110, 14, 90, 35); // Adjust dimensions as needed
+        pdf.addImage(logoBase64, 'PNG', 110, 12, 90, 35); // Adjust dimensions as needed
       } catch (error) {
         console.error('Error adding logo:', error);
       }
@@ -87,7 +87,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.rect( 0 ,  295, pdf.internal.pageSize.width, gradientHeight, 'F');
   // Add company name in large font with custom positioning
   pdf.setFont("helvetica", "bold");
-  pdf.setTextColor(50, 50, 50);
+  pdf.setTextColor(529, 53, 87);
   pdf.setFontSize(22);
   pdf.text(companyInfo?.businessName || 'YOUR COMPANY NAME', 14, 25);
   
