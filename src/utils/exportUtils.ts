@@ -284,7 +284,7 @@ const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
   pdf.setFontSize(12);
   pdf.text(formatCurrency(invoice.total), pdf.internal.pageSize.width - 20, nextY + 5, { align: 'right' });
   
-  return nextY + 15;
+  return nextY + 18;
 };
 
 // Add notes section with styled design
