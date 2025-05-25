@@ -137,7 +137,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.setTextColor(255, 255, 255);
   pdf.text(statusText, docTypeXX + 5, docTypeYY+24);
   
-  return { yPos: pdf.lastAutoTable?.finalY || 50, companyInfo };
+  return { yPos: docTypeYY+30, companyInfo };
 };
 
 // Add client info section with styled design
