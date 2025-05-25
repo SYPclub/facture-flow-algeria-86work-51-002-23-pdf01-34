@@ -314,23 +314,34 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
   return startY + 33;
 };
 
-// Add amount in words section
 const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   const lightGreen = "#457B9D";  // Light green background
-  const darkGreen = "#1D3557";   // Dark green for text
+  const darkGreen = "#F1FAEE";   // Text color
   
-  // Draw background
-  drawRoundedRect(pdf, 14, startY, 180, 12, 3, lightGreen);
-  
-  // Add text
+  // Set font properties first to calculate text width
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(9);
-  pdf.setTextColor(darkGreen);
   
+  // Generate the text
   const totalInWords = formatCurrencyInFrenchWords(amount);
-  pdf.text(`Montant en lettres: ${totalInWords}`, 19, startY + 7);
+  const fullText = `Montant en lettres: ${totalInWords}`;
   
-  return startY + 15;
+  // Calculate text width
+  const textWidth = pdf.getStringUnitWidth(fullText) * 9 / pdf.internal.scaleFactor;
+  
+  // Set rectangle dimensions
+  const padding = 10; // 5px padding on each side
+  const rectWidth = textWidth + padding;
+  const rectHeight = 12;
+  
+  // Draw background (now with dynamic width)
+  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
+  
+  // Add text (centered in the rectangle)
+  pdf.setTextColor(darkGreen);
+  pdf.text(fullText, 14 + (rectWidth / 2) - (textWidth / 2), startY + 7);
+  
+  return startY + rectHeight + 3; // Return new Y position with some margin
 };
 
 // Add footer with thank you message
