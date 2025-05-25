@@ -250,7 +250,7 @@ const ClientDetail = () => {
   if (!isNewClient && error) {
     return (
       <div className="flex h-40 items-center justify-center">
-        <p className="text-red-500">Erreur de chargement des informations sur le client</p>
+        <p className="text-red-500">Error loading client information</p>
       </div>
     );
   }
@@ -271,7 +271,7 @@ const ClientDetail = () => {
         <div className="flex gap-2">
           {!isNewClient && !isEditing && canEdit && (
             <Button onClick={() => setIsEditing(true)}>
-              Editer Client
+              Edit Client
             </Button>
           )}
           {!isNewClient && canEdit && (
@@ -279,23 +279,23 @@ const ClientDetail = () => {
               <AlertDialogTrigger asChild>
                 <Button variant="destructive">
                   <Trash className="mr-2 h-4 w-4" />
-                  Supprimer
+                  Delete
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Êtes-vous sûr?</AlertDialogTitle>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Cette opération supprime définitivement le client et ne peut être annulée.
+                    This will permanently delete the client and cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction 
                     onClick={() => deleteHandler()}
                     className="bg-red-600 hover:bg-red-700"
                   >
-                    Supprimer
+                    Delete
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -308,17 +308,17 @@ const ClientDetail = () => {
         <CardHeader>
           <CardTitle>
             {isNewClient 
-              ? 'Créer un nouveau client' 
+              ? 'Create New Client' 
               : isEditing 
-                ? 'Editer Client Information' 
+                ? 'Edit Client Information' 
                 : 'Client Information'}
           </CardTitle>
           <CardDescription>
             {isNewClient 
-              ? 'Ajouter un nouveau client à votre système' 
+              ? 'Add a new client to your system' 
               : isEditing 
-                ? 'Mise à jour des coordonnées du client' 
-                : 'Voir les détails du client'}
+                ? 'Update client details' 
+                : 'View client details'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -330,10 +330,10 @@ const ClientDetail = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom de l'entreprise</FormLabel>
+                      <FormLabel>Company Name</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le nom de l'entreprise" 
+                          placeholder="Enter company name" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -348,10 +348,10 @@ const ClientDetail = () => {
                   name="taxid"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Numéro d'identification fiscale (NIF)</FormLabel>
+                      <FormLabel>Tax ID (NIF)</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le numéro d'identification fiscale" 
+                          placeholder="Enter tax identification number" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -372,7 +372,7 @@ const ClientDetail = () => {
                       <FormLabel>NIS</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Entrer NIS" 
+                          placeholder="Enter NIS" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -390,7 +390,7 @@ const ClientDetail = () => {
                       <FormLabel>AI</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Entrer AI" 
+                          placeholder="Enter AI" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -409,7 +409,7 @@ const ClientDetail = () => {
                     <FormLabel>Address</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="Saisir l'adresse complète" 
+                        placeholder="Enter full address" 
                         {...field} 
                         disabled={!isEditing && !isNewClient}
                       />
@@ -425,10 +425,10 @@ const ClientDetail = () => {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ville</FormLabel>
+                      <FormLabel>City</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir la ville" 
+                          placeholder="Enter city" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -443,10 +443,10 @@ const ClientDetail = () => {
                   name="country"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Pays</FormLabel>
+                      <FormLabel>Country</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le pays" 
+                          placeholder="Enter country" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -466,10 +466,10 @@ const ClientDetail = () => {
                   name="contact"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Personne de contact</FormLabel>
+                      <FormLabel>Contact Person</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le nom de la personne de contact" 
+                          placeholder="Enter contact person name" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -484,10 +484,10 @@ const ClientDetail = () => {
                   name="telcontact"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Téléphone de contact</FormLabel>
+                      <FormLabel>Contact Phone</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le numéro de téléphone de la personne de contact" 
+                          placeholder="Enter contact person phone" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -564,10 +564,10 @@ const ClientDetail = () => {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Numéro de téléphone</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
                         <Input 
-                          placeholder="Saisir le numéro de téléphone" 
+                          placeholder="Enter phone number" 
                           {...field} 
                           disabled={!isEditing && !isNewClient}
                         />
@@ -613,12 +613,12 @@ const ClientDetail = () => {
                     {createMutation.isPending || updateMutation.isPending ? (
                       <>
                         <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
-                        {isNewClient ? 'Création...' : 'Économiser...'}
+                        {isNewClient ? 'Creating...' : 'Saving...'}
                       </>
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        {isNewClient ? 'Créer un client' : 'Enregistrer les modifications'}
+                        {isNewClient ? 'Create Client' : 'Save Changes'}
                       </>
                     )}
                   </Button>

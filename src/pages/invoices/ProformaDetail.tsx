@@ -502,7 +502,7 @@ const ProformaDetail = () => {
       <div className="flex h-40 items-center justify-center">
         <div className="flex items-center gap-2">
           <span className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></span>
-          <span>Chargement...</span>
+          <span>Loading...</span>
         </div>
       </div>
     );
@@ -514,10 +514,10 @@ const ProformaDetail = () => {
         <CardContent className="pt-6">
           <div className="flex h-40 flex-col items-center justify-center gap-2">
             <p className="text-center text-muted-foreground">
-              Facture proforma introuvable
+              Proforma invoice not found
             </p>
             <Button asChild variant="outline">
-              <Link to="/invoices/proforma">Retour à la liste</Link>
+              <Link to="/invoices/proforma">Return to List</Link>
             </Button>
           </div>
         </CardContent>
@@ -559,7 +559,7 @@ const ProformaDetail = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Informations sur le client</CardTitle>
+                <CardTitle>Client Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <FormField
@@ -575,7 +575,7 @@ const ProformaDetail = () => {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner un client" />
+                            <SelectValue placeholder="Select a client" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -617,19 +617,19 @@ const ProformaDetail = () => {
                       {clients.find(c => c.id === field.value)?.ccp}
                     </div>
                     <div>
-                      <strong className="font-semibold">nom du contact:</strong>{" "}
+                      <strong className="font-semibold">contact name:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.contact}
                     </div>
                     <div>
-                      <strong className="font-semibold">téléphone de contact:</strong>{" "}
+                      <strong className="font-semibold">contact phone:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.telcontact}
                     </div>
                     <div>
-                      <strong className="font-semibold">Adresse:</strong>{" "}
+                      <strong className="font-semibold">Address:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.address || ''}
                     </div>
                     <div>
-                      <strong className="font-semibold">Ville:</strong>{" "}
+                      <strong className="font-semibold">City:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
                     </div>
                   </div>
@@ -639,11 +639,11 @@ const ProformaDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Détails de la facture</CardTitle>
+                <CardTitle>Invoice Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <strong className="font-semibold">Numéro de la facture:</strong>{" "}
+                  <strong className="font-semibold">Invoice Number:</strong>{" "}
                   {proforma.number}
                 </div>
                 <FormField
@@ -651,7 +651,7 @@ const ProformaDetail = () => {
                   name="issuedate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date d'émission</FormLabel>
+                      <FormLabel>Issue Date</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -664,7 +664,7 @@ const ProformaDetail = () => {
                   name="duedate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date d'échéance</FormLabel>
+                      <FormLabel>Due Date</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -677,7 +677,7 @@ const ProformaDetail = () => {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Statut</FormLabel>
+                      <FormLabel>Status</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -688,10 +688,10 @@ const ProformaDetail = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="draft">Projet</SelectItem>
-                          <SelectItem value="sent">Envoyé</SelectItem>
-                          <SelectItem value="approved">Approuvé</SelectItem>
-                          <SelectItem value="rejected">Rejeté</SelectItem>
+                          <SelectItem value="draft">Draft</SelectItem>
+                          <SelectItem value="sent">Sent</SelectItem>
+                          <SelectItem value="approved">Approved</SelectItem>
+                          <SelectItem value="rejected">Rejected</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -703,19 +703,19 @@ const ProformaDetail = () => {
                   name="payment_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mode de paiement</FormLabel>
+                      <FormLabel>Payment Method</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner le mode de paiement" />
+                            <SelectValue placeholder="Select payment method" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="cheque">Chèque/virement</SelectItem>
-                          <SelectItem value="cash">Argent liquide</SelectItem>
+                          <SelectItem value="cheque">Cheque</SelectItem>
+                          <SelectItem value="cash">Cash</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -728,11 +728,11 @@ const ProformaDetail = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>Articles</CardTitle>
-                  <CardDescription>Produits et services inclus dans ce proforma</CardDescription>
+                  <CardTitle>Items</CardTitle>
+                  <CardDescription>Products and services included in this proforma</CardDescription>
                 </div>
                 <Button type="button" onClick={addItem} variant="outline" size="sm">
-                  <Plus className="mr-2 h-4 w-4" /> Ajouter un élément
+                  <Plus className="mr-2 h-4 w-4" /> Add Item
                 </Button>
               </CardHeader>
               <CardContent>
@@ -740,12 +740,12 @@ const ProformaDetail = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Produit</TableHead>
-                        <TableHead className="w-[80px]">Qté</TableHead>
-                        <TableHead className="w-[80px]">unité</TableHead>
-                        <TableHead className="w-[120px]">Prix unitaire</TableHead>
+                        <TableHead>Product</TableHead>
+                        <TableHead className="w-[80px]">Qty</TableHead>
+                        <TableHead className="w-[80px]">unit</TableHead>
+                        <TableHead className="w-[120px]">Unit Price</TableHead>
                         <TableHead className="w-[80px]">Tax %</TableHead>
-                        <TableHead className="w-[80px]">remise %</TableHead>
+                        <TableHead className="w-[80px]">Disc %</TableHead>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -758,7 +758,7 @@ const ProformaDetail = () => {
                               onValueChange={(value) => updateItemProduct(index, value)}
                             >
                               <SelectTrigger>
-                                <SelectValue placeholder="Sélectionner un produit" />
+                                <SelectValue placeholder="Select a product" />
                               </SelectTrigger>
                               <SelectContent>
                                 {products.map(product => (
@@ -846,7 +846,7 @@ const ProformaDetail = () => {
                 
                 <div className="mt-4 space-y-2 border-t pt-4 text-right">
                   <div className="flex justify-between">
-                    <span className="font-medium">Sous-total:</span>
+                    <span className="font-medium">Subtotal:</span>
                     <span>{formatCurrency(totals.subtotal)}</span>
                   </div>
                   <div className="flex justify-between">
@@ -855,7 +855,7 @@ const ProformaDetail = () => {
                   </div>
                   {form.getValues('payment_type') === 'cash' && (
                     <div className="flex justify-between">
-                      <span className="font-medium">droit de timbre:</span>
+                      <span className="font-medium">Stamp Tax:</span>
                       <span>{formatCurrency(totals.stampTax)}</span>
                     </div>
                   )}
@@ -885,11 +885,11 @@ const ProformaDetail = () => {
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" asChild>
-                <Link to={`/invoices/proforma/${proforma.id}`}>Annuler</Link>
+                <Link to={`/invoices/proforma/${proforma.id}`}>Cancel</Link>
               </Button>
               <Button type="submit" disabled={updateProformaMutation.isPending}>
                 <Save className="mr-2 h-4 w-4" />
-                Enregistrer les modifications
+                Save Changes
               </Button>
             </div>
           </form>
@@ -898,11 +898,11 @@ const ProformaDetail = () => {
         <>
           <Card>
             <CardHeader>
-              <CardTitle>Informations sur le client</CardTitle>
+              <CardTitle>Client Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <strong className="font-semibold">Nom:</strong>{" "}
+                <strong className="font-semibold">Name:</strong>{" "}
                 {proforma.client?.name}
               </div>
               <div>
@@ -930,19 +930,19 @@ const ProformaDetail = () => {
                 {proforma.client?.ccp}
               </div>
               <div>
-                <strong className="font-semibold">nom du contact:</strong>{" "}
+                <strong className="font-semibold">contact name:</strong>{" "}
                 {proforma.client?.contact}
               </div>
               <div>
-                <strong className="font-semibold">téléphone de contact:</strong>{" "}
+                <strong className="font-semibold">contact phone:</strong>{" "}
                 {proforma.client?.telcontact}
               </div>
               <div>
-                <strong className="font-semibold">Adresse:</strong>{" "}
+                <strong className="font-semibold">Address:</strong>{" "}
                 {proforma.client?.address}
               </div>
               <div>
-                <strong className="font-semibold">Ville:</strong>{" "}
+                <strong className="font-semibold">City:</strong>{" "}
                 {proforma.client?.city}, {proforma.client?.country}
               </div>
               <div>
@@ -954,23 +954,23 @@ const ProformaDetail = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Détails de la facture</CardTitle>
+              <CardTitle>Invoice Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <strong className="font-semibold">Numéro de la facture:</strong>{" "}
+                <strong className="font-semibold">Invoice Number:</strong>{" "}
                 {proforma.number}
               </div>
               <div>
-                <strong className="font-semibold">Date d'émission:</strong>{" "}
+                <strong className="font-semibold">Issue Date:</strong>{" "}
                 {formatDate(proforma.issuedate)}
               </div>
               <div>
-                <strong className="font-semibold">Date d'échéance:</strong>{" "}
+                <strong className="font-semibold">Due Date:</strong>{" "}
                 {formatDate(proforma.duedate)}
               </div>
               <div>
-                <strong className="font-semibold">Statut:</strong>{" "}
+                <strong className="font-semibold">Status:</strong>{" "}
                 <Badge
                   className={`${statusColor[proforma.status]} text-white px-2 py-0.5 text-xs font-medium`}
                 >
@@ -978,7 +978,7 @@ const ProformaDetail = () => {
                 </Badge>
               </div>
               <div>
-                <strong className="font-semibold">Mode de paiement:</strong>{" "}
+                <strong className="font-semibold">Payment Method:</strong>{" "}
                 <span className="flex items-center">
                   {getPaymentTypeIcon(proforma.payment_type || 'cheque')}
                   {proforma.payment_type === 'cash' ? 'Cash' : 'Cheque'}
@@ -986,12 +986,12 @@ const ProformaDetail = () => {
               </div>
               {proforma.finalInvoiceId && (
                 <div>
-                  <strong className="font-semibold">Facture finale:</strong>{" "}
+                  <strong className="font-semibold">Final Invoice:</strong>{" "}
                   <Link
                     to={`/invoices/final/${proforma.finalInvoiceId}`}
                     className="text-primary hover:underline"
                   >
-                    Voir la facture finale
+                    View Final Invoice
                   </Link>
                 </div>
               )}
@@ -1000,22 +1000,22 @@ const ProformaDetail = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Articles</CardTitle>
-              <CardDescription>Produits et services inclus dans ce proforma</CardDescription>
+              <CardTitle>Items</CardTitle>
+              <CardDescription>Products and services included in this proforma</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Produit</TableHead>
-                    <TableHead className="text-right">Qté</TableHead>
-                    <TableHead className="text-right">unité</TableHead>
-                    <TableHead className="text-right">Prix unitaire</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead className="text-right">Qty</TableHead>
+                    <TableHead className="text-right">unit</TableHead>
+                    <TableHead className="text-right">Unit Price</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
-                    <TableHead className="text-right">Remise %</TableHead>
+                    <TableHead className="text-right">Discount %</TableHead>
                     <TableHead className="text-right">Total Excl.</TableHead>
-                    <TableHead className="text-right">Montant de l'impôt</TableHead>
-                    <TableHead className="text-right">Total inclus.</TableHead>
+                    <TableHead className="text-right">Tax Amount</TableHead>
+                    <TableHead className="text-right">Total Incl.</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1041,7 +1041,7 @@ const ProformaDetail = () => {
                 <tfoot>
                   <tr className="border-t">
                     <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                      Sous-total:
+                      Subtotal:
                     </td>
                     <td colSpan={3} className="px-4 py-2 text-right">
                       {formatCurrency(proforma.subtotal)}
@@ -1049,7 +1049,7 @@ const ProformaDetail = () => {
                   </tr>
                   <tr>
                     <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                      Taxe Total:
+                      Tax Total:
                     </td>
                     <td colSpan={3} className="px-4 py-2 text-right">
                       {formatCurrency(proforma.taxTotal)}
@@ -1058,7 +1058,7 @@ const ProformaDetail = () => {
                   {proforma.payment_type === 'cash' && proforma.stamp_tax > 0 && (
                     <tr>
                       <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                        droit de timbre:
+                        Stamp Tax:
                       </td>
                       <td colSpan={3} className="px-4 py-2 text-right">
                         {formatCurrency(proforma.stamp_tax)}
@@ -1090,14 +1090,14 @@ const ProformaDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle>Actions</CardTitle>
-              <CardDescription>Gérer cette facture proforma</CardDescription>
+              <CardDescription>Manage this proforma invoice</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
               {canEdit && (proforma.status === 'draft' || proforma.status === 'sent') && (
                 <Button asChild variant="outline">
                   <Link to={`/invoices/proforma/edit/${proforma.id}`}>
                     <Edit className="mr-2 h-4 w-4" />
-                    Editer le proforma
+                    Edit Proforma
                   </Link>
                 </Button>
               )}
@@ -1109,7 +1109,7 @@ const ProformaDetail = () => {
                   disabled={statusUpdateMutation.isPending}
                 >
                   <Send className="mr-2 h-4 w-4" />
-                  Marquer comme envoyé
+                  Mark as Sent
                 </Button>
               )}
 
@@ -1121,7 +1121,7 @@ const ProformaDetail = () => {
                   disabled={statusUpdateMutation.isPending}
                 >
                   <ThumbsUp className="mr-2 h-4 w-4 text-green-600" />
-                  Approuver
+                  Approve
                 </Button>
               )}
 
@@ -1133,7 +1133,7 @@ const ProformaDetail = () => {
                   disabled={statusUpdateMutation.isPending}
                 >
                   <ThumbsDown className="mr-2 h-4 w-4 text-red-600" />
-                  Rejeter
+                  Reject
                 </Button>
               )}
 
@@ -1142,19 +1142,19 @@ const ProformaDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button>
                       <FileCheck className="mr-2 h-4 w-4" />
-                      Conversion en facture finale
+                      Convert to Final Invoice
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Convertir en facture finale</AlertDialogTitle>
+                      <AlertDialogTitle>Convert to Final Invoice</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cela créera une facture finale basée sur ce proforma.
-                        Etes-vous sûr de vouloir continuer ?
+                        This will create a final invoice based on this proforma.
+                        Are you sure you want to proceed?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleConvertToFinal}
                         disabled={convertMutation.isPending}
@@ -1162,7 +1162,7 @@ const ProformaDetail = () => {
                         {convertMutation.isPending ? (
                           <>
                             <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
-                            Conversion...
+                            Converting...
                           </>
                         ) : (
                           "Convert"
@@ -1178,24 +1178,24 @@ const ProformaDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
                       <Undo className="mr-2 h-4 w-4 text-yellow-600" />
-                      Annuler l'approbation
+                      Undo Approval
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Annuler l'approbation</AlertDialogTitle>
+                      <AlertDialogTitle>Undo Approval</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Le statut redeviendra alors "envoyé".
-                        Êtes-vous sûr de vouloir continuer ?
+                        This will change the status back to "sent".
+                        Are you sure you want to proceed?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => handleUpdateStatus('sent')}
                         disabled={statusUpdateMutation.isPending}
                       >
-                        Confirmer
+                        Confirm
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -1207,7 +1207,7 @@ const ProformaDetail = () => {
                   <Button asChild variant="default">
                     <Link to={`/invoices/final/${proforma.finalInvoiceId}`}>
                       <File className="mr-2 h-4 w-4" />
-                      Voir la facture finale
+                      View Final Invoice
                     </Link>
                   </Button>
                   
@@ -1215,24 +1215,24 @@ const ProformaDetail = () => {
                     <AlertDialogTrigger asChild>
                       <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
                         <Undo className="mr-2 h-4 w-4 text-yellow-600" />
-                        Annuler la conversion
+                        Undo Conversion
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Annuler la conversion</AlertDialogTitle>
+                        <AlertDialogTitle>Undo Conversion</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Cette opération supprimera la facture finale liée et réinitialisera ce formulaire.
-                          Etes-vous sûr de vouloir continuer ?
+                          This will delete the linked final invoice and reset this proforma.
+                          Are you sure you want to proceed?
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleUndoConversion}
                           disabled={undoConversionMutation.isPending}
                         >
-                          Confirmer
+                          Confirm
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -1242,7 +1242,7 @@ const ProformaDetail = () => {
 
               <Button variant="outline" onClick={handleExportPDF}>
                 <Printer className="mr-2 h-4 w-4" />
-                Imprimer / Télécharger
+                Print / Download
               </Button>
               <Button 
                 variant="outline" 
@@ -1258,23 +1258,23 @@ const ProformaDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Supprimer
+                      Delete
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Supprimer la facture pro forma</AlertDialogTitle>
+                      <AlertDialogTitle>Delete Proforma Invoice</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cette action ne peut pas être annulée, ce qui supprimera définitivement cette facture pro forma.
+                        This action cannot be undone. This will permanently delete this proforma invoice.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteProforma}
                         className="bg-red-500 hover:bg-red-600"
                       >
-                        Supprimer
+                        Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

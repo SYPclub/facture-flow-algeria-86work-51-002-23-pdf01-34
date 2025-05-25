@@ -334,8 +334,8 @@ const DeliveryNoteDetail = () => {
       const result = exportDeliveryNoteToPDF(deliveryNote);
       if (result) {
         toast({
-          title: 'PDF généré',
-          description: 'Le bon de livraison a été exporté au format PDF'
+          title: 'PDF Generated',
+          description: 'Delivery note has been exported to PDF'
         });
       }
     } catch (error) {
@@ -343,7 +343,7 @@ const DeliveryNoteDetail = () => {
       toast({
         variant: 'destructive',
         title: 'Export Failed',
-        description: 'Échec de la génération du PDF. Veuillez réessayer.'
+        description: 'Failed to generate PDF. Please try again.'
       });
     }
   };
@@ -358,7 +358,7 @@ const DeliveryNoteDetail = () => {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">
-            {isNewNote ? 'Nouveau bon de livraison' : isEditMode ? `Modifier le bon de livraison: ${deliveryNote?.number}` : `bon de livraison : ${deliveryNote?.number}`}
+            {isNewNote ? 'New Delivery Note' : isEditMode ? `Edit Delivery Note: ${deliveryNote?.number}` : `Delivery Note: ${deliveryNote?.number}`}
           </h1>
         </div>
         <div className="flex items-center gap-2">
@@ -377,25 +377,25 @@ const DeliveryNoteDetail = () => {
               <div className="grid gap-6 md:grid-cols-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Informations sur le client</CardTitle>
-                    <CardDescription>Détails du client pour cette livraison</CardDescription>
+                    <CardTitle>Client Information</CardTitle>
+                    <CardDescription>Client details for this delivery</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Nom:</span>
+                        <span className="text-sm text-muted-foreground">Name:</span>
                         <span>{deliveryNote.client?.name}</span>
                       </div>
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Adresse:</span>
+                        <span className="text-sm text-muted-foreground">Address:</span>
                         <span>{deliveryNote.client?.address}</span>
                       </div>
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Ville:</span>
+                        <span className="text-sm text-muted-foreground">City:</span>
                         <span>{deliveryNote.client?.city}</span>
                       </div>
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Téléphone:</span>
+                        <span className="text-sm text-muted-foreground">Phone:</span>
                         <span>{deliveryNote.client?.phone}</span>
                       </div>
                     </div>
@@ -404,13 +404,13 @@ const DeliveryNoteDetail = () => {
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Détails de la livraison</CardTitle>
-                    <CardDescription>Informations sur ce document</CardDescription>
+                    <CardTitle>Delivery Details</CardTitle>
+                    <CardDescription>Information about this document</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Numéro de livraison:</span>
+                        <span className="text-sm text-muted-foreground">Delivery Number:</span>
                         <span>{deliveryNote.number}</span>
                       </div>
                       
@@ -419,7 +419,7 @@ const DeliveryNoteDetail = () => {
                         name="issuedate"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Date d'émission</FormLabel>
+                            <FormLabel>Issue Date</FormLabel>
                             <FormControl>
                               <Input type="date" {...field} />
                             </FormControl>
@@ -433,7 +433,7 @@ const DeliveryNoteDetail = () => {
                         name="deliverydate"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Date de livraison (optional)</FormLabel>
+                            <FormLabel>Delivery Date (optional)</FormLabel>
                             <FormControl>
                               <Input
                                 type="date"
@@ -448,7 +448,7 @@ const DeliveryNoteDetail = () => {
                       />
                       
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Statut:</span>
+                        <span className="text-sm text-muted-foreground">Status:</span>
                         <span>
                           <Badge variant={getStatusBadgeVariant(deliveryNote.status)}>
                             {deliveryNote.status.charAt(0).toUpperCase() + deliveryNote.status.slice(1)}
@@ -458,7 +458,7 @@ const DeliveryNoteDetail = () => {
                       
                       {deliveryNote.finalInvoiceId && (
                         <div className="grid grid-cols-2">
-                          <span className="text-sm text-muted-foreground">Facture associée:</span>
+                          <span className="text-sm text-muted-foreground">Related Invoice:</span>
                           <span>
                             <Link to={`/invoices/final/${deliveryNote.finalInvoiceId}`} className="text-primary hover:underline">
                               F-{deliveryNote.finalInvoiceId.padStart(4, '0')}
@@ -473,8 +473,8 @@ const DeliveryNoteDetail = () => {
               
               <Card>
                 <CardHeader>
-                  <CardTitle>Détails du transport</CardTitle>
-                  <CardDescription>Informations sur le transport de livraison</CardDescription>
+                  <CardTitle>Transportation Details</CardTitle>
+                  <CardDescription>Information about delivery transport</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -483,7 +483,7 @@ const DeliveryNoteDetail = () => {
                       name="drivername"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Nom du conducteur</FormLabel>
+                          <FormLabel>Driver Name</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -497,7 +497,7 @@ const DeliveryNoteDetail = () => {
                       name="truck_id"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>ID du camion / plaque d'immatriculation</FormLabel>
+                          <FormLabel>Truck ID / License Plate</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -511,7 +511,7 @@ const DeliveryNoteDetail = () => {
                       name="delivery_company"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Société de livraison (facultatif)</FormLabel>
+                          <FormLabel>Delivery Company (optional)</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -526,11 +526,11 @@ const DeliveryNoteDetail = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Articles à livrer</CardTitle>
-                    <CardDescription>Produits à livrer</CardDescription>
+                    <CardTitle>Items for Delivery</CardTitle>
+                    <CardDescription>Products to be delivered</CardDescription>
                   </div>
                   <Button type="button" onClick={addItem} variant="outline" size="sm">
-                    <Plus className="mr-2 h-4 w-4" /> Ajouter un article
+                    <Plus className="mr-2 h-4 w-4" /> Add Item
                   </Button>
                 </CardHeader>
                 <CardContent>
@@ -538,8 +538,8 @@ const DeliveryNoteDetail = () => {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
-                          <th className="px-4 py-2 text-left">Produit</th>
-                          <th className="px-4 py-2 text-right">Quantité</th>
+                          <th className="px-4 py-2 text-left">Product</th>
+                          <th className="px-4 py-2 text-right">Quantity</th>
                           <th className="px-4 py-2 text-left w-[100px]"></th>
                         </tr>
                       </thead>
@@ -552,7 +552,7 @@ const DeliveryNoteDetail = () => {
                                 onValueChange={(value) => updateItemProduct(index, value)}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Sélectionner un produit" />
+                                  <SelectValue placeholder="Select a product" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {products.map(product => (
@@ -564,7 +564,7 @@ const DeliveryNoteDetail = () => {
                               </Select>
                               {form.formState.errors.items?.[index]?.productId?.message && (
                                 <p className="text-xs text-destructive mt-1">
-                                  Le produit est nécessaire
+                                  Product is required
                                 </p>
                               )}
                             </td>
@@ -582,7 +582,7 @@ const DeliveryNoteDetail = () => {
                               />
                               {form.formState.errors.items?.[index]?.quantity?.message && (
                                 <p className="text-xs text-destructive mt-1">
-                                  Une quantité valide est requise
+                                  Valid quantity is required
                                 </p>
                               )}
                             </td>
@@ -613,7 +613,7 @@ const DeliveryNoteDetail = () => {
                       name="notes"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Instructions de livraison</FormLabel>
+                          <FormLabel>Delivery Instructions</FormLabel>
                           <FormControl>
                             <Textarea rows={4} {...field} />
                           </FormControl>
@@ -627,11 +627,11 @@ const DeliveryNoteDetail = () => {
               
               <div className="flex justify-end gap-2">
                 <Button variant="outline" asChild>
-                  <Link to={`/delivery-notes/${deliveryNote.id}`}>Annuler</Link>
+                  <Link to={`/delivery-notes/${deliveryNote.id}`}>Cancel</Link>
                 </Button>
                 <Button type="submit" disabled={updateDeliveryNoteMutation.isPending}>
                   <Save className="mr-2 h-4 w-4" />
-                  Enregistrer les modifications
+                  Save Changes
                 </Button>
               </div>
             </form>
@@ -641,25 +641,25 @@ const DeliveryNoteDetail = () => {
             <div className="grid gap-6 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Informations sur le client</CardTitle>
-                  <CardDescription>Détails du client pour cette livraison</CardDescription>
+                  <CardTitle>Client Information</CardTitle>
+                  <CardDescription>Client details for this delivery</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Nom:</span>
+                      <span className="text-sm text-muted-foreground">Name:</span>
                       <span>{deliveryNote.client?.name}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Adresse:</span>
+                      <span className="text-sm text-muted-foreground">Address:</span>
                       <span>{deliveryNote.client?.address}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Ville:</span>
+                      <span className="text-sm text-muted-foreground">City:</span>
                       <span>{deliveryNote.client?.city}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Téléphone:</span>
+                      <span className="text-sm text-muted-foreground">Phone:</span>
                       <span>{deliveryNote.client?.phone}</span>
                     </div>
                   </div>
@@ -668,26 +668,26 @@ const DeliveryNoteDetail = () => {
               
               <Card>
                 <CardHeader>
-                  <CardTitle>Détails de la livraison</CardTitle>
-                  <CardDescription>Informations sur ce document</CardDescription>
+                  <CardTitle>Delivery Details</CardTitle>
+                  <CardDescription>Information about this document</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Numéro de livraison:</span>
+                      <span className="text-sm text-muted-foreground">Delivery Number:</span>
                       <span>{deliveryNote.number}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Date d'émission:</span>
+                      <span className="text-sm text-muted-foreground">Issue Date:</span>
                       <span>{deliveryNote.issuedate}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Date de livraison:</span>
+                      <span className="text-sm text-muted-foreground">Delivery Date:</span>
                        
                       <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
                     </div>
                     <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Statut:</span>
+                      <span className="text-sm text-muted-foreground">Status:</span>
                       <span>
                         <Badge variant={getStatusBadgeVariant(deliveryNote.status)}>
                           {deliveryNote.status.charAt(0).toUpperCase() + deliveryNote.status.slice(1)}
@@ -696,7 +696,7 @@ const DeliveryNoteDetail = () => {
                     </div>
                     {deliveryNote.finalInvoiceId && (
                       <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Facture associée:</span>
+                        <span className="text-sm text-muted-foreground">Related Invoice:</span>
                         <span>
                           <Link to={`/invoices/final/${deliveryNote.finalInvoiceId}`} className="text-primary hover:underline">
                             F-{deliveryNote.finalInvoiceId.padStart(4, '0')}
@@ -711,32 +711,32 @@ const DeliveryNoteDetail = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>Détails du transport</CardTitle>
-                <CardDescription>Informations sur le transport de livraison</CardDescription>
+                <CardTitle>Transportation Details</CardTitle>
+                <CardDescription>Information about delivery transport</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="grid grid-cols-2">
                     <span className="text-sm text-muted-foreground flex items-center">
                       <User className="mr-2 h-4 w-4" />
-                      Conducteur:
+                      Driver:
                     </span>
-                    <span> d :{deliveryNote.drivername?.trim() ? deliveryNote.drivername : 'Non spécifié'}</span>
+                    <span> d :{deliveryNote.drivername?.trim() ? deliveryNote.drivername : 'Not specified'}</span>
 
                   </div>
                   
                   <div className="grid grid-cols-2">
                     <span className="text-sm text-muted-foreground flex items-center">
                       <Truck className="mr-2 h-4 w-4" />
-                      ID du camion :
+                      Truck ID:
                     </span>
-                    <span>{deliveryNote.truck_id || 'Non spécifié'}</span>
+                    <span>{deliveryNote.truck_id || 'Not specified'}</span>
                   </div>
                   
                   <div className="grid grid-cols-2">
                     <span className="text-sm text-muted-foreground flex items-center">
                       <Building className="mr-2 h-4 w-4" />
-                      Société de livraison:
+                      Delivery Company:
                     </span>
                     <span>{deliveryNote.delivery_company || 'Not specified'}</span>
                   </div>
@@ -746,17 +746,17 @@ const DeliveryNoteDetail = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>Articles à livrer</CardTitle>
-                <CardDescription>Produits à livrer</CardDescription>
+                <CardTitle>Items for Delivery</CardTitle>
+                <CardDescription>Products to be delivered</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="overflow-hidden rounded-md border">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b bg-muted/50">
-                        <th className="px-4 py-2 text-left">Produit</th>
-                        <th className="px-4 py-2 text-right">Quantité</th>
-                        <th className="px-4 py-2 text-left">Unité</th>
+                        <th className="px-4 py-2 text-left">Product</th>
+                        <th className="px-4 py-2 text-right">Quantity</th>
+                        <th className="px-4 py-2 text-left">Unit</th>
                         <th className="px-4 py-2 text-left">Description</th>
                       </tr>
                     </thead>
@@ -778,7 +778,7 @@ const DeliveryNoteDetail = () => {
                 
                 {deliveryNote.notes && (
                   <div className="mt-6 rounded-md border p-4">
-                    <h4 className="mb-2 font-medium">Instructions de livraison</h4>
+                    <h4 className="mb-2 font-medium">Delivery Instructions</h4>
                     <p className="text-sm">{deliveryNote.notes}</p>
                   </div>
                 )}
@@ -788,7 +788,7 @@ const DeliveryNoteDetail = () => {
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={handlePrintDeliveryNote}>
                 <Printer className="mr-2 h-4 w-4" />
-                Imprimer le bon de livraison
+                Print Delivery Note
               </Button>
               <Button 
                 variant="outline" 
@@ -802,7 +802,7 @@ const DeliveryNoteDetail = () => {
                 <Button asChild variant="outline">
                   <Link to={`/delivery-notes/edit/${deliveryNote.id}`}>
                     <Edit className="mr-2 h-4 w-4" />
-                    Modifier le bon de livraison
+                    Edit Delivery Note
                   </Link>
                 </Button>
               )}
@@ -812,23 +812,23 @@ const DeliveryNoteDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Supprimer
+                      Delete
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Supprimer le bon de livraison</AlertDialogTitle>
+                      <AlertDialogTitle>Delete Delivery Note</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cette action ne peut être annulée. Cette action supprimera définitivement le bon de livraison.
+                        This action cannot be undone. This will permanently delete this delivery note.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteDeliveryNote}
                         className="bg-red-500 hover:bg-red-600"
                       >
-                        Supprimer
+                        Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -840,22 +840,22 @@ const DeliveryNoteDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button>
                       <Check className="mr-2 h-4 w-4" />
-                      Marquer comme délivré
+                      Mark as Delivered
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Marquer comme délivré</AlertDialogTitle>
+                      <AlertDialogTitle>Mark as Delivered</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Cette opération marquera la livraison comme étant terminée et fixera la date de livraison à aujourd'hui.
+                        This will mark the delivery as completed and set the delivery date to today.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleMarkAsDelivered}
                       >
-                        Confirmer
+                        Confirm
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -867,13 +867,13 @@ const DeliveryNoteDetail = () => {
       ) : isNewNote ? (
         <Card>
           <CardHeader>
-            <CardTitle>Nouveau bulletin de livraison</CardTitle>
-            <CardDescription>Créer un nouveau bon de livraison</CardDescription>
+            <CardTitle>New Delivery Note</CardTitle>
+            <CardDescription>Create a new delivery note</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-center py-8 text-muted-foreground">
-              Il s'agit d'une demande de démonstration. <br />
-              Le formulaire complet de création de bons de livraison serait mis en œuvre ici dans un environnement de production.
+              This is a demonstration application. <br />
+              The full delivery note creation form would be implemented here in a production environment.
             </p>
           </CardContent>
         </Card>
@@ -883,10 +883,10 @@ const DeliveryNoteDetail = () => {
             <div className="flex h-40 flex-col items-center justify-center gap-2">
               <FileText className="h-10 w-10 text-muted-foreground/50" />
               <p className="text-center text-muted-foreground">
-                Bon de livraison introuvable
+                Delivery note not found
               </p>
               <Button asChild variant="outline">
-                <Link to="/delivery-notes">Retour à la liste</Link>
+                <Link to="/delivery-notes">Return to List</Link>
               </Button>
             </div>
           </CardContent>

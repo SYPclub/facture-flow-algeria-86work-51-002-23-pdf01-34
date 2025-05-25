@@ -158,25 +158,25 @@ const Etat104Page = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">État 104 Report</h1>
           <p className="text-muted-foreground">
-            Générer un résumé de votre déclaration fiscale mensuelle
+            Generate your monthly tax declaration summary
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={exportToPDF}>
             <printer className="mr-2 h-4 w-4" />
-            Exporter le PDF
+            Export PDF
           </Button>
           <Button variant="outline" onClick={exportToExcel}>
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Exporter Excel
+            Export Excel
           </Button>
         </div>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle>Paramètres du rapport</CardTitle>
-          <CardDescription>Sélectionner la période pour le rapport de l'État 104</CardDescription>
+          <CardTitle>Report Parameters</CardTitle>
+          <CardDescription>Select the period for the État 104 report</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-md">
@@ -195,31 +195,31 @@ const Etat104Page = () => {
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-medium">Mois</label>
+              <label className="text-sm font-medium">Month</label>
               <Select value={month} onValueChange={setMonth}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select month" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="01">Janvier</SelectItem>
-                  <SelectItem value="02">Février</SelectItem>
-                  <SelectItem value="03">Mars</SelectItem>
-                  <SelectItem value="04">Avril</SelectItem>
-                  <SelectItem value="05">Mai</SelectItem>
-                  <SelectItem value="06">Juin</SelectItem>
-                  <SelectItem value="07">Juillet</SelectItem>
-                  <SelectItem value="08">Août</SelectItem>
-                  <SelectItem value="09">Septembre</SelectItem>
-                  <SelectItem value="10">Octobre</SelectItem>
-                  <SelectItem value="11">Novembre</SelectItem>
-                  <SelectItem value="12">Décembre</SelectItem>
+                  <SelectItem value="01">January</SelectItem>
+                  <SelectItem value="02">February</SelectItem>
+                  <SelectItem value="03">March</SelectItem>
+                  <SelectItem value="04">April</SelectItem>
+                  <SelectItem value="05">May</SelectItem>
+                  <SelectItem value="06">June</SelectItem>
+                  <SelectItem value="07">July</SelectItem>
+                  <SelectItem value="08">August</SelectItem>
+                  <SelectItem value="09">September</SelectItem>
+                  <SelectItem value="10">October</SelectItem>
+                  <SelectItem value="11">November</SelectItem>
+                  <SelectItem value="12">December</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           
           <Button className="mt-4" onClick={() => console.log('Generate report')}>
-            Générer un rapport
+            Generate Report
           </Button>
         </CardContent>
       </Card>
@@ -227,7 +227,7 @@ const Etat104Page = () => {
       <Card>
         <CardHeader>
           <CardTitle>État 104 Report - {month}/{year}</CardTitle>
-          <CardDescription>Résumé mensuel de la déclaration de TVA</CardDescription>
+          <CardDescription>Monthly TVA Declaration Summary</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -238,7 +238,7 @@ const Etat104Page = () => {
             <div className="flex h-40 flex-col items-center justify-center gap-2">
               <FileSpreadsheet className="h-10 w-10 text-muted-foreground/50" />
               <p className="text-center text-muted-foreground">
-                Pas de données de facturation disponibles pour cette période
+                No invoice data available for this period
               </p>
             </div>
           ) : (
@@ -249,7 +249,7 @@ const Etat104Page = () => {
                     <TableRow>
                       <TableHead>Client</TableHead>
                       <TableHead>NIF</TableHead>
-                      <TableHead className="text-right">Montant (Excl.)</TableHead>
+                      <TableHead className="text-right">Amount (Excl.)</TableHead>
                       <TableHead className="text-right">TVA</TableHead>
                       <TableHead className="text-right">Total</TableHead>
                     </TableRow>
@@ -278,18 +278,18 @@ const Etat104Page = () => {
               </div>
               
               <div className="rounded-md border p-4">
-                <h3 className="mb-3 font-medium">Résumé pour la déclaration de l'État 104</h3>
+                <h3 className="mb-3 font-medium">Summary for État 104 Declaration</h3>
                 <div className="space-y-2">
                   <div className="grid grid-cols-2">
-                    <span>Ventes totales (hors taxes):</span>
+                    <span>Total Sales (Excl. Tax):</span>
                     <span className="font-medium">{formatCurrency(totalAmount)}</span>
                   </div>
                   <div className="grid grid-cols-2">
-                    <span>Total TVA perçue:</span>
+                    <span>Total TVA Collected:</span>
                     <span className="font-medium">{formatCurrency(totalTax)}</span>
                   </div>
                   <div className="grid grid-cols-2">
-                    <span>Franchise TVA totale (simulée):</span>
+                    <span>Total TVA Deductible (simulated):</span>
                     <span className="font-medium">{formatCurrency(totalTax * 0.3)}</span>
                   </div>
                   <div className="grid grid-cols-2 border-t pt-2">
@@ -300,7 +300,7 @@ const Etat104Page = () => {
               </div>
               
               <div className="text-sm text-muted-foreground">
-                <p>Note : Dans un environnement de production, ce rapport serait entièrement conforme aux exigences de l'autorité fiscale algérienne pour les déclarations G50.</p>
+                <p>Note: In a production environment, this report would be fully compliant with the Algerian tax authority requirements for G50 declarations.</p>
               </div>
             </div>
           )}

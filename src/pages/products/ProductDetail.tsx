@@ -323,10 +323,10 @@ const ProductDetail = () => {
         <CardContent className="pt-6">
           <div className="flex h-40 flex-col items-center justify-center gap-2">
             <p className="text-center text-muted-foreground">
-              Vous n'avez pas l'autorisation de voir ce produit
+              You don't have permission to view this product
             </p>
             <Button asChild variant="outline">
-              <Link to="/products">Retour à la liste</Link>
+              <Link to="/products">Return to List</Link>
             </Button>
           </div>
         </CardContent>
@@ -354,23 +354,23 @@ const ProductDetail = () => {
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">
                     <Trash className="mr-2 h-4 w-4" />
-                    Supprimer
+                    Delete
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Êtes-vous absolument sûr ?/AlertDialogTitle>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Cette action ne peut pas être annulée
-                      le produit de nos serveurs.
+                      This action cannot be undone. This will permanently delete
+                      the product from our servers.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
-                      Annuler
+                      Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction onClick={deleteHandler}>
-                      Supprimer
+                      Delete
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -384,9 +384,9 @@ const ProductDetail = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Informations sur les produits</CardTitle>
+              <CardTitle>Product Information</CardTitle>
               <CardDescription>
-                {isCreating ? 'Ajouter les détails un nouveau produit' : 'Edit product details and information'}
+                {isCreating ? 'Add new product details' : 'Edit product details and information'}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -410,7 +410,7 @@ const ProductDetail = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -443,9 +443,9 @@ const ProductDetail = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Prix et inventaire</CardTitle>
+              <CardTitle>Pricing & Inventory</CardTitle>
               <CardDescription>
-                Gérer les prix et les niveaux de stock
+                Manage pricing and stock levels
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -455,7 +455,7 @@ const ProductDetail = () => {
                   name="unitprice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Prix unitaire</FormLabel>
+                      <FormLabel>Unit Price</FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>
@@ -469,7 +469,7 @@ const ProductDetail = () => {
                   name="taxrate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Taux d'imposition (%)</FormLabel>
+                      <FormLabel>Tax Rate (%)</FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>
@@ -483,7 +483,7 @@ const ProductDetail = () => {
                   name="stockquantity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Quantité en stock</FormLabel>
+                      <FormLabel>Stock Quantity</FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>
