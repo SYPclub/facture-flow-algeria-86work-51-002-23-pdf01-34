@@ -100,25 +100,25 @@ export default function CompanyInfoPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Company Information</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Informations sur l'entreprise</h1>
         {!isEditing && (
           <Button onClick={() => setIsEditing(true)} variant="outline" className="flex items-center gap-2">
-            <Edit className="h-4 w-4" /> Edit
+            <Edit className="h-4 w-4" /> Editer
           </Button>
         )}
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle>Company Details</CardTitle>
+          <CardTitle>Détails de l'entreprise</CardTitle>
           <CardDescription>
-            View and manage your company information that will appear on invoices and official documents.
+            Visualisez et gérez les informations relatives à votre entreprise qui figureront sur les factures et les documents officiels.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex justify-center py-8">
-              <div className="loader">Loading...</div>
+              <div className="loader">Chargement...</div>
             </div>
           ) : (
             <Form {...form}>
@@ -128,7 +128,7 @@ export default function CompanyInfoPage() {
                   name="businessName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Business Name (Raison sociale)</FormLabel>
+                      <FormLabel>Nom de l'entreprise (Raison sociale)</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={!isEditing} />
                       </FormControl>
@@ -142,7 +142,7 @@ export default function CompanyInfoPage() {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address (Adresse complète)</FormLabel>
+                      <FormLabel>Adresse (Adresse complète)</FormLabel>
                       <FormControl>
                         <Textarea {...field} disabled={!isEditing} />
                       </FormControl>
@@ -157,7 +157,7 @@ export default function CompanyInfoPage() {
                     name="taxid"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Tax ID (N° d'identification fiscale)</FormLabel>
+                        <FormLabel>Numéro d'identification fiscale (N° d'identification fiscale)</FormLabel>
                         <FormControl>
                           <Input {...field} disabled={!isEditing} />
                         </FormControl>
@@ -171,7 +171,7 @@ export default function CompanyInfoPage() {
                     name="commerceRegNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Commerce Registry (N° registre de commerce)</FormLabel>
+                        <FormLabel>Registre du commerce (N° registre de commerce)</FormLabel>
                         <FormControl>
                           <Input {...field} disabled={!isEditing} />
                         </FormControl>
@@ -187,7 +187,7 @@ export default function CompanyInfoPage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone (Téléphone)</FormLabel>
+                        <FormLabel>Téléphone (Téléphone)</FormLabel>
                         <FormControl>
                           <Input {...field} disabled={!isEditing} type="tel" />
                         </FormControl>
@@ -218,10 +218,10 @@ export default function CompanyInfoPage() {
                       variant="outline" 
                       onClick={() => setIsEditing(false)}
                     >
-                      Cancel
+                      Annuler
                     </Button>
                     <Button type="submit" className="flex items-center gap-2">
-                      <Check className="h-4 w-4" /> Save Changes
+                      <Check className="h-4 w-4" /> Enregistrer les modifications
                     </Button>
                   </div>
                 )}

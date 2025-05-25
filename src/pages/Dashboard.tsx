@@ -32,9 +32,9 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Tableau de bord</h1>
         <div className="text-sm text-muted-foreground">
-          Welcome, {user?.name}
+          Bienvenue, {user?.name}
           {companyInfo && <span className="ml-2">| {companyInfo.businessName}</span>}
         </div>
       </div>
@@ -50,93 +50,93 @@ const Dashboard = () => {
             {isLoading ? (
               <div className="flex items-center space-x-2">
                 <Loader className="h-4 w-4 animate-spin" />
-                <span className="text-xs text-muted-foreground">Loading...</span>
+                <span className="text-xs text-muted-foreground">Chargement...</span>
               </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats.activeClients}</div>
-                <p className="text-xs text-muted-foreground">Active clients</p>
+                <p className="text-xs text-muted-foreground">Clients actifs</p>
               </>
             )}
           </CardContent>
           <CardFooter>
             <Link to="/clients" className="text-xs text-primary flex items-center">
-              View all clients <ArrowRight className="ml-1 h-3 w-3" />
+              Voir tous les clients <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </CardFooter>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Proforma Invoices</CardTitle>
+            <CardTitle className="text-sm font-medium">Factures pro forma</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex items-center space-x-2">
                 <Loader className="h-4 w-4 animate-spin" />
-                <span className="text-xs text-muted-foreground">Loading...</span>
+                <span className="text-xs text-muted-foreground">Chargement...</span>
               </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats.proformaInvoices}</div>
-                <p className="text-xs text-muted-foreground">Active proforma invoices</p>
+                <p className="text-xs text-muted-foreground">Factures pro forma actives</p>
               </>
             )}
           </CardContent>
           <CardFooter>
             <Link to="/invoices/proforma" className="text-xs text-primary flex items-center">
-              View all proformas <ArrowRight className="ml-1 h-3 w-3" />
+              Voir toutes les proformas <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </CardFooter>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Final Invoices</CardTitle>
+            <CardTitle className="text-sm font-medium">Factures finales</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex items-center space-x-2">
                 <Loader className="h-4 w-4 animate-spin" />
-                <span className="text-xs text-muted-foreground">Loading...</span>
+                <span className="text-xs text-muted-foreground">Chargement...</span>
               </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats.finalInvoices}</div>
-                <p className="text-xs text-muted-foreground">Issued final invoices</p>
+                <p className="text-xs text-muted-foreground">Émission des factures finales</p>
               </>
             )}
           </CardContent>
           <CardFooter>
             <Link to="/invoices/final" className="text-xs text-primary flex items-center">
-              View all invoices <ArrowRight className="ml-1 h-3 w-3" />
+              Voir toutes les factures <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </CardFooter>
         </Card>
         
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Products</CardTitle>
+            <CardTitle className="text-sm font-medium">Produits</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex items-center space-x-2">
                 <Loader className="h-4 w-4 animate-spin" />
-                <span className="text-xs text-muted-foreground">Loading...</span>
+                <span className="text-xs text-muted-foreground">Chargement...</span>
               </div>
             ) : (
               <>
                 <div className="text-2xl font-bold">{stats.products}</div>
-                <p className="text-xs text-muted-foreground">Products in catalog</p>
+                <p className="text-xs text-muted-foreground">Produits dans le catalogue</p>
               </>
             )}
           </CardContent>
           <CardFooter>
             <Link to="/products" className="text-xs text-primary flex items-center">
-              Manage products <ArrowRight className="ml-1 h-3 w-3" />
+              Gérer les produits <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </CardFooter>
         </Card>
@@ -147,15 +147,15 @@ const Dashboard = () => {
         {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]) && (
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Commonly used actions</CardDescription>
+              <CardTitle>Actions rapides</CardTitle>
+              <CardDescription>Actions couramment utilisées</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
               {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON]) && (
                 <Button asChild variant="outline" className="justify-start">
                   <Link to="/invoices/proforma/new">
                     <FileText className="mr-2 h-4 w-4" />
-                    Create New Proforma Invoice
+                    Créer une nouvelle facture pro forma
                   </Link>
                 </Button>
               )}
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 <Button asChild variant="outline" className="justify-start">
                   <Link to="/invoices/final/new">
                     <FileText className="mr-2 h-4 w-4" />
-                    Create New Final Invoice
+                    Créer une nouvelle facture finale
                   </Link>
                 </Button>
               )}
@@ -173,7 +173,7 @@ const Dashboard = () => {
                 <Button asChild variant="outline" className="justify-start">
                   <Link to="/delivery-notes/new">
                     <Truck className="mr-2 h-4 w-4" />
-                    Create Delivery Note
+                    Créer un bon de livraison
                   </Link>
                 </Button>
               )}
@@ -182,7 +182,7 @@ const Dashboard = () => {
                 <Button asChild variant="outline" className="justify-start">
                   <Link to="/clients/new">
                     <Users className="mr-2 h-4 w-4" />
-                    Add New Client
+                    Ajouter un nouveau client
                   </Link>
                 </Button>
               )}
@@ -191,7 +191,7 @@ const Dashboard = () => {
                 <Button asChild variant="outline" className="justify-start">
                   <Link to="/products/new">
                     <Package className="mr-2 h-4 w-4" />
-                    Add New Product
+                    Ajouter un nouveau produit
                   </Link>
                 </Button>
               )}
@@ -202,19 +202,19 @@ const Dashboard = () => {
         {/* Recent Proformas */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Proforma Invoices</CardTitle>
-            <CardDescription>Latest created proformas</CardDescription>
+            <CardTitle>Factures pro forma récentes</CardTitle>
+            <CardDescription>Dernières proformas créées</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex h-40 flex-col items-center justify-center gap-2">
                 <Loader className="h-10 w-10 animate-spin text-muted-foreground/50" />
-                <p className="text-center text-muted-foreground">Loading proformas...</p>
+                <p className="text-center text-muted-foreground">Chargement des proformas...</p>
               </div>
             ) : stats.recentProformas.length === 0 ? (
               <div className="flex h-40 flex-col items-center justify-center gap-2">
                 <FileText className="h-10 w-10 text-muted-foreground/50" />
-                <p className="text-center text-muted-foreground">No proforma invoices yet</p>
+                <p className="text-center text-muted-foreground">Pas encore de factures pro forma</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -235,7 +235,7 @@ const Dashboard = () => {
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild className="w-full">
-              <Link to="/invoices/proforma">View All Proformas</Link>
+              <Link to="/invoices/proforma">Voir toutes les Proformas</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -243,19 +243,19 @@ const Dashboard = () => {
         {/* Recent Invoices */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Final Invoices</CardTitle>
-            <CardDescription>Latest issued invoices</CardDescription>
+            <CardTitle>Factures finales récentes</CardTitle>
+            <CardDescription>Dernières factures émises</CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex h-40 flex-col items-center justify-center gap-2">
                 <Loader className="h-10 w-10 animate-spin text-muted-foreground/50" />
-                <p className="text-center text-muted-foreground">Loading invoices...</p>
+                <p className="text-center text-muted-foreground">Chargement des factures...</p>
               </div>
             ) : stats.recentInvoices.length === 0 ? (
               <div className="flex h-40 flex-col items-center justify-center gap-2">
                 <FileText className="h-10 w-10 text-muted-foreground/50" />
-                <p className="text-center text-muted-foreground">No final invoices yet</p>
+                <p className="text-center text-muted-foreground">Pas encore de factures finales</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -281,7 +281,7 @@ const Dashboard = () => {
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild className="w-full">
-              <Link to="/invoices/final">View All Invoices</Link>
+              <Link to="/invoices/final">Voir toutes les factures</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -293,15 +293,15 @@ const Dashboard = () => {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-amber-800">
               <AlertCircle className="mr-2 h-5 w-5" />
-              Getting Started
+              Pour commencer
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-amber-800">
-            <p>Welcome to your new invoice management system! To get started:</p>
+            <p>Bienvenue dans votre nouveau système de gestion des factures ! Pour commencer:</p>
             <ul className="mt-2 list-disc pl-5 space-y-1">
-              <li>First, set up your company information in the Admin section</li>
-              <li>Add your clients and products to the system</li>
-              <li>Start creating proforma invoices and converting them to final invoices</li>
+              <li>Tout d'abord, définissez les informations relatives à votre entreprise dans la section Admin.</li>
+              <li>Ajoutez vos clients et vos produits au système</li>
+              <li>Commencer à créer des factures pro forma et les convertir en factures finales</li>
             </ul>
           </CardContent>
         </Card>

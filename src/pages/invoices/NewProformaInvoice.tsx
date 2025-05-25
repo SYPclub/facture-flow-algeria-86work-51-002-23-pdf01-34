@@ -311,10 +311,10 @@ const NewProformaInvoice = () => {
         <CardContent className="pt-6">
           <div className="flex h-40 flex-col items-center justify-center gap-2">
             <p className="text-center text-muted-foreground">
-              You don't have permission to create proforma invoices
+              Vous n'avez pas l'autorisation de créer des factures pro forma
             </p>
             <Button asChild variant="outline">
-              <Link to="/invoices/proforma">Return to List</Link>
+              <Link to="/invoices/proforma">Retour à la liste</Link>
             </Button>
           </div>
         </CardContent>
@@ -332,7 +332,7 @@ const NewProformaInvoice = () => {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">
-            Create New Proforma Invoice
+            Créer une nouvelle facture pro forma
           </h1>
         </div>
       </div>
@@ -341,8 +341,8 @@ const NewProformaInvoice = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Client Information</CardTitle>
-              <CardDescription>Select the client for this proforma</CardDescription>
+              <CardTitle>Informations sur le client</CardTitle>
+              <CardDescription>Sélectionnez le client pour ce formulaire</CardDescription>
             </CardHeader>
             <CardContent>
               <FormField
@@ -379,7 +379,7 @@ const NewProformaInvoice = () => {
           <Card>
             <CardHeader>
               <CardTitle>Proforma Details</CardTitle>
-              <CardDescription>Information about the invoice</CardDescription>
+              <CardDescription>Détails de la facture</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -388,7 +388,7 @@ const NewProformaInvoice = () => {
                   name="issuedate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Issue Date</FormLabel>
+                      <FormLabel>Date d'émission</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -402,7 +402,7 @@ const NewProformaInvoice = () => {
                   name="duedate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Due Date</FormLabel>
+                      <FormLabel>Date d'échéance</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -417,7 +417,7 @@ const NewProformaInvoice = () => {
                 name="paymentType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Payment Method</FormLabel>
+                    <FormLabel>Mode de paiement</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
@@ -457,7 +457,7 @@ const NewProformaInvoice = () => {
                     <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Enter any additional information for this proforma invoice"
+                        placeholder="Saisir toute information supplémentaire pour cette facture proforma"
                         className="min-h-[120px]"
                         {...field} 
                       />
@@ -472,11 +472,11 @@ const NewProformaInvoice = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Items</CardTitle>
-                <CardDescription>Products and services for this proforma</CardDescription>
+                <CardTitle>Articles</CardTitle>
+                <CardDescription>Produits et services pour ce formulaire</CardDescription>
               </div>
               <Button type="button" onClick={addItem} variant="outline" size="sm">
-                <Plus className="mr-2 h-4 w-4" /> Add Item
+                <Plus className="mr-2 h-4 w-4" /> Ajouter un élément
               </Button>
             </CardHeader>
             <CardContent>
@@ -484,12 +484,12 @@ const NewProformaInvoice = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead className="w-[80px]">Qty</TableHead>
-                      <TableHead className="w-[80px]">unit</TableHead>
-                      <TableHead className="w-[120px]">Unit Price</TableHead>
+                      <TableHead>Produit</TableHead>
+                      <TableHead className="w-[80px]">Qté</TableHead>
+                      <TableHead className="w-[80px]">unité</TableHead>
+                      <TableHead className="w-[120px]">Prix unitaire</TableHead>
                       <TableHead className="w-[80px]">Tax %</TableHead>
-                      <TableHead className="w-[80px]">Disc %</TableHead>
+                      <TableHead className="w-[80px]">Remise %</TableHead>
                       <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -502,7 +502,7 @@ const NewProformaInvoice = () => {
                             onValueChange={(value) => updateItemProduct(index, value)}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a product" />
+                              <SelectValue placeholder="Sélectionner un produit" />
                             </SelectTrigger>
                             <SelectContent>
                               {products.map(product => (
@@ -589,7 +589,7 @@ const NewProformaInvoice = () => {
               
               <div className="mt-4 space-y-2 border-t pt-4 text-right">
                 <div className="flex justify-between">
-                  <span className="font-medium">Subtotal:</span>
+                  <span className="font-medium">Sous-total:</span>
                   <span>{formatCurrency(totals.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
@@ -598,7 +598,7 @@ const NewProformaInvoice = () => {
                 </div>
                 {form.getValues('paymentType') === 'cash' && (
                   <div className="flex justify-between">
-                    <span className="font-medium">Stamp Tax:</span>
+                    <span className="font-medium">droit de timbre:</span>
                     <span>{formatCurrency(totals.stampTax)}</span>
                   </div>
                 )}
@@ -612,18 +612,18 @@ const NewProformaInvoice = () => {
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" asChild>
-              <Link to="/invoices/proforma">Cancel</Link>
+              <Link to="/invoices/proforma">Annuler</Link>
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
               {createMutation.isPending ? (
                 <>
                   <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
-                  Creating...
+                  Création...
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Create Proforma
+                  Créer un proforma
                 </>
               )}
             </Button>

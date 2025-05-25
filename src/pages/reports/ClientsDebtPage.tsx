@@ -65,12 +65,12 @@ const ClientsDebtPage = () => {
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Clients Debt Report</h1>
+        <h1 className="text-3xl font-bold">Rapport sur la dette des clients</h1>
       </div>
       
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Search & Filters</CardTitle>
+          <CardTitle>Recherche et filtres</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
@@ -98,9 +98,9 @@ const ClientsDebtPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Client</TableHead>
-                    <TableHead>Tax ID</TableHead>
-                    <TableHead>Total Debt</TableHead>
-                    <TableHead>Unpaid Invoices</TableHead>
+                    <TableHead>NIF</TableHead>
+                    <TableHead>Total de la dette</TableHead>
+                    <TableHead>Factures impayées</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -108,7 +108,7 @@ const ClientsDebtPage = () => {
                   {filteredClients?.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        No clients found with debt
+                        Aucun client n'a été trouvé avec une dette
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -131,7 +131,7 @@ const ClientsDebtPage = () => {
                           >
                             <Link to={`/reports/client-debt/${client.id}`}>
                               <Eye className="h-4 w-4 mr-2" />
-                              View Details
+                              Voir les détails
                             </Link>
                           </Button>
                         </TableCell>

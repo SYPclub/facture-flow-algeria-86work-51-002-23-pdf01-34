@@ -126,15 +126,15 @@ const FinalInvoicesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Final Invoices</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Factures finales</h1>
           <p className="text-muted-foreground">
-            Manage your formal invoices
+            Gérer vos factures formelles
           </p>
         </div>
         {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]) && (
           <Button asChild>
             <Link to="/invoices/final/new">
-              <Plus className="mr-2 h-4 w-4" /> New Invoice
+              <Plus className="mr-2 h-4 w-4" /> Nouvelle facture
             </Link>
           </Button>
         )}
@@ -143,8 +143,8 @@ const FinalInvoicesPage = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>Final Invoice List</CardTitle>
-            <CardDescription>Formal invoices issued to clients</CardDescription>
+            <CardTitle>Liste des factures finales</CardTitle>
+            <CardDescription>Factures formelles émises aux clients</CardDescription>
           </div>
           <div className="mt-4 sm:mt-0">
             <DropdownMenu>
@@ -155,11 +155,11 @@ const FinalInvoicesPage = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setStatusFilter(null)}>All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('unpaid')}>Unpaid</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('paid')}>Paid</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('cancelled')}>Cancelled</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('credited')}>Credited</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter(null)}>Tous</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('unpaid')}>Non payé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('paid')}>Payé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('cancelled')}>Annulé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('credited')}>Crédité</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -168,7 +168,7 @@ const FinalInvoicesPage = () => {
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search invoices..."
+              placeholder="Recherche de factures..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -181,15 +181,15 @@ const FinalInvoicesPage = () => {
             </div>
           ) : error ? (
             <div className="flex h-40 items-center justify-center">
-              <p className="text-red-500">Error loading invoices</p>
+              <p className="text-red-500">Erreur de chargement des factures</p>
             </div>
           ) : filteredInvoices.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-2">
               <FileText className="h-10 w-10 text-muted-foreground/50" />
               <p className="text-center text-muted-foreground">
                 {searchQuery || statusFilter
-                  ? "No invoices found matching your criteria"
-                  : "No final invoices issued yet"}
+                  ? "Aucune facture ne correspond à vos critères"
+                  : "Aucune facture finale n'a encore été émise"}
               </p>
             </div>
           ) : (
@@ -197,11 +197,11 @@ const FinalInvoicesPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Number</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead>Client</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Creator</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Créateur</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>

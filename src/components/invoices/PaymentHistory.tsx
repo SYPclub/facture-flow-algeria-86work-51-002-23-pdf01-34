@@ -92,7 +92,7 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ invoiceId }) => {
       <div className="flex justify-center p-4">
         <div className="flex items-center space-x-2">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-          <span>Loading payments...</span>
+          <span>Chargement des paiements...</span>
         </div>
       </div>
     );
@@ -101,7 +101,7 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ invoiceId }) => {
   if (!payments || payments.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        No payments have been recorded yet.
+        Aucun paiement n'a encore été enregistré.
       </div>
     );
   }
@@ -112,8 +112,8 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ invoiceId }) => {
         <TableHeader>
           <TableRow>
             <TableHead>Date</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead>Montant</TableHead>
+            <TableHead>Méthode</TableHead>
             <TableHead>Reference</TableHead>
             <TableHead>Notes</TableHead>
             {canEdit && <TableHead className="w-[80px]">Actions</TableHead>}
@@ -139,15 +139,15 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ invoiceId }) => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Payment</AlertDialogTitle>
+                        <AlertDialogTitle>Supprimer le paiement</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete this payment? This
-                          action cannot be undone and will update the invoice's
-                          payment status.
+                          Êtes-vous sûr de vouloir supprimer ce paiement ? Cette action
+                          Cette action ne peut être annulée et mettra à jour le statut de paiement de la facture.
+                          de la facture.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() =>
                             deletePaymentMutation.mutate(payment.id)

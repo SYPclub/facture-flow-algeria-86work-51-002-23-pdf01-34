@@ -111,16 +111,16 @@ const DeliveryNotesPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Delivery Notes</h1>
+          <h1 className="text-3xl font-bold tracking-tight">bon de livraison</h1>
           <p className="text-muted-foreground">
-            Manage delivery documents for your clients
+            Gérer les documents de livraison pour vos clients
           </p>
         </div>
         {canCreate && (
           <Button asChild>
             <Link to="/delivery-notes/new">
               <Plus className="mr-2 h-4 w-4" />
-              Create Delivery Note
+              Créer un bon de livraison
             </Link>
           </Button>
         )}
@@ -129,8 +129,8 @@ const DeliveryNotesPage = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>Delivery Note List</CardTitle>
-            <CardDescription>Track delivery documentation</CardDescription>
+            <CardTitle>Liste des bons de livraison</CardTitle>
+            <CardDescription>Suivi des bon de livraison</CardDescription>
           </div>
           <div className="mt-4 sm:mt-0">
             <DropdownMenu>
@@ -141,10 +141,10 @@ const DeliveryNotesPage = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setStatusFilter(null)}>All</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('pending')}>Pending</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('delivered')}>Delivered</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('cancelled')}>Cancelled</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter(null)}>Tous</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('pending')}>En attente</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('delivered')}>Livré</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('cancelled')}>Annulé</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -153,7 +153,7 @@ const DeliveryNotesPage = () => {
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search delivery notes..."
+              placeholder="Recherche de bons de livraison..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -166,7 +166,7 @@ const DeliveryNotesPage = () => {
             </div>
           ) : error ? (
             <div className="flex h-40 items-center justify-center">
-              <p className="text-red-500">Error loading delivery notes</p>
+              <p className="text-red-500">Erreur de chargement des bons de livraison</p>
             </div>
           ) : filteredDeliveryNotes.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-2">
@@ -180,7 +180,7 @@ const DeliveryNotesPage = () => {
                 <Button asChild variant="outline" className="mt-2">
                   <Link to="/delivery-notes/new">
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Your First Delivery Note
+                    Créez votre premier bon de livraison
                   </Link>
                 </Button>
               )}
@@ -190,12 +190,12 @@ const DeliveryNotesPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Number</TableHead>
+                    <TableHead>Nombre</TableHead>
                     <TableHead>Client</TableHead>
-                    <TableHead>Related Invoice</TableHead>
-                    <TableHead className="hidden md:table-cell">Issue Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Creator</TableHead>
+                    <TableHead>Facture associée</TableHead>
+                    <TableHead className="hidden md:table-cell">Date d'émission</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Créateur</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -206,7 +206,7 @@ const DeliveryNotesPage = () => {
                         {note.number}
                       </TableCell>
                       <TableCell>
-                        {note.client?.name || 'Unknown Client'}
+                        {note.client?.name || 'Client inconnu'}
                       </TableCell>
                       <TableCell>
                         <Link 

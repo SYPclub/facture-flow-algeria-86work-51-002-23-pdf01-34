@@ -115,17 +115,15 @@ const PrintableInvoiceV3 = () => {
 
         // Fetch invoice items
         const { data: items, error: itemsError } = await supabase
-          .from(itemsTableName)
+          .from('products')
           .select(`
-            *,
-            item:itemid (
-              *,
-              product:productid (
-                name,
-                description,
-                code
-              )
-            )
+            id,
+            name,
+            code,
+            description,
+            unitprice,
+            taxrate,
+            quantity
           `)
 
           .eq(itemsRelationKey, id);
@@ -138,7 +136,7 @@ const PrintableInvoiceV3 = () => {
         // Format items
         const formattedItems = items.map(item => ({
           id: item.id,
-          name: item.product?.name,
+          name: item.name,
           code: item.code,
           description: item.product?.name || item.description || "",
           quantity: item.quantity || 1,

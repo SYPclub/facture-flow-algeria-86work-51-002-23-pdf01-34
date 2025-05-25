@@ -66,15 +66,15 @@ const ProductsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Products</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Produits</h1>
           <p className="text-muted-foreground">
-            Manage your product catalog
+            Gérer votre catalogue de produits
           </p>
         </div>
         {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]) && (
           <Button asChild>
             <Link to="/products/new">
-              <Plus className="mr-2 h-4 w-4" /> Add New Product
+              <Plus className="mr-2 h-4 w-4" /> Ajouter un nouveau produit
             </Link>
           </Button>
         )}
@@ -82,14 +82,14 @@ const ProductsPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Product List</CardTitle>
-          <CardDescription>View and manage your products</CardDescription>
+          <CardTitle>Liste des produits</CardTitle>
+          <CardDescription>Visualisez et gérez vos produits</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-4 flex items-center gap-2">
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search products..."
+              placeholder="Recherche de produits..."
               className="max-w-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -102,7 +102,7 @@ const ProductsPage = () => {
             </div>
           ) : error ? (
             <div className="flex h-40 items-center justify-center">
-              <p className="text-red-500">Error loading products</p>
+              <p className="text-red-500">Erreur de chargement des produits</p>
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-2">
@@ -115,7 +115,7 @@ const ProductsPage = () => {
               {checkPermission([UserRole.ADMIN, UserRole.ACCOUNTANT]) && (
                 <Button asChild variant="outline" className="mt-2">
                   <Link to="/products/new">
-                    <Plus className="mr-2 h-4 w-4" /> Add Your First Product
+                    <Plus className="mr-2 h-4 w-4" /> Ajouter votre premier produit
                   </Link>
                 </Button>
               )}
@@ -126,12 +126,12 @@ const ProductsPage = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Code</TableHead>
-                    <TableHead>Product Name</TableHead>
+                    <TableHead>Nom du produit</TableHead>
                     <TableHead className="hidden md:table-cell">Description</TableHead>
-                    <TableHead>Price</TableHead>
+                    <TableHead>Prix</TableHead>
                     <TableHead>Tax</TableHead>
                     <TableHead className="hidden sm:table-cell">Stock</TableHead>
-                    <TableHead className="hidden md:table-cell">Unit</TableHead>
+                    <TableHead className="hidden md:table-cell">Unité</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -152,7 +152,7 @@ const ProductsPage = () => {
                           to={`/products/${product.id}`}
                           className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
                         >
-                          View Details
+                          Voir les détails
                         </Link>
                       </TableCell>
                     </TableRow>

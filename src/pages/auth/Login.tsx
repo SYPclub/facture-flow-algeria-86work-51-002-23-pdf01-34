@@ -49,7 +49,7 @@ const Login = () => {
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">FactureFlow</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+          <p className="mt-2 text-sm text-gray-600">Connectez-vous à votre compte</p>
         </div>
 
         <div className="mt-8 rounded-lg bg-white p-6 shadow sm:p-8">
@@ -79,7 +79,7 @@ const Login = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mot de passe</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Enter your password" 
@@ -101,7 +101,7 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></span>
-                    Signing in...
+                    S'inscrire ..
                   </>
                 ) : (
                   'Sign in'
@@ -112,13 +112,10 @@ const Login = () => {
 
           <div className="mt-6">
             <p className="text-center text-sm text-gray-600">
-              Demo accounts:
+              
             </p>
             <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-gray-500">
-              <p>admin@example.com / admin123</p>
-              <p>accountant@example.com / account123</p>
-              <p>sales@example.com / sales123</p>
-              <p>viewer@example.com / viewer123</p>
+              
             </div>
           </div>
         </div>

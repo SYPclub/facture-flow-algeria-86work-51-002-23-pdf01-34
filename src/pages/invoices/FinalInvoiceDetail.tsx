@@ -347,7 +347,7 @@ const FinalInvoiceDetail = () => {
       <div className="flex h-40 items-center justify-center">
         <div className="flex items-center gap-2">
           <span className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent"></span>
-          <span>Loading...</span>
+          <span>Chargement...</span>
         </div>
       </div>
     );
@@ -360,10 +360,10 @@ const FinalInvoiceDetail = () => {
         <CardContent className="pt-6">
           <div className="flex h-40 flex-col items-center justify-center gap-2">
             <p className="text-center text-muted-foreground">
-              Invoice not found
+              Facture non trouvée
             </p>
             <Button asChild variant="outline">
-              <Link to="/invoices/final">Return to List</Link>
+              <Link to="/invoices/final">Retour à la liste</Link>
             </Button>
           </div>
         </CardContent>
@@ -425,7 +425,7 @@ const FinalInvoiceDetail = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <strong className="font-semibold">Name:</strong>{" "}
+                  <strong className="font-semibold">Nom:</strong>{" "}
                   {invoice.client?.name}
                 </div>
                 <div>
@@ -453,11 +453,11 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.ccp}
                 </div>
                 <div>
-                  <strong className="font-semibold">contact name:</strong>{" "}
+                  <strong className="font-semibold">nom du contact:</strong>{" "}
                   {invoice.client?.contact}
                 </div>
                 <div>
-                  <strong className="font-semibold">contact phone:</strong>{" "}
+                  <strong className="font-semibold">téléphone de contact:</strong>{" "}
                   {invoice.client?.telcontact}
                 </div>
                 <div>
@@ -465,7 +465,7 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.address}
                 </div>
                 <div>
-                  <strong className="font-semibold">City:</strong>{" "}
+                  <strong className="font-semibold">Ville:</strong>{" "}
                   {invoice.client?.city}, {invoice.client?.country}
                 </div>
                 <div>
@@ -477,11 +477,11 @@ const FinalInvoiceDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Invoice Details</CardTitle>
+                <CardTitle>Détails de la facture</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <strong className="font-semibold">Invoice Number:</strong>{" "}
+                  <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                   {invoice.number}
                 </div>
                 <FormField
@@ -489,7 +489,7 @@ const FinalInvoiceDetail = () => {
                   name="issuedate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Issue Date</FormLabel>
+                      <FormLabel>Date d'émission</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -505,7 +505,7 @@ const FinalInvoiceDetail = () => {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Statut</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -516,11 +516,11 @@ const FinalInvoiceDetail = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="unpaid">Unpaid</SelectItem>
-                          <SelectItem value="partially_paid">Partially Paid</SelectItem>
-                          <SelectItem value="paid">Paid</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                          <SelectItem value="credited">Credited</SelectItem>
+                          <SelectItem value="unpaid">Non payé</SelectItem>
+                          <SelectItem value="partially_paid">Partiellement Payé</SelectItem>
+                          <SelectItem value="paid">Payé</SelectItem>
+                          <SelectItem value="cancelled">Annulé</SelectItem>
+                          <SelectItem value="credited">Crédité</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -537,7 +537,7 @@ const FinalInvoiceDetail = () => {
                       name="paymentreference"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Payment Reference</FormLabel>
+                          <FormLabel>Référence de paiement</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -550,12 +550,12 @@ const FinalInvoiceDetail = () => {
 
                 {invoice.proformaId && (
                   <div>
-                    <strong className="font-semibold">From Proforma:</strong>{" "}
+                    <strong className="font-semibold">De Proforma:</strong>{" "}
                     <Link
                       to={`/invoices/proforma/${invoice.proformaId}`}
                       className="text-primary hover:underline"
                     >
-                      View Proforma
+                      Voir Proforma
                     </Link>
                   </div>
                 )}
@@ -564,22 +564,22 @@ const FinalInvoiceDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Items</CardTitle>
-                <CardDescription>Products and services included in this invoice</CardDescription>
+                <CardTitle>Articles</CardTitle>
+                <CardDescription>Produits et services inclus dans cette facture</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead className="text-right">Qty</TableHead>
-                      <TableHead className="text-right">Unit</TableHead>
-                      <TableHead className="text-right">Unit Price</TableHead>
+                      <TableHead>Produit</TableHead>
+                      <TableHead className="text-right">Qté</TableHead>
+                      <TableHead className="text-right">Unité</TableHead>
+                      <TableHead className="text-right">Prix unitaire</TableHead>
                       <TableHead className="text-right">Tax %</TableHead>
-                      <TableHead className="text-right">Discount %</TableHead>
-                      <TableHead className="text-right">Total Excl.</TableHead>
-                      <TableHead className="text-right">Tax Amount</TableHead>
-                      <TableHead className="text-right">Total Incl.</TableHead>
+                      <TableHead className="text-right">Remise %</TableHead>
+                      <TableHead className="text-right">Total Excl..</TableHead>
+                      <TableHead className="text-right">Montant de l'impôt</TableHead>
+                      <TableHead className="text-right">Total inclus.</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -624,11 +624,11 @@ const FinalInvoiceDetail = () => {
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" asChild>
-                <Link to={`/invoices/final/${invoice.id}`}>Cancel</Link>
+                <Link to={`/invoices/final/${invoice.id}`}>Annuler</Link>
               </Button>
               <Button type="submit" disabled={updateInvoiceMutation.isPending}>
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                Enregistrer les modifications
               </Button>
             </div>
           </form>
@@ -638,11 +638,11 @@ const FinalInvoiceDetail = () => {
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Client Information</CardTitle>
+                <CardTitle>Informations sur le client</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <strong className="font-semibold">Name:</strong>{" "}
+                  <strong className="font-semibold">Nom:</strong>{" "}
                   {invoice.client?.name}
                 </div>
                 <div>
@@ -670,11 +670,11 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.ccp}
                 </div>
                 <div>
-                  <strong className="font-semibold">contact name:</strong>{" "}
+                  <strong className="font-semibold">nom du contact:</strong>{" "}
                   {invoice.client?.contact}
                 </div>
                 <div>
-                  <strong className="font-semibold">contact phone:</strong>{" "}
+                  <strong className="font-semibold">téléphone de contact:</strong>{" "}
                   {invoice.client?.telcontact}
                 </div>
                 <div>
@@ -682,7 +682,7 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.address}
                 </div>
                 <div>
-                  <strong className="font-semibold">City:</strong>{" "}
+                  <strong className="font-semibold">Ville:</strong>{" "}
                   {invoice.client?.city}, {invoice.client?.country}
                 </div>
                 <div>
@@ -694,20 +694,20 @@ const FinalInvoiceDetail = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Invoice Details</CardTitle>
+                <CardTitle>Détails de la facture</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <strong className="font-semibold">Invoice Number:</strong>{" "}
+                  <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                   {invoice.number}
                 </div>
                 <div>
-                  <strong className="font-semibold">Issue Date:</strong>{" "}
+                  <strong className="font-semibold">Date d'émission:</strong>{" "}
                   {formatDate(invoice.issuedate)}
                 </div>
                 
                 <div>
-                  <strong className="font-semibold">Status:</strong>{" "}
+                  <strong className="font-semibold">Statut:</strong>{" "}
                   <Badge
                     className={`${statusColor[computedStatus]} text-white px-2 py-0.5 text-xs font-medium`}
                   >
@@ -716,15 +716,15 @@ const FinalInvoiceDetail = () => {
                 </div>
                 
                 <div>
-                  <strong className="font-semibold">Total Amount:</strong>{" "}
+                  <strong className="font-semibold">Montant total:</strong>{" "}
                   {formatCurrency(invoice.total)}
                 </div>
                 <div>
-                  <strong className="font-semibold">Amount Paid:</strong>{" "}
+                  <strong className="font-semibold">Montant payé:</strong>{" "}
                   {formatCurrency(amountPaid)}
                 </div>
                 <div>
-                  <strong className="font-semibold">Remaining Debt:</strong>{" "}
+                  <strong className="font-semibold">Dette restante:</strong>{" "}
                   <span className={clientDebt <= 0 ? "text-green-600 font-medium" : "text-amber-600 font-medium"}>
                     {formatCurrency(clientDebt > 0 ? clientDebt : 0)}
                   </span>
@@ -735,7 +735,7 @@ const FinalInvoiceDetail = () => {
                     
                     {invoice.paymentReference && (
                       <div>
-                        <strong className="font-semibold">Payment Reference:</strong>{" "}
+                        <strong className="font-semibold">Référence de paiement:</strong>{" "}
                         {invoice.paymentReference}
                       </div>
                     )}
@@ -744,12 +744,12 @@ const FinalInvoiceDetail = () => {
 
                 {invoice.proformaId && (
                   <div>
-                    <strong className="font-semibold">From Proforma:</strong>{" "}
+                    <strong className="font-semibold">De Proforma:</strong>{" "}
                     <Link
                       to={`/invoices/proforma/${invoice.proformaId}`}
                       className="text-primary hover:underline"
                     >
-                      View Proforma
+                      Voir Proforma
                     </Link>
                   </div>
                 )}
@@ -759,22 +759,22 @@ const FinalInvoiceDetail = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Items</CardTitle>
-              <CardDescription>Products and services included in this invoice</CardDescription>
+              <CardTitle>Articles</CardTitle>
+              <CardDescription>Produits et services inclus dans cette facture</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead className="text-right">Qty</TableHead>
-                    <TableHead className="text-right">unit</TableHead>
-                    <TableHead className="text-right">Unit Price</TableHead>
+                    <TableHead>Produit</TableHead>
+                    <TableHead className="text-right">Qté</TableHead>
+                    <TableHead className="text-right">unité</TableHead>
+                    <TableHead className="text-right">Prix unitaire</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
-                    <TableHead className="text-right">Discount %</TableHead>
-                    <TableHead className="text-right">Total Excl.</TableHead>
-                    <TableHead className="text-right">Tax Amount</TableHead>
-                    <TableHead className="text-right">Total Incl.</TableHead>
+                    <TableHead className="text-right">Remise %</TableHead>
+                    <TableHead className="text-right">Total Excl..</TableHead>
+                    <TableHead className="text-right">Montant de l'impôt</TableHead>
+                    <TableHead className="text-right">Total inclus.</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -800,7 +800,7 @@ const FinalInvoiceDetail = () => {
                 <tfoot>
                   <tr className="border-t">
                     <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                      Subtotal:
+                      Sous-total:
                     </td>
                     <td colSpan={3} className="px-4 py-2 text-right">
                       {formatCurrency(invoice.subtotal)}
@@ -808,7 +808,7 @@ const FinalInvoiceDetail = () => {
                   </tr>
                   <tr>
                     <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                      Tax Total:
+                      Taxe Total:
                     </td>
                     <td colSpan={3} className="px-4 py-2 text-right">
                       {formatCurrency(invoice.taxTotal)}
@@ -830,18 +830,18 @@ const FinalInvoiceDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
-                <span>Payment History</span>
+                <span>Historique des paiements</span>
                 {canEdit && clientDebt > 0 && (
                   <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
                     <DialogTrigger asChild>
                       <Button size="sm" className="ml-auto">
                         <Plus className="mr-2 h-4 w-4" />
-                        Add Payment
+                        Ajouter un paiement
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[500px]">
                       <DialogHeader>
-                        <DialogTitle>Record New Payment</DialogTitle>
+                        <DialogTitle>Enregistrer un nouveau paiement</DialogTitle>
                       </DialogHeader>
                       <PaymentForm 
                         invoiceId={id || ''} 
@@ -881,14 +881,14 @@ const FinalInvoiceDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle>Actions</CardTitle>
-              <CardDescription>Manage this invoice</CardDescription>
+              <CardDescription>Gérer cette facture</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
               {canEdit && invoice.status !== 'credited' && (
                 <Button asChild variant="outline">
                   <Link to={`/invoices/final/edit/${invoice.id}`}>
                     <Edit className="mr-2 h-4 w-4" />
-                    Edit Invoice
+                    Modifier la facture
                   </Link>
                 </Button>
               )}
@@ -898,15 +898,15 @@ const FinalInvoiceDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="default" className="bg-green-600 hover:bg-green-700">
                       <Check className="mr-2 h-4 w-4" />
-                      Mark as Paid
+                      Marquer comme payé
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Mark as Paid</AlertDialogTitle>
+                      <AlertDialogTitle>Marquer comme payé</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will mark the invoice as paid and set payment date to today.
-                        Would you like to add a payment reference?
+                        Cette opération marquera la facture comme payée et fixera la date de paiement à aujourd'hui.
+                        Souhaitez-vous ajouter une référence de paiement ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="py-4">
@@ -917,7 +917,7 @@ const FinalInvoiceDetail = () => {
                       />
                     </div>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => {
                           const paymentRef = (document.getElementById('paymentReference') as HTMLInputElement)?.value;
@@ -932,7 +932,7 @@ const FinalInvoiceDetail = () => {
                           statusUpdateMutation.mutate(data);
                         }}
                       >
-                        Mark as Paid
+                        Marquer comme payé
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -944,12 +944,12 @@ const FinalInvoiceDetail = () => {
                   <DialogTrigger asChild>
                     <Button variant="outline" className="bg-blue-50 hover:bg-blue-100">
                       <Plus className="mr-2 h-4 w-4 text-blue-600" />
-                      Add Payment
+                      Ajouter un paiement
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                      <DialogTitle>Record New Payment</DialogTitle>
+                      <DialogTitle>Enregistrer un nouveau paiement</DialogTitle>
                     </DialogHeader>
                     <PaymentForm 
                       invoiceId={id || ''} 
@@ -969,24 +969,24 @@ const FinalInvoiceDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-red-50 hover:bg-red-100">
                       <Ban className="mr-2 h-4 w-4 text-red-600" />
-                      Cancel Invoice
+                      Annuler la facture
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Cancel Invoice</AlertDialogTitle>
+                      <AlertDialogTitle>Annuler la facture</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will mark the invoice as cancelled.
-                        Are you sure you want to proceed?
+                        Cette opération marquera la facture comme étant annulée.
+                        Etes-vous sûr de vouloir continuer ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>No, Keep It</AlertDialogCancel>
+                      <AlertDialogCancel>Non, gardez-le</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => handleUpdateStatus('cancelled')}
                         className="bg-red-500 hover:bg-red-600"
                       >
-                        Yes, Cancel It
+                        Oui, annuler
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -998,23 +998,23 @@ const FinalInvoiceDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
+                      Supprimer
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
+                      <AlertDialogTitle>Supprimer une facture</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete this invoice.
+                        Cette action ne peut être annulée. Cette action supprimera définitivement cette facture.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteInvoice}
                         className="bg-red-500 hover:bg-red-600"
                       >
-                        Delete
+                        Supprimer
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -1026,24 +1026,24 @@ const FinalInvoiceDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
                       <Undo className="mr-2 h-4 w-4 text-yellow-600" />
-                      Revert to Unpaid
+                      Revenir à l'impayé
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Revert to Unpaid</AlertDialogTitle>
+                      <AlertDialogTitle>Revenir à l'impayé</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will revert the invoice status to unpaid.
-                        Any existing payment records will remain but the status will change.
-                        Are you sure you want to proceed?
+                        Le statut de la facture redeviendra alors impayé.
+                        Tous les enregistrements de paiement existants seront conservés, mais le statut sera modifié.
+                        Êtes-vous sûr de vouloir continuer ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => handleUpdateStatus('unpaid')}
                       >
-                        Confirm
+                        Confirmer
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -1052,7 +1052,7 @@ const FinalInvoiceDetail = () => {
               
               <Button variant="outline" onClick={handleExportPDF}>
                 <Printer className="mr-2 h-4 w-4" />
-                Print / Download
+                Imprimer / Télécharger
               </Button>
               <Button 
                 variant="outline" 

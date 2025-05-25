@@ -117,22 +117,22 @@ const MainLayout = () => {
 
         {/* Sidebar content */}
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-          <SidebarItem icon={Home} title="Dashboard" href="/" />
+          <SidebarItem icon={Home} title="Tableau de bord" href="/" />
           
           <SidebarItem 
             icon={FileText} 
-            title="Invoices"
+            title="Factures"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON, UserRole.VIEWER]}
           >
             <SidebarItem 
               icon={FileText} 
-              title="Proforma Invoices" 
+              title="Factures pro forma" 
               href="/invoices/proforma"
               allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON, UserRole.VIEWER]}
             />
             <SidebarItem 
               icon={FileText} 
-              title="Final Invoices" 
+              title="Factures finales" 
               href="/invoices/final"
               allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
             />
@@ -140,7 +140,7 @@ const MainLayout = () => {
           
           <SidebarItem 
             icon={Truck} 
-            title="Delivery Notes" 
+            title="bon de livraison" 
             href="/delivery-notes"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.SALESPERSON, UserRole.VIEWER]}
           />
@@ -154,7 +154,7 @@ const MainLayout = () => {
           
           <SidebarItem 
             icon={Package} 
-            title="Products" 
+            title="Produits" 
             href="/products"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
           />
@@ -167,25 +167,25 @@ const MainLayout = () => {
           />
           <SidebarItem 
             icon={FileSpreadsheet} 
-            title="client  debt" 
+            title="dette du client" 
             href="/reports/clients-debt"
             allowedRoles={[UserRole.ADMIN, UserRole.ACCOUNTANT, UserRole.VIEWER]}
           />
           
           <SidebarItem 
             icon={UserCog} 
-            title="Admin"
+            title="Administrateur"
             allowedRoles={[UserRole.ADMIN]}
           >
             <SidebarItem 
               icon={Users} 
-              title="Users" 
+              title="Utilisateurs" 
               href="/admin/users"
               allowedRoles={[UserRole.ADMIN]}
             />
             <SidebarItem 
               icon={Building} 
-              title="Company Info" 
+              title="Informations sur l'entreprise" 
               href="/admin/company-info"
               allowedRoles={[UserRole.ADMIN]}
             />
