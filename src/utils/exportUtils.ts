@@ -347,7 +347,7 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   const rectWidth = textWidth + padding;
   const rectHeight = 17;
   
-  // Draw background (now with dynamic width)
+  // Draw backgroun d (now with dynamic width)
 //  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
   pdf.setDrawColor(220, 220, 220);
   pdf.line(
