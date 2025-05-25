@@ -74,7 +74,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   if (logoBase64) {
       try {
         // Add logo to the left of the company name
-        pdf.addImage(logoBase64, 'PNG', 110, 10, 90, 40); // Adjust dimensions as needed
+        pdf.addImage(logoBase64, 'PNG', 110, 7, 90, 43); // Adjust dimensions as needed
       } catch (error) {
         console.error('Error adding logo:', error);
       }
@@ -91,10 +91,10 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.setFont("times", "bolditalic");
   pdf.setTextColor(29, 53, 87);
   pdf.setFontSize(22);
-  pdf.text(companyInfo?.businessName || 'YOUR COMPANY NAME', 30, 20);
+  pdf.text(companyInfo?.businessName || 'YOUR COMPANY NAME', 30, 17);
     pdf.setFont("helvetica", "bold");
   pdf.setFontSize(16);
-  pdf.text('Sable industriel de l\'EST', 30, 25);
+  pdf.text('Sable industriel de l\'EST', 30, 22);
 
   // Add smaller company details below the name
   pdf.setFont("helvetica", "normal");
@@ -109,7 +109,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
     `Tél: ${companyInfo?.phone || 'N/A'} | Email: ${companyInfo?.email || 'info@company.com'}`
   ];
   
-  pdf.text(companyDetails, 14, 30);
+  pdf.text(companyDetails, 14, 27);
   
   // Add document type in a styled box on the right
   pdf.setFillColor(hexToRgb(primaryColor).r, hexToRgb(primaryColor).g, hexToRgb(primaryColor).b);
