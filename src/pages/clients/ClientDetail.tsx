@@ -616,6 +616,7 @@ const ClientDetail = () => {
                           email: client?.email || '',
                           country: client?.country || '',
                           city: client?.city || '',
+                          rc: client?.rc || '',
                           nis: client?.nis || '',
                           ai: client?.ai || '',
                           rib: client?.rib || '',
