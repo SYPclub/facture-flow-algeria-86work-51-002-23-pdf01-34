@@ -173,7 +173,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.setTextColor(darkBlue);
   pdf.setFontSize(11);
   pdf.setFont("helvetica", "bold");
-  pdf.text("DOCUMENT DETAILS:", 115, startY + 7);
+  pdf.text("Information de la facture:", 115, startY + 7);
   
   // Create array of invoice details
   pdf.setTextColor(darkGray);
@@ -183,19 +183,19 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   const details = [];
   
   if (invoiceDetails.issuedate) {
-    details.push(`Issue Date: ${formatDate(invoiceDetails.issuedate)}`);
+    details.push(`Date de création: ${formatDate(invoiceDetails.issuedate)}`);
   }
   
   if (invoiceDetails.duedate) {
-    details.push(`Due Date: ${formatDate(invoiceDetails.duedate)}`);
+    details.push(`Valid au: ${formatDate(invoiceDetails.duedate)}`);
   }
   
   if (invoiceDetails.payment_type) {
-    details.push(`Payment Method: ${invoiceDetails.payment_type === 'cash' ? 'Cash' : 'Cheque'}`);
+    details.push(`Méthode de paiment: ${invoiceDetails.payment_type === 'cash' ? 'Cash' : 'Cheque'}`);
   }
   
   if (invoiceDetails.deliverydate) {
-    details.push(`Delivery Date: ${formatDate(invoiceDetails.deliverydate)}`);
+    details.push(`Date de livraison: ${formatDate(invoiceDetails.deliverydate)}`);
   }
   
   pdf.text(details, 115, startY + 13);
@@ -267,14 +267,14 @@ const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
   pdf.setTextColor(darkGray);
   pdf.setFontSize(9);
   
-  pdf.text("Subtotal:", pdf.internal.pageSize.width - 75, startY + 10);
-  pdf.text("Tax:", pdf.internal.pageSize.width - 75, startY + 20);
+  pdf.text("sous-total:", pdf.internal.pageSize.width - 75, startY + 10);
+  pdf.text("TVA:", pdf.internal.pageSize.width - 75, startY + 20);
   
   let nextY = startY + 30;
   
   // Add stamp tax line if applicable
   if (invoice.payment_type === 'cash' && invoice.stamp_tax > 0) {
-    pdf.text("Stamp Tax:", pdf.internal.pageSize.width - 75, nextY);
+    pdf.text("Tembre:", pdf.internal.pageSize.width - 75, nextY);
     pdf.text(formatCurrency(invoice.stamp_tax), pdf.internal.pageSize.width - 20, nextY, { align: 'right' });
     nextY += 10;
   }
@@ -403,7 +403,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   // Add items table
   const tableY = addStylizedTable(
     pdf,
-    ['No', 'Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Discount %', 'Total Excl.', 'Tax Amount', 'Total'],
+    ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise %', 'Hors taxe', 'TVA', 'Total'],
     tableRows,
     clientY
   );
@@ -452,7 +452,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   // Add items table
   const tableY = addStylizedTable(
     pdf,
-    ['No', 'Product', 'Qty', 'Unit', 'Unit Price', 'Tax %', 'Total Excl.', 'Tax Amount', 'Total'],
+    ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'Hors taxe', 'TVA', 'Total'],
     tableRows,
     clientY
   );
@@ -473,7 +473,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(10);
     pdf.setTextColor(59, 130, 246); // primaryColor
-    pdf.text("PAYMENT HISTORY:", 14, paymentsY);
+    pdf.text("paiemnt enregistré:", 14, paymentsY);
     
     const paymentRows = invoice.payments.map(payment => [
       formatDate(payment.payment_date),
@@ -484,7 +484,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     
     paymentsY = addStylizedTable(
       pdf,
-      ['Date', 'Method', 'Reference', 'Amount'],
+      ['Date', 'Méthode', 'Reference', 'Montant'],
       paymentRows,
       paymentsY + 5
     );
@@ -523,7 +523,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(10);
     pdf.setTextColor(darkPurple);
-    pdf.text("TRANSPORTATION DETAILS:", 20, nextY + 7);
+    pdf.text("detail de transport:", 20, nextY + 7);
     
     // Add details
     pdf.setFont("helvetica", "normal");
@@ -532,15 +532,15 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     const transportDetails = [];
     
     if (deliveryNote.drivername) {
-      transportDetails.push(`Driver: ${deliveryNote.drivername}`);
+      transportDetails.push(`Chaufeur: ${deliveryNote.drivername}`);
     }
     
     if (deliveryNote.truck_id) {
-      transportDetails.push(`Truck ID: ${deliveryNote.truck_id}`);
+      transportDetails.push(`Matricule: ${deliveryNote.truck_id}`);
     }
     
     if (deliveryNote.delivery_company) {
-      transportDetails.push(`Delivery Company: ${deliveryNote.delivery_company}`);
+      transportDetails.push(`Enterprise de transport: ${deliveryNote.delivery_company}`);
     }
     
     pdf.text(transportDetails.join(' | '), 20, nextY + 15);
@@ -561,7 +561,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   // Add items table
   const tableY = addStylizedTable(
     pdf,
-    ['No', 'Product', 'Quantity', 'Unit', 'Description'],
+    ['No', 'Produit', 'Quantity', 'Unité', 'Description'],
     tableRows,
     nextY
   );
@@ -580,8 +580,8 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   pdf.line(30, signatureY + 20, 80, signatureY + 20);
   pdf.line(130, signatureY + 20, 180, signatureY + 20);
   
-  pdf.text("Deliverer Signature", 30, signatureY + 10);
-  pdf.text("Recipient Signature", 130, signatureY + 10);
+  pdf.text("Signature de Chaufeur", 30, signatureY + 10);
+  pdf.text("Signature de Récepteur ", 130, signatureY + 10);
   
   // Add footer
   addFooter(pdf);
@@ -652,7 +652,7 @@ export const exportEtat104ToPDF = async (
   pdf.setFont("helvetica", "italic");
   pdf.setFontSize(12);
   pdf.setTextColor(100, 100, 100);
-  pdf.text('Monthly TVA Declaration Summary', 105, 58, { align: 'center' });
+  pdf.text('TVA de mois', 105, 58, { align: 'center' });
   
   // Prepare table data
   const tableRows = clientSummaries.map(summary => [
@@ -675,7 +675,7 @@ export const exportEtat104ToPDF = async (
   // Add data table
   const tableY = addStylizedTable(
     pdf,
-    ['Client', 'NIF', 'Amount (Excl.)', 'TVA', 'Total'],
+    ['Client', 'NIF', 'Montant (HT)', 'TVA', 'Total'],
     tableRows,
     70
   );
@@ -689,16 +689,16 @@ export const exportEtat104ToPDF = async (
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(14);
   pdf.setTextColor(hexToRgb(primaryColor).r, hexToRgb(primaryColor).g, hexToRgb(primaryColor).b);
-  pdf.text('Summary for État 104 Declaration', 105, summaryY + 10, { align: 'center' });
+  pdf.text('resumé État 104', 105, summaryY + 10, { align: 'center' });
   
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(11);
   pdf.setTextColor(70, 70, 70);
   
   const detailsY = summaryY + 20;
-  pdf.text('Total Sales (Excl. Tax):', 60, detailsY);
-  pdf.text('Total TVA Collected:', 60, detailsY + 10);
-  pdf.text('Total TVA Deductible (simulated):', 60, detailsY + 20);
+  pdf.text('Total vente (Excl. Tax):', 60, detailsY);
+  pdf.text('Total TVA :', 60, detailsY + 10);
+  pdf.text('Total TVA  (simulé):', 60, detailsY + 20);
   
   // Draw separator line
   pdf.setDrawColor(200, 200, 200);
@@ -763,7 +763,7 @@ export const exportEtat104ToExcel = (
   const data = clientSummaries.map(summary => ({
     'Client': summary.clientName,
     'NIF': summary.taxid,
-    'Amount (Excl.)': summary.subtotal,
+    'Montant (HT)': summary.subtotal,
     'TVA': summary.taxTotal,
     'Total': summary.total
   }));
@@ -772,16 +772,16 @@ export const exportEtat104ToExcel = (
   data.push({
     'Client': 'TOTALS:',
     'NIF': '',
-    'Amount (Excl.)': totalAmount,
+    'Montant (HT)': totalAmount,
     'TVA': totalTax,
     'Total': grandTotal
   });
   
   // Create summary sheet data
   const summaryData = [
-    { 'Summary': 'Total Sales (Excl. Tax):', 'Value': totalAmount },
-    { 'Summary': 'Total TVA Collected:', 'Value': totalTax },
-    { 'Summary': 'Total TVA Deductible (simulated):', 'Value': totalTax * 0.3 },
+    { 'Summary': 'Total vente (HT):', 'Value': totalAmount },
+    { 'Summary': 'Total TVA :', 'Value': totalTax },
+    { 'Summary': 'Total TVA  (simule):', 'Value': totalTax * 0.3 },
     { 'Summary': 'TVA Due:', 'Value': totalTax * 0.7 }
   ];
   
