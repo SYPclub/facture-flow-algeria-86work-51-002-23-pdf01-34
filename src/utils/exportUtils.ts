@@ -99,7 +99,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.setTextColor(70, 70, 70);
   
   const companyDetails = [
-    `Addresse: ${companyInfo?.address} || 'Company Address' `,,
+    `Addresse: ${companyInfo?.address || 'Company Address'}  `,
     `NIF: ${companyInfo?.taxid || 'N/A'} | RC: ${companyInfo?.commerceRegNumber || 'N/A'}`,
     `NIS: 002004020004183`, `RIB: 00300325000240230052 Badr agence Ain Beida`,
     `Tél: ${companyInfo?.phone || 'N/A'} | Email: ${companyInfo?.email || 'info@company.com'}`
