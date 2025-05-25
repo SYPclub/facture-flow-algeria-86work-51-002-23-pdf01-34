@@ -154,14 +154,15 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   const clientInfo = [
     
     `Address: ${client?.address || 'Address'}`,
-    `RC: ${client?.rc || 'RC: -'}`,
-    `NIF: ${client?.taxid || 'NIF: -'}     NIS: ${client?.nis || 'NIS: -'}`,
-    `AI: ${client?.ai || 'AI: -'}`,
-    `RIB: ${client?.rib || 'RIB: -'}  ville : ${client?.city || 'City'}`,      
+    `RC: ${client?.rc || '-'}`,
+    `NIF: ${client?.taxid || '-'}`,
+    `NIS: ${client?.nis || '-'}`
+    `AI: ${client?.ai || '-'}`,
+    `RIB: ${client?.rib || '-'}  ville : ${client?.city || 'City'}`,      
     `Tel: ${client?.phone || 'N/A'} | Email: ${client?.email || 'N/A'}`
   ];
   
-  pdf.text(clientInfo, 20, startY + 15);
+  pdf.text(clientInfo, 20, startY + 13);
   
   // Right side: Invoice details
   pdf.setTextColor(darkBlue);
@@ -192,7 +193,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
     details.push(`Delivery Date: ${formatDate(invoiceDetails.deliverydate)}`);
   }
   
-  pdf.text(details, 115, startY + 15);
+  pdf.text(details, 115, startY + 13);
   
   return startY + 45; // Return next Y position
 };
