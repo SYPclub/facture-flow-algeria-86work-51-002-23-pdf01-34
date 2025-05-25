@@ -144,7 +144,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.setTextColor(darkBlue);
   pdf.setFontSize(11);
   pdf.setFont("helvetica", "bold");
-  pdf.text("BILLED TO:", 20, startY + 8);
+  pdf.text(`CLIENT: ${client?.name || 'Client Name'}`, 20, startY + 8);
   
   // Client details
   pdf.setTextColor(darkGray);
@@ -152,14 +152,12 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.setFont("helvetica", "normal");
   
   const clientInfo = [
-    `${client?.name || 'Client Name'}`,
-    `${client?.address || 'Address'}`,
+    
+    `Address: ${client?.address || 'Address'}`,
     `RC: ${client?.rc || 'RC: -'}`,
-    `NIF: ${client?.taxid || 'NIF: -'}`,
-    `NIS: ${client?.nis || 'RC: -'}`,
-    `AI: ${client?.ai || 'RC: -'}`,
-    `RIB: ${client?.rib || 'RC: -'}`,      
-    `${client?.city || 'City'}`,
+    `NIF: ${client?.taxid || 'NIF: -'}     NIS: ${client?.nis || 'NIS: -'}`,
+    `AI: ${client?.ai || 'AI: -'}`,
+    `RIB: ${client?.rib || 'RIB: -'}  ville : ${client?.city || 'City'}`,      
     `Tel: ${client?.phone || 'N/A'} | Email: ${client?.email || 'N/A'}`
   ];
   
