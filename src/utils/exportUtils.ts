@@ -144,7 +144,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.setTextColor(darkBlue);
   pdf.setFontSize(11);
   pdf.setFont("helvetica", "bold");
-  pdf.text(`CLIENT: ${client?.name || 'Client Name'}`, 20, startY + 8);
+  pdf.text(`CLIENT: ${client?.name || 'Client Name'}`, 20, startY + 7);
   
   // Client details
   pdf.setTextColor(darkGray);
@@ -168,7 +168,7 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.setTextColor(darkBlue);
   pdf.setFontSize(11);
   pdf.setFont("helvetica", "bold");
-  pdf.text("DOCUMENT DETAILS:", 115, startY + 8);
+  pdf.text("DOCUMENT DETAILS:", 115, startY + 7);
   
   // Create array of invoice details
   pdf.setTextColor(darkGray);
