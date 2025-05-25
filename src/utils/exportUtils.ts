@@ -350,15 +350,12 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   // Draw backgroun d (now with dynamic width)
 //  drawRoundedRect(pdf, 14, startY, rectWidth, rectHeight, 3, lightGreen);
   pdf.setDrawColor(220, 220, 220);
-  pdf.line(
-        rectWidth,
-        startY + 9,
-        rectHeight,
-        startY + 9
-      );
+  //pdf.line(        rectWidth,startY + 9,rectHeight,        startY + 9);
   // Add text (centered in the rectangle)
   pdf.setTextColor(darkGreen);
-  pdf.text(fullText, 14 + (rectWidth / 2) - (textWidth / 2), startY + 7);
+  pdf.text(`Montant en lettres:`, 14 + (rectWidth / 2) - (textWidth / 2), startY + 7);
+  pdf.line(rectWidth,startY + 9, rectHeight ,startY + 9);
+  pdf.text(fullText, 14 + (rectWidth / 2) - (textWidth / 2), startY + 13);
   
   return startY + rectHeight + 3; // Return new Y position with some margin
 };
