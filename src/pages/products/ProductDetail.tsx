@@ -359,7 +359,7 @@ const ProductDetail = () => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Êtes-vous absolument sûr ?/AlertDialogTitle>
+                    <AlertDialogTitle>Êtes-vous absolument sûr ?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Cette action ne peut pas être annulée
                       le produit de nos serveurs.
