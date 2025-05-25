@@ -84,6 +84,8 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
 
   pdf.setFillColor(hexToRgb(primaryColor).r, hexToRgb(primaryColor).g, hexToRgb(primaryColor).b);
   pdf.rect(0, 0, pdf.internal.pageSize.width, gradientHeight, 'F');
+  pdf.rect( 0 ,  295, pdf.internal.pageSize.width, 1, 'F');
+
   pdf.rect( 0 ,  295, pdf.internal.pageSize.width, gradientHeight, 'F');
   // Add company name in large font with custom positioning
   pdf.setFont("helvetica", "bold");
@@ -97,8 +99,9 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   pdf.setTextColor(70, 70, 70);
   
   const companyDetails = [
-    companyInfo?.address || 'Company Address',
+    `Addresse: ${companyInfo?.address} || 'Company Address' `,,
     `NIF: ${companyInfo?.taxid || 'N/A'} | RC: ${companyInfo?.commerceRegNumber || 'N/A'}`,
+    `NIS: 002004020004183`, `RIB: 00300325000240230052 Badr agence Ain Beida`,
     `Tél: ${companyInfo?.phone || 'N/A'} | Email: ${companyInfo?.email || 'info@company.com'}`
   ];
   
