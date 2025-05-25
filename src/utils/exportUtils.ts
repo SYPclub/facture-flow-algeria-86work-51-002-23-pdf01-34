@@ -84,7 +84,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
 
   pdf.setFillColor(hexToRgb(primaryColor).r, hexToRgb(primaryColor).g, hexToRgb(primaryColor).b);
   pdf.rect(0, 0, pdf.internal.pageSize.width, gradientHeight, 'F');
-  pdf.rect( 0 ,  285, pdf.internal.pageSize.width, gradientHeight, 'F');
+  pdf.rect( 0 ,  295, pdf.internal.pageSize.width, gradientHeight, 'F');
   // Add company name in large font with custom positioning
   pdf.setFont("helvetica", "bold");
   pdf.setTextColor(50, 50, 50);
