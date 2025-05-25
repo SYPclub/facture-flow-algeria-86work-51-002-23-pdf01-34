@@ -240,9 +240,10 @@ const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
   const primaryColor = "#003049";  // Blue
   const lightGray = "#F1FAEE";     // Light gray for background
   const darkGray = "#374151";      // Dark gray for text
-  
+  const borderColor = "#1D3557"; 
+
   // Draw totals container with light gray background
-  drawRoundedRect(pdf, pdf.internal.pageSize.width - 80, startY, 66, 50, 3, lightGray);
+  drawRoundedRect(pdf, pdf.internal.pageSize.width - 80, startY, 66, 50, 3, lightGray,borderColor);
   
   // Add totals
   pdf.setFont("helvetica", "normal");
@@ -316,10 +317,10 @@ const addNotes = (pdf: jsPDF, notes: string | undefined, startY: number) => {
 
 const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   const lightGreen = "#457B9D";  // Light green background
-  const darkGreen = "#F1FAEE";   // Text color
+  const darkGreen = "#E63946";   // Text color
   
   // Set font properties first to calculate text width
-  pdf.setFont("helvetica", "italic");
+  pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9);
   
   // Generate the text
