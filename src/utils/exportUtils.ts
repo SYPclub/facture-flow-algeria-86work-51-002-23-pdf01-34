@@ -128,9 +128,9 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   const lightBlue = "#F1FAEE";  // Light blue background
   const darkBlue = "#E63946";   // Dark blue for accent
   const darkGray = "#374151";   // Dark gray for text
-
+  const borderColor = "#1D3557"; 
   // Client section box with light blue background
-  drawRoundedRect(pdf, 14, startY, 180, 40, 3, lightBlue,darkBlue);
+  drawRoundedRect(pdf, 14, startY, 180, 40, 3, lightBlue,borderColor);
   
   // Left side: Client info
   pdf.setTextColor(darkBlue);
