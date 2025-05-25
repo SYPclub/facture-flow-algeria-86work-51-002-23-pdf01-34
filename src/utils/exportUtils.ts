@@ -8,6 +8,11 @@ import n2words from 'n2words';
 export const convertNumberToFrenchWords = (num: number): string => {
   return n2words(num, { lang: 'fr' });
 };
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
 function formatCurrencyInFrenchWords(amount: number): string {
   const euros = Math.floor(amount);
@@ -337,7 +342,7 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   
   // Generate the text
   const totalInWords = formatCurrencyInFrenchWords(amount);
-  const fullText = `Montant en lettres: ${totalInWords}`;
+  const fullText = `| ${totalInWords}.`;
   
   // Calculate text width
   const textWidth = pdf.getStringUnitWidth(fullText) * 9 / pdf.internal.scaleFactor;
@@ -355,7 +360,7 @@ const addAmountInWords = (pdf: jsPDF, amount: number, startY: number) => {
   pdf.setTextColor(darkGreen);
   pdf.text(`Montant en lettres:`, 14 + (rectWidth / 2) - (textWidth / 2), startY + 7);
   pdf.line(rectWidth,startY + 9, rectHeight ,startY + 9);
-  pdf.text(fullText, 14 + (rectWidth / 2) - (textWidth / 2), startY + 13);
+  pdf.text(toTitleCase(fullText), 14 + (rectWidth / 2) - (textWidth / 2), startY + 13);
   
   return startY + rectHeight + 3; // Return new Y position with some margin
 };
