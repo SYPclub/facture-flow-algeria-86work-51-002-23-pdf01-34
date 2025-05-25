@@ -116,8 +116,8 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
   const docTypeYY = 50;
 
 
-  drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 13, 2, primaryColor);
-  pdf.text([docTypeText, `    N°: ${documentNumber}`], docTypeXX + 5, docTypeYY + 7);
+  drawRoundedRect(pdf, docTypeXX, docTypeYY, docTypeWidth + 10, 14, 2, primaryColor);
+  pdf.text([docTypeText, `        N°: ${documentNumber}`], docTypeXX + 5, docTypeYY + 7);
   
   return { yPos: docTypeYY+16, companyInfo };
 };
