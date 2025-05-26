@@ -500,7 +500,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   // On last page: totals, words, notes, payments
   
 
-  let paymentsY = notesYY;
+  let paymentsY = 230;
 
   if (invoice.payments && invoice.payments.length > 0) {
     pdf.setFont("helvetica", "bold");
