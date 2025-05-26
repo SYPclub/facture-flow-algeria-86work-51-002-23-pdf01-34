@@ -378,16 +378,14 @@ const addFooter = (pdf: jsPDF) => {
 // PROFORMA INVOICE EXPORT
 export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   const pdf = new jsPDF();
-  
-  // Add header
-  const { yPos } = await addHeader(pdf, "FACTURE PROFORMA", proforma.number, proforma.status);
-  
-  // Add client info section
-  const clientY = addClientInfo(pdf, proforma.client, proforma, yPos);
-  
-  // Prepare items table data
+
+  const maxRowsPerPage = 8;
+  const chunkArray = <T>(arr: T[], size: number): T[][] =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
+
+  // Chunked item rows
   let counter = 0;
-  const tableRows = proforma.items.map(item => [
+  const itemRows = proforma.items.map(item => [
     (++counter).toString(),
     `${item.product?.name || ''}\n${item.product?.code || ''}`,
     item.quantity.toString(),
@@ -399,31 +397,43 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     formatCurrency(item.totalTax),
     formatCurrency(item.total)
   ]);
-  
-  // Add items table
-  const tableY = addStylizedTable(
-    pdf,
-    ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise %', 'Hors taxe', 'TVA', 'Total'],
-    tableRows,
-    clientY
-  );
-  
-  // Add totals section
-  const totalsY = addTotals(pdf, proforma, tableY + 10);
-  
-  // Add amount in words
+  const itemChunks = chunkArray(itemRows, maxRowsPerPage);
+
+  let currentY = 10;
+  let pageIndex = 0;
+  let lastTableY = 0;
+
+  for (const chunk of itemChunks) {
+    if (pageIndex > 0) pdf.addPage();
+
+    const { yPos } = await addHeader(pdf, "FACTURE PROFORMA", proforma.number, proforma.status);
+    currentY = yPos;
+
+    if (pageIndex === 0) {
+      currentY = addClientInfo(pdf, proforma.client, proforma, yPos);
+    }
+
+    const tableY = addStylizedTable(
+      pdf,
+      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise %', 'Hors taxe', 'TVA', 'Total'],
+      chunk,
+      currentY + 10
+    );
+    lastTableY = tableY;
+    pageIndex++;
+  }
+
+  // Totals, amount in words, and notes go on last page
+  let yAfterTable = lastTableY + 10;
+  const totalsY = addTotals(pdf, proforma, yAfterTable);
   const wordsY = addAmountInWords(pdf, proforma.total, totalsY);
-  
-  // Add notes if present
   const notesY = addNotes(pdf, proforma.notes, wordsY);
-  
-  // Add footer
+
   addFooter(pdf);
-  
-  // Save the PDF
   pdf.save(`Proforma_${proforma.number}.pdf`);
   return true;
 };
+
 
 // FINAL INVOICE EXPORT
 export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
