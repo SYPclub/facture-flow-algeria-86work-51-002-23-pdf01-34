@@ -422,9 +422,18 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     const totalsY = addTotals(pdf, proforma, yAfterTable);
     const wordsY = addAmountInWords(pdf, proforma.total, totalsY);
     const notesY = addNotes(pdf, proforma.notes, wordsY);
+    
     pageIndex++;
   }
 
+  // Add page numbers
+  const pageCount = pageIndex;
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.setFontSize(8);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Page ${i} of ${pageCount}`, 105, pdf.internal.pageSize.height - 10, { align: 'center' });
+  }
   // Totals, amount in words, and notes go on last page
  
 
