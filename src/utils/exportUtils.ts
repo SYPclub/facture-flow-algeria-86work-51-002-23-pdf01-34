@@ -399,7 +399,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   ]);
   const itemChunks = chunkArray(itemRows, maxRowsPerPage);
 
-  let currentY = 10;
+  let currentY = 3;
   let pageIndex = 0;
   let lastTableY = 0;
 
