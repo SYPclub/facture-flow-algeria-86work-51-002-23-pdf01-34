@@ -579,7 +579,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     lastTableY = tableY;
       // Add notes and signature on last page
     const notesY = addNotes(pdf, deliveryNote.notes, lastTableY + 10);
-    const signatureY = notesY + 10;
+    const signatureY = notesY + 1;
 
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(10);
