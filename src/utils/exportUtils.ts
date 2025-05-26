@@ -446,16 +446,14 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
 // FINAL INVOICE EXPORT
 export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   const pdf = new jsPDF();
-  
-  // Add header
-  const { yPos } = await addHeader(pdf, "FACTURE", invoice.number, invoice.status);
-  
-  // Add client info section
-  const clientY = addClientInfo(pdf, invoice.client, invoice, yPos);
-  
-  // Prepare items table data
+
+  const maxRowsPerPage = 5;
+  const chunkArray = <T>(arr: T[], size: number): T[][] =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
+
+  // Prepare item rows
   let counter = 0;
-  const tableRows = invoice.items.map(item => [
+  const itemRows = invoice.items.map(item => [
     (++counter).toString(),
     `${item.product?.name || ''}\n${item.product?.code || ''}`,
     item.quantity.toString(),
@@ -466,57 +464,71 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     formatCurrency(item.totalTax),
     formatCurrency(item.total)
   ]);
+
+  const itemChunks = chunkArray(itemRows, maxRowsPerPage);
+  let currentY = 3;
+  let pageIndex = 0;
+  let lastTableY = 0;
+  let notesY =0;
+
+  for (const chunk of itemChunks) {
+    if (pageIndex > 0) pdf.addPage();
+
+    const { yPos } = await addHeader(pdf, "FACTURE", invoice.number, invoice.status);
+    currentY = yPos;
+
+    if (pageIndex === 0) {
+      currentY = addClientInfo(pdf, invoice.client, invoice, yPos);
+    }
+
+    const tableY = addStylizedTable(
+      pdf,
+      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'Hors taxe', 'TVA', 'Total'],
+      chunk,
+      currentY + 3
+    );
+
+    lastTableY = tableY;
+    let yAfterTable = lastTableY + 10;
+    const totalsY = addTotals(pdf, invoice, yAfterTable);
+    const wordsY = addAmountInWords(pdf, invoice.total, totalsY);
+    notesY = addNotes(pdf, invoice.notes, wordsY);
+    pageIndex++;
+  }
+
+  // On last page: totals, words, notes, payments
   
-  // Add items table
-  const tableY = addStylizedTable(
-    pdf,
-    ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'Hors taxe', 'TVA', 'Total'],
-    tableRows,
-    clientY
-  );
-  
-  // Add totals section
-  const totalsY = addTotals(pdf, invoice, tableY + 10);
-  
-  // Add amount in words
-  const wordsY = addAmountInWords(pdf, invoice.total, totalsY);
-  
-  // Add notes if present
-  const notesY = addNotes(pdf, invoice.notes, wordsY);
-  
-  // Add payments section if any
+
   let paymentsY = notesY;
-  
+
   if (invoice.payments && invoice.payments.length > 0) {
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(10);
     pdf.setTextColor(59, 130, 246); // primaryColor
-    pdf.text("paiemnt enregistré:", 14, paymentsY);
-    
+    pdf.text("paiement enregistré:", 14, paymentsY);
+
     const paymentRows = invoice.payments.map(payment => [
       formatDate(payment.payment_date),
       payment.paymentMethod,
       payment.reference || 'N/A',
       formatCurrency(payment.amount)
     ]);
-    
+
     paymentsY = addStylizedTable(
       pdf,
       ['Date', 'Méthode', 'Reference', 'Montant'],
       paymentRows,
       paymentsY + 5
     );
-    
+
     paymentsY += 10;
   }
-  
-  // Add footer
+
   addFooter(pdf);
-  
-  // Save the PDF
   pdf.save(`Invoice_${invoice.number}.pdf`);
   return true;
 };
+
 
 // DELIVERY NOTE EXPORT
 export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
