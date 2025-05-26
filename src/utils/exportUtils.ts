@@ -379,7 +379,7 @@ const addFooter = (pdf: jsPDF) => {
 export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
   const pdf = new jsPDF();
 
-  const maxRowsPerPage = 8;
+  const maxRowsPerPage = 5;
   const chunkArray = <T>(arr: T[], size: number): T[][] =>
     Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
 
@@ -408,10 +408,8 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
 
     const { yPos } = await addHeader(pdf, "FACTURE PROFORMA", proforma.number, proforma.status);
     currentY = yPos;
+    currentY = addClientInfo(pdf, proforma.client, proforma, yPos);
 
-    if (pageIndex === 0) {
-      currentY = addClientInfo(pdf, proforma.client, proforma, yPos);
-    }
 
     const tableY = addStylizedTable(
       pdf,
@@ -420,14 +418,15 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
       currentY + 10
     );
     lastTableY = tableY;
+    let yAfterTable = lastTableY + 10;
+    const totalsY = addTotals(pdf, proforma, yAfterTable);
+    const wordsY = addAmountInWords(pdf, proforma.total, totalsY);
+    const notesY = addNotes(pdf, proforma.notes, wordsY);
     pageIndex++;
   }
 
   // Totals, amount in words, and notes go on last page
-  let yAfterTable = lastTableY + 10;
-  const totalsY = addTotals(pdf, proforma, yAfterTable);
-  const wordsY = addAmountInWords(pdf, proforma.total, totalsY);
-  const notesY = addNotes(pdf, proforma.notes, wordsY);
+ 
 
   addFooter(pdf);
   pdf.save(`Proforma_${proforma.number}.pdf`);
