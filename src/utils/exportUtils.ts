@@ -469,7 +469,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   let currentY = 3;
   let pageIndex = 0;
   let lastTableY = 0;
-  let notesY =0;
+  let notesYY =0;
 
   for (const chunk of itemChunks) {
     if (pageIndex > 0) pdf.addPage();
@@ -492,14 +492,15 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     let yAfterTable = lastTableY + 10;
     const totalsY = addTotals(pdf, invoice, yAfterTable);
     const wordsY = addAmountInWords(pdf, invoice.total, totalsY);
-    notesY = addNotes(pdf, invoice.notes, wordsY);
+    const notesY = addNotes(pdf, invoice.notes, wordsY);
+    notesYY = wordsY;
     pageIndex++;
   }
 
   // On last page: totals, words, notes, payments
   
 
-  let paymentsY = notesY;
+  let paymentsY = notesYY;
 
   if (invoice.payments && invoice.payments.length > 0) {
     pdf.setFont("helvetica", "bold");
