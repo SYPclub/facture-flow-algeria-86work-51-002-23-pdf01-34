@@ -500,30 +500,6 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   // On last page: totals, words, notes, payments
   
 
-  let paymentsY = 230;
-
-  if (invoice.payments && invoice.payments.length > 0) {
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(10);
-    pdf.setTextColor(59, 130, 246); // primaryColor
-    pdf.text("paiement enregistré:", 14, paymentsY);
-
-    const paymentRows = invoice.payments.map(payment => [
-      formatDate(payment.payment_date),
-      payment.paymentMethod,
-      payment.reference || 'N/A',
-      formatCurrency(payment.amount)
-    ]);
-
-    paymentsY = addStylizedTable(
-      pdf,
-      ['Date', 'Méthode', 'Reference', 'Montant'],
-      paymentRows,
-      paymentsY + 5
-    );
-
-    paymentsY += 10;
-  }
 
   addFooter(pdf);
   pdf.save(`Invoice_${invoice.number}.pdf`);
@@ -534,93 +510,97 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
 // DELIVERY NOTE EXPORT
 export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   const pdf = new jsPDF();
-  
-  // Add header
-  const { yPos } = await addHeader(pdf, "BON DE COMMANDE", deliveryNote.number, deliveryNote.status);
-  
-  // Add client info section
-  let nextY = addClientInfo(pdf, deliveryNote.client, deliveryNote, yPos);
-  
-  // Add transportation details in a styled box
-  const primaryColor = "#3B82F6";  // Blue
-  const lightPurple = "#EEF2FF";   // Light purple for background
-  const darkPurple = "#4F46E5";    // Dark purple for text
-  
-  if (deliveryNote.drivername || deliveryNote.truck_id || deliveryNote.delivery_company) {
-    // Draw background box
-    drawRoundedRect(pdf, 14, nextY, 180, 20, 3, lightPurple);
-    
-    // Add title
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(10);
-    pdf.setTextColor(darkPurple);
-    pdf.text("detail de transport:", 20, nextY + 7);
-    
-    // Add details
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
-    
-    const transportDetails = [];
-    
-    if (deliveryNote.drivername) {
-      transportDetails.push(`Chaufeur: ${deliveryNote.drivername}`);
-    }
-    
-    if (deliveryNote.truck_id) {
-      transportDetails.push(`Matricule: ${deliveryNote.truck_id}`);
-    }
-    
-    if (deliveryNote.delivery_company) {
-      transportDetails.push(`Enterprise de transport: ${deliveryNote.delivery_company}`);
-    }
-    
-    pdf.text(transportDetails.join(' | '), 20, nextY + 15);
-    
-    nextY += 25;
-  }
-  
-  // Prepare items table data
+
+  const maxRowsPerPage = 8;
+  const chunkArray = <T>(arr: T[], size: number): T[][] =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
+
+  // Prepare table data
   let counter = 0;
-  const tableRows = deliveryNote.items.map(item => [
+  const itemRows = deliveryNote.items.map(item => [
     (++counter).toString(),
     `${item.product?.name || 'N/A'}\n${item.product?.code || 'N/A'}`,
     item.quantity.toString(),
     item.unit ? item.unit.toString() : 'N/A',
     item.product?.description || ''
   ]);
+  const itemChunks = chunkArray(itemRows, maxRowsPerPage);
+
+  const primaryColor = "#3B82F6";
+  const lightPurple = "#EEF2FF";
+  const darkPurple = "#4F46E5";
+
+  let currentY = 10;
+  let pageIndex = 0;
+  let lastTableY = 0;
+
+  for (const chunk of itemChunks) {
+    if (pageIndex > 0) pdf.addPage();
+
+    const { yPos } = await addHeader(pdf, "BON DE COMMANDE", deliveryNote.number, deliveryNote.status);
+    currentY = yPos;
+    currentY = addClientInfo(pdf, deliveryNote.client, deliveryNote, yPos);
+
+    // Add transport details
+    if (deliveryNote.drivername || deliveryNote.truck_id || deliveryNote.delivery_company) {
+      drawRoundedRect(pdf, 14, currentY, 180, 20, 3, lightPurple);
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(10);
+      pdf.setTextColor(darkPurple);
+      pdf.text("detail de transport:", 20, currentY + 7);
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
+      const transportDetails = [];
+
+      if (deliveryNote.drivername) {
+        transportDetails.push(`Chaufeur: ${deliveryNote.drivername}`);
+      }
+      if (deliveryNote.truck_id) {
+        transportDetails.push(`Matricule: ${deliveryNote.truck_id}`);
+      }
+      if (deliveryNote.delivery_company) {
+        transportDetails.push(`Enterprise de transport: ${deliveryNote.delivery_company}`);
+      }
+
+      pdf.text(transportDetails.join(' | '), 20, currentY + 15);
+      currentY += 25;
+    }
   
-  // Add items table
-  const tableY = addStylizedTable(
-    pdf,
-    ['No', 'Produit', 'Quantity', 'Unité', 'Description'],
-    tableRows,
-    nextY
-  );
+
+    const tableY = addStylizedTable(
+      pdf,
+      ['No', 'Produit', 'Quantity', 'Unité', 'Description'],
+      chunk,
+      currentY + 10
+    );
+
+    lastTableY = tableY;
+      // Add notes and signature on last page
+    const notesY = addNotes(pdf, deliveryNote.notes, lastTableY + 10);
+    const signatureY = notesY + 10;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.setTextColor(59, 130, 246);
+
+    // Signature lines
+    pdf.line(30, signatureY + 20, 80, signatureY + 20);
+    pdf.line(130, signatureY + 20, 180, signatureY + 20);
+
+    pdf.text("Signature de Chaufeur", 30, signatureY + 10);
+    pdf.text("Signature de Récepteur", 130, signatureY + 10);
+
+    pageIndex++;
+  }
+
   
-  // Add notes if present
-  const notesY = addNotes(pdf, deliveryNote.notes, tableY + 10);
-  
-  // Add signatures section
-  const signatureY = notesY + 10;
-  
-  pdf.setFont("helvetica", "normal");
-  pdf.setFontSize(10);
-  pdf.setTextColor(59, 130, 246); // primaryColor
-  
-  // Draw signature lines
-  pdf.line(30, signatureY + 20, 80, signatureY + 20);
-  pdf.line(130, signatureY + 20, 180, signatureY + 20);
-  
-  pdf.text("Signature de Chaufeur", 30, signatureY + 10);
-  pdf.text("Signature de Récepteur ", 130, signatureY + 10);
-  
-  // Add footer
   addFooter(pdf);
-  
-  // Save the PDF
   pdf.save(`DeliveryNote_${deliveryNote.number}.pdf`);
   return true;
 };
+
 
 // ETAT 104 REPORT EXPORTS
 interface ClientSummary {
