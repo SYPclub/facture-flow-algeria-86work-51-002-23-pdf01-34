@@ -415,7 +415,7 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
       pdf,
       ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise %', 'Hors taxe', 'TVA', 'Total'],
       chunk,
-      currentY + 10
+      currentY + 3
     );
     lastTableY = tableY;
     let yAfterTable = lastTableY + 10;
