@@ -92,6 +92,8 @@ export interface FinalInvoice extends BaseInvoice {
   amount_paid?: number;
   client_debt?: number;
   payments?: InvoicePayment[];
+  payment_type?: string; // 'cheque' or 'cash'
+  stamp_tax?: number; // For cash payment tax
 }
 
 export interface DeliveryNote {

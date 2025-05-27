@@ -93,6 +93,8 @@ const finalInvoiceFormSchema = z.object({
   status: z.string(),
   paymentdate: z.string().optional(),
   paymentreference: z.string().optional(),
+  payment_type: z.string().optional(),
+  stamp_tax: z.coerce.number().optional(),
 });
 
 const FinalInvoiceDetail = () => {
@@ -154,6 +156,8 @@ const FinalInvoiceDetail = () => {
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
+      payment_type: invoice?.payment_type || '',
+      stamp_tax: invoice?.stamp_tax || 0,
     },
     values: {
       notes: invoice?.notes || '',
@@ -162,6 +166,8 @@ const FinalInvoiceDetail = () => {
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
+      payment_type: invoice?.payment_type || '',
+      stamp_tax: invoice?.stamp_tax || 0,
     }
   });
 
@@ -226,7 +232,7 @@ const FinalInvoiceDetail = () => {
       toast({
         variant: 'destructive',
         title: 'Status Update Failed',
-        description: 'Failed to update invoice status. Please try again.'
+        description: 'Failed to update invoice status. Please try again'
       });
       console.error('Error updating invoice status:', error);
     }
@@ -497,8 +503,47 @@ const FinalInvoiceDetail = () => {
                     </FormItem>
                   )}
                 />
-                
-                
+
+                <FormField
+                  control={form.control}
+                  name="payment_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type de paiement</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner le type de paiement" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="cheque">Chèque</SelectItem>
+                          <SelectItem value="cash">Espèces</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch('payment_type') === 'cash' && (
+                  <FormField
+                    control={form.control}
+                    name="stamp_tax"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Taxe de timbre</FormLabel>
+                        <FormControl>
+                          <Input type="number" step="0.01" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <FormField
                   control={form.control}
@@ -530,8 +575,6 @@ const FinalInvoiceDetail = () => {
 
                 {form.watch('status') === 'paid' && (
                   <>
-                    
-                    
                     <FormField
                       control={form.control}
                       name="paymentreference"
@@ -705,6 +748,22 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Date d'émission:</strong>{" "}
                   {formatDate(invoice.issuedate)}
                 </div>
+                
+                {invoice.payment_type && (
+                  <div>
+                    <strong className="font-semibold">Type de paiement:</strong>{" "}
+                    <Badge variant="outline">
+                      {invoice.payment_type === 'cash' ? 'Espèces' : 'Chèque'}
+                    </Badge>
+                  </div>
+                )}
+
+                {invoice.payment_type === 'cash' && invoice.stamp_tax && (
+                  <div>
+                    <strong className="font-semibold">Taxe de timbre:</strong>{" "}
+                    {formatCurrency(invoice.stamp_tax)}
+                  </div>
+                )}
                 
                 <div>
                   <strong className="font-semibold">Statut:</strong>{" "}
