@@ -487,7 +487,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     lastTableY = tableY;
     let yAfterTable = lastTableY + 10;
     const totalsY = addTotals(pdf, invoice, yAfterTable);
-    const wordsY = addAmountInWords(pdf, invoice.total, totalsY);
+    const wordsY = addAmountInWords(pdf, invoice.total, yAfterTable +15);
     const notesY = addNotes(pdf, invoice.notes, wordsY);
     notesYY = wordsY;
     pageIndex++;
