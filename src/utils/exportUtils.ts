@@ -537,55 +537,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     currentY = yPos;
     currentY = addClientInfo(pdf, deliveryNote.client, deliveryNote, yPos);
 
-    // Add transport details
-    if (deliveryNote.drivername || deliveryNote.truck_id || deliveryNote.delivery_company) {
-      const boxX = 14;
-      const boxWidth = 180;
-      const boxHeight = 24;
-      const boxY = currentY;
-
-      // Draw background box
-      drawRoundedRect(pdf, boxX, boxY, boxWidth, boxHeight, 3, lightPurple);
-
-      // Title
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(10);
-      pdf.setTextColor(darkPurple);
-      pdf.text("Détails de transport:", boxX + 4, boxY + 7);
-
-      // Table column positions
-      const colWidths = [60, 60, 60];
-      const totalColsWidth = colWidths.reduce((a, b) => a + b, 0);
-      const startX = boxX + (boxWidth - totalColsWidth) / 2; // Centered horizontally
-      const headerY = boxY + 14;
-      const valueY = boxY + 20;
-
-      // Set headers
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(9);
-      pdf.setTextColor(0, 0, 0);
-
-      const headers = ["Chauffeur", "Matricule", "Entreprise de transport"];
-      headers.forEach((header, i) => {
-        pdf.text(header, startX + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 2, headerY);
-      });
-
-      // Set values
-      pdf.setFont("helvetica", "normal");
-      const values = [
-        deliveryNote.drivername || "-",
-        deliveryNote.truck_id || "-",
-        deliveryNote.delivery_company || "-"
-      ];
-      values.forEach((val, i) => {
-        pdf.text(val, startX + colWidths.slice(0, i).reduce((a, b) => a + b, 0) + 2, valueY);
-      });
-
-      currentY += boxHeight + 5;
-    }
-
-  
-
+   
     const tableY = addStylizedTable(
       pdf,
       ['No', 'Produit', 'Quantity', 'Unité', 'Description'],
@@ -594,6 +546,60 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     );
 
     lastTableY = tableY;
+     // Add transport details
+    if (deliveryNote.drivername || deliveryNote.truck_id || deliveryNote.delivery_company) {
+      const pdfFontSize = 9;
+      const linePadding = 5;
+      const rowSpacing = 6;
+
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(pdfFontSize);
+
+      const labels = ["Chauffeur", "Matricule", "Entreprise de transport"];
+      const values = [
+        deliveryNote.drivername || "-",
+        deliveryNote.truck_id || "-",
+        deliveryNote.delivery_company || "-"
+      ];
+
+      // Measure max width of label and value
+      const labelWidths = labels.map(label => pdf.getTextWidth(label));
+      const valueWidths = values.map(value => pdf.getTextWidth(value));
+
+      const maxLabelWidth = Math.max(...labelWidths);
+      const maxValueWidth = Math.max(...valueWidths);
+
+      const col1Width = maxLabelWidth + linePadding;
+      const col2Width = maxValueWidth + linePadding;
+
+      const tableWidth = col1Width + col2Width + 5;
+      const tableHeight = (labels.length * rowSpacing) + 10;
+
+      const boxX = 14;
+      const boxY = lastTableY;
+
+      // Draw background box
+      drawRoundedRect(pdf, boxX, boxY, tableWidth, tableHeight, 3, lightPurple);
+
+      // Add title
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(10);
+      pdf.setTextColor("#4F46E5"); // darkPurple
+      pdf.text("Détails de transport:", boxX + 2, boxY + 6);
+
+      // Draw content rows
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(pdfFontSize);
+      pdf.setTextColor(0, 0, 0);
+
+      labels.forEach((label, i) => {
+        const rowY = boxY + 10 + (i * rowSpacing);
+        pdf.text(label, boxX + 2, rowY);
+        pdf.text(values[i], boxX + col1Width + 2, rowY);
+      });
+
+      currentY += tableHeight + 10;
+    }
       // Add notes and signature on last page
     const notesY = addNotes(pdf, deliveryNote.notes, lastTableY + 10);
     const signatureY = notesY + 1;
@@ -604,10 +610,11 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
 
     // Signature lines
     pdf.line(30, signatureY + 20, 80, signatureY + 20);
-    pdf.line(130, signatureY + 20, 180, signatureY + 20);
+    
+    drawRoundedRect(pdf, 14, signatureY, 60, 40, 3,'#FFFFFF' ,'#003049');
 
-    pdf.text("Signature de Chaufeur", 30, signatureY + 10);
-    pdf.text("Signature de Récepteur", 130, signatureY + 10);
+    pdf.text("Recu par:", 30, signatureY + 10);
+    
 
     pageIndex++;
   }
