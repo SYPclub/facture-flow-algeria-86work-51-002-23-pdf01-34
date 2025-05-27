@@ -90,6 +90,7 @@ const proformaFormSchema = z.object({
   notes: z.string().optional(),
   issuedate: z.string(),
   duedate: z.string(),
+  bc: z.string().optional(),
   payment_type: z.string(),
   status: z.string().optional(),
   items: z.array(
@@ -153,18 +154,20 @@ const ProformaDetail = () => {
     defaultValues: {
       clientid: proforma?.clientid || '',
       notes: proforma?.notes || '',
+      bc: proforma?.bc || '',
       issuedate: proforma?.issuedate || '',
       duedate: proforma?.duedate || '',
-      payment_type: proforma?.payment_type || 'cheque',
+      payment_type: proforma?.payment_type || '',
       status: proforma?.status || 'draft',
       items: proforma?.items || [],
     },
     values: {
       clientid: proforma?.clientid || '',
       notes: proforma?.notes || '',
+      bc: proforma?.bc || '',
       issuedate: proforma?.issuedate || '',
       duedate: proforma?.duedate || '',
-      payment_type: proforma?.payment_type || 'cheque',
+      payment_type: proforma?.payment_type || '',
       status: proforma?.status || 'draft',
       items: proforma?.items || [],
     }
@@ -209,7 +212,7 @@ const ProformaDetail = () => {
       const taxrate = item.taxrate || 0;
       const discount = item.discount || 0;
       
-      const itemSubtotal = quantity * unitprice * (1 - discount / 100);
+      const itemSubtotal = (quantity * unitprice) -discount;
       const itemTax = itemSubtotal * (taxrate / 100);
       
       subtotal += itemSubtotal;
@@ -278,6 +281,7 @@ const ProformaDetail = () => {
         issuedate: data.issuedate,
         duedate: data.duedate,
         notes: data.notes,
+        bc: data.bc,
         payment_type: data.payment_type,
         status: data.status
       });
@@ -289,7 +293,7 @@ const ProformaDetail = () => {
         const taxrate = item.taxrate || 0;
         const discount = item.discount || 0;
         
-        const totalExcl = quantity * unitprice * (1 - discount / 100);
+        const totalExcl = (quantity * unitprice ) -discount ;
         const totalTax = totalExcl * (taxrate / 100);
         const total = totalExcl + totalTax;
         
@@ -597,6 +601,10 @@ const ProformaDetail = () => {
                       {clients.find(c => c.id === field.value)?.taxid } 
                     </div>
                     <div>
+                      <strong className="font-semibold">TIN:</strong>{" "}
+                      {clients.find(c => c.id === field.value)?.city || ''}
+                    </div>
+                    <div>
                       <strong className="font-semibold">NIS:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.nis}
                     </div>
@@ -628,10 +636,7 @@ const ProformaDetail = () => {
                       <strong className="font-semibold">Adresse:</strong>{" "}
                       {clients.find(c => c.id === field.value)?.address || ''}
                     </div>
-                    <div>
-                      <strong className="font-semibold">Ville:</strong>{" "}
-                      {clients.find(c => c.id === field.value)?.city || ''}, {clients.find(c => c.id === field.value)?.country || ''}
-                    </div>
+                    
                   </div>
                 )}
               </CardContent>
@@ -644,7 +649,7 @@ const ProformaDetail = () => {
               <CardContent className="space-y-2">
                 <div>
                   <strong className="font-semibold">Numéro de la facture:</strong>{" "}
-                  {proforma.number}
+                  {proforma.number}   
                 </div>
                 <FormField
                   control={form.control}
@@ -722,6 +727,19 @@ const ProformaDetail = () => {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="bc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bon de Commande:</FormLabel>
+                      <FormControl>
+                        <Input type="BC .." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
 
@@ -741,11 +759,11 @@ const ProformaDetail = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Produit</TableHead>
-                        <TableHead className="w-[80px]">Qté</TableHead>
+                        <TableHead className="w-[120px]">Qté</TableHead>
                         <TableHead className="w-[80px]">unité</TableHead>
                         <TableHead className="w-[120px]">Prix unitaire</TableHead>
-                        <TableHead className="w-[80px]">Tax %</TableHead>
-                        <TableHead className="w-[80px]">remise %</TableHead>
+                        <TableHead className="w-[120px]">Tax %</TableHead>
+                        <TableHead className="w-[120px]">remise </TableHead>
                         <TableHead className="w-[50px]"></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -818,7 +836,7 @@ const ProformaDetail = () => {
                             <Input
                               type="number"
                               min="0"
-                              max="100"
+                              max="100000"
                               value={item.discount || 0}
                               onChange={(e) => {
                                 const items = [...form.getValues('items')];
@@ -910,6 +928,10 @@ const ProformaDetail = () => {
                 {proforma.client?.taxid}
               </div>
               <div>
+                <strong className="font-semibold">TIN:</strong>{" "}
+                {proforma.client?.city}
+              </div>
+              <div>
                 <strong className="font-semibold">NIS:</strong>{" "}
                 {proforma.client?.taxid}
               </div>
@@ -941,10 +963,7 @@ const ProformaDetail = () => {
                 <strong className="font-semibold">Adresse:</strong>{" "}
                 {proforma.client?.address}
               </div>
-              <div>
-                <strong className="font-semibold">Ville:</strong>{" "}
-                {proforma.client?.city}, {proforma.client?.country}
-              </div>
+              
               <div>
                 <strong className="font-semibold">Contact:</strong>{" "}
                 {proforma.client?.phone} | {proforma.client?.email}
@@ -977,12 +996,19 @@ const ProformaDetail = () => {
                   {proforma.status}
                 </Badge>
               </div>
+              {proforma?.payment_type && (
+                <div>
+                  <strong className="font-semibold">Mode de paiement:</strong>{" "}
+                  <span className="flex items-center">
+                    {getPaymentTypeIcon(proforma.payment_type)}
+                    {proforma.payment_type === 'cash' ? 'Cash' : 'Cheque'}
+                  </span>
+                </div>
+                
+              )}
               <div>
-                <strong className="font-semibold">Mode de paiement:</strong>{" "}
-                <span className="flex items-center">
-                  {getPaymentTypeIcon(proforma.payment_type || 'cheque')}
-                  {proforma.payment_type === 'cash' ? 'Cash' : 'Cheque'}
-                </span>
+                <strong className="font-semibold">Bon de Commande:</strong>{" "}
+                {proforma.bc}
               </div>
               {proforma.finalInvoiceId && (
                 <div>
@@ -1012,7 +1038,7 @@ const ProformaDetail = () => {
                     <TableHead className="text-right">unité</TableHead>
                     <TableHead className="text-right">Prix unitaire</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
-                    <TableHead className="text-right">Remise %</TableHead>
+                    <TableHead className="text-right">Remise </TableHead>
                     <TableHead className="text-right">Total Excl.</TableHead>
                     <TableHead className="text-right">Montant de l'impôt</TableHead>
                     <TableHead className="text-right">Total inclus.</TableHead>
@@ -1031,7 +1057,7 @@ const ProformaDetail = () => {
                       <TableCell className="text-right">{item.unit}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                       <TableCell className="text-right">{item.taxrate}%</TableCell>
-                      <TableCell className="text-right">{item.discount}%</TableCell>
+                      <TableCell className="text-right">{item.discount}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalExcl)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalTax)}</TableCell>
                       <TableCell className="text-right font-medium">{formatCurrency(item.total)}</TableCell>
@@ -1055,7 +1081,7 @@ const ProformaDetail = () => {
                       {formatCurrency(proforma.taxTotal)}
                     </td>
                   </tr>
-                  {proforma.payment_type === 'cash' && proforma.stamp_tax > 0 && (
+                  {proforma.payment_type === 'cash'  && (
                     <tr>
                       <td colSpan={5} className="px-4 py-2 text-right font-semibold">
                         droit de timbre:

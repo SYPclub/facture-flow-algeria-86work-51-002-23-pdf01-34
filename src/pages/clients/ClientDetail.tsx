@@ -385,7 +385,7 @@ const ClientDetail = () => {
               </div>
               
               {/* New fields: NIS and AI */}
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <FormField
                   control={form.control}
                   name="nis"
@@ -421,7 +421,25 @@ const ClientDetail = () => {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>TIN</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Saisir TIN" 
+                          {...field} 
+                          disabled={!isEditing && !isNewClient}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
+              
               
               <FormField
                 control={form.control}
@@ -442,23 +460,7 @@ const ClientDetail = () => {
               />
               
               <div className="grid gap-4 sm:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ville</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Saisir la ville" 
-                          {...field} 
-                          disabled={!isEditing && !isNewClient}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
                 
                 <FormField
                   control={form.control}

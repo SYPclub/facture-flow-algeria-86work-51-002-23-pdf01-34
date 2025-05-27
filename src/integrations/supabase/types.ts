@@ -127,6 +127,7 @@ export type Database = {
           issuedate: string
           notes: string | null
           number: string
+          bc: string | null
           status: string
           truck_id: string | null
           updatedat: string | null
@@ -143,6 +144,7 @@ export type Database = {
           issuedate: string
           notes?: string | null
           number: string
+          bc?: string | null
           status: string
           truck_id?: string | null
           updatedat?: string | null
@@ -159,6 +161,7 @@ export type Database = {
           issuedate?: string
           notes?: string | null
           number?: string
+          bc?: string | null
           status?: string
           truck_id?: string | null
           updatedat?: string | null
@@ -222,6 +225,9 @@ export type Database = {
           paymentdate: string | null
           paymentreference: string | null
           proformaid: string | null
+          bc: string | null
+          payment_type: string | null
+          stamp_tax: number | null
           status: string
           subtotal: number
           taxtotal: number
@@ -239,6 +245,9 @@ export type Database = {
           paymentdate?: string | null
           paymentreference?: string | null
           proformaid?: string | null
+          bc?: string | null
+          payment_type?: string | null
+          stamp_tax?: number | null
           status: string
           subtotal: number
           taxtotal: number
@@ -257,6 +266,9 @@ export type Database = {
           paymentreference?: string | null
           proformaid?: string | null
           status?: string
+          bc?: string | null
+          payment_type?: string | null
+          stamp_tax?: number | null
           subtotal?: number
           taxtotal?: number
           total?: number
@@ -407,6 +419,7 @@ export type Database = {
           number: string
           payment_type: string | null
           stamp_tax: number | null
+          bc: string | null
           status: string
           subtotal: number
           taxtotal: number
@@ -424,6 +437,7 @@ export type Database = {
           number: string
           payment_type?: string | null
           stamp_tax?: number | null
+          bc?: string | null
           status: string
           subtotal: number
           taxtotal: number
@@ -440,6 +454,7 @@ export type Database = {
           notes?: string | null
           number?: string
           payment_type?: string | null
+          bc?: string | null
           stamp_tax?: number | null
           status?: string
           subtotal?: number

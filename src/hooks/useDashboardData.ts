@@ -103,6 +103,7 @@ export const useDashboardData = () => {
           finalInvoiceId: invoice.finalinvoiceid,
           payment_type: invoice.payment_type,
           stamp_tax: invoice.stamp_tax,
+          bc:invoice.bc,
           createdAt: invoice.createdat,
           updatedAt: invoice.updatedat
         }));
@@ -134,6 +135,9 @@ export const useDashboardData = () => {
           proformaId: invoice.proformaid,
           paymentDate: invoice.paymentdate,
           paymentReference: invoice.paymentreference,
+          payment_type: invoice.payment_type,
+          stamp_tax: invoice.stamp_tax,
+          bc:invoice.bc,
           createdAt: invoice.createdat,
           updatedAt: invoice.updatedat
         }));

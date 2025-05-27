@@ -390,10 +390,7 @@ const DeliveryNoteDetail = () => {
                         <span className="text-sm text-muted-foreground">Adresse:</span>
                         <span>{deliveryNote.client?.address}</span>
                       </div>
-                      <div className="grid grid-cols-2">
-                        <span className="text-sm text-muted-foreground">Ville:</span>
-                        <span>{deliveryNote.client?.city}</span>
-                      </div>
+                      
                       <div className="grid grid-cols-2">
                         <span className="text-sm text-muted-foreground">Téléphone:</span>
                         <span>{deliveryNote.client?.phone}</span>
@@ -654,10 +651,7 @@ const DeliveryNoteDetail = () => {
                       <span className="text-sm text-muted-foreground">Adresse:</span>
                       <span>{deliveryNote.client?.address}</span>
                     </div>
-                    <div className="grid grid-cols-2">
-                      <span className="text-sm text-muted-foreground">Ville:</span>
-                      <span>{deliveryNote.client?.city}</span>
-                    </div>
+                    
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Téléphone:</span>
                       <span>{deliveryNote.client?.phone}</span>

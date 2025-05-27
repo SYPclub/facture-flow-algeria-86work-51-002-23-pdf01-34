@@ -93,11 +93,18 @@ const finalInvoiceFormSchema = z.object({
   status: z.string(),
   paymentdate: z.string().optional(),
   paymentreference: z.string().optional(),
+  bc: z.string().optional(),
+  stamp_tax: z.string().optional(),
   payment_type: z.string().optional(),
-  stamp_tax: z.coerce.number().optional(),
 });
 
 const FinalInvoiceDetail = () => {
+  const paymentMethods = {
+        1: 'espèces',
+        2: 'Cheque / Virement',
+        3: 'carte',
+        // Add more as needed
+      };
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -156,8 +163,9 @@ const FinalInvoiceDetail = () => {
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
+      bc: invoice?.bc || '',
+      stamp_tax: invoice?.stamp_tax || '',
       payment_type: invoice?.payment_type || '',
-      stamp_tax: invoice?.stamp_tax || 0,
     },
     values: {
       notes: invoice?.notes || '',
@@ -166,8 +174,9 @@ const FinalInvoiceDetail = () => {
       status: invoice?.status || 'unpaid',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
+      bc: invoice?.bc || '',
+      stamp_tax: invoice?.stamp_tax || '',
       payment_type: invoice?.payment_type || '',
-      stamp_tax: invoice?.stamp_tax || 0,
     }
   });
 
@@ -232,7 +241,7 @@ const FinalInvoiceDetail = () => {
       toast({
         variant: 'destructive',
         title: 'Status Update Failed',
-        description: 'Failed to update invoice status. Please try again'
+        description: 'Failed to update invoice status. Please try again.'
       });
       console.error('Error updating invoice status:', error);
     }
@@ -260,7 +269,7 @@ const FinalInvoiceDetail = () => {
       if (totalPaid > 0) {
         updateData = {
           ...updateData,
-          // Keep the amount_paid from payments
+          // Keep the amount_paid from payments 
           amount_paid: totalPaid,
           // Recalculate client debt
           client_debt: Math.max(0, invoice.total - totalPaid)
@@ -272,7 +281,6 @@ const FinalInvoiceDetail = () => {
           amount_paid: 0,
           client_debt: invoice.total,
           paymentdate: null,
-          paymentreference: null
         };
       }
     }
@@ -439,6 +447,10 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.taxid}
                 </div>
                 <div>
+                  <strong className="font-semibold">TIN:</strong>{" "}
+                  {invoice.client?.city}
+                </div>
+                <div>
                   <strong className="font-semibold">NIS:</strong>{" "}
                   {invoice.client?.nis}
                 </div>
@@ -470,10 +482,7 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Address:</strong>{" "}
                   {invoice.client?.address}
                 </div>
-                <div>
-                  <strong className="font-semibold">Ville:</strong>{" "}
-                  {invoice.client?.city}, {invoice.client?.country}
-                </div>
+                
                 <div>
                   <strong className="font-semibold">Contact:</strong>{" "}
                   {invoice.client?.phone} | {invoice.client?.email}
@@ -503,47 +512,32 @@ const FinalInvoiceDetail = () => {
                     </FormItem>
                   )}
                 />
-
+                
+                
                 <FormField
                   control={form.control}
-                  name="payment_type"
+                  name="paymentReference"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Type de paiement</FormLabel>
+                      <FormLabel>Mode de paiement</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner le type de paiement" />
+                            <SelectValue placeholder="Sélectionner le mode de paiement" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="cheque">Chèque</SelectItem>
-                          <SelectItem value="cash">Espèces</SelectItem>
+                          <SelectItem value="1">Chèque/virement</SelectItem>
+                          <SelectItem value="2">Espèce</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                {form.watch('payment_type') === 'cash' && (
-                  <FormField
-                    control={form.control}
-                    name="stamp_tax"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Taxe de timbre</FormLabel>
-                        <FormControl>
-                          <Input type="number" step="0.01" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
 
                 <FormField
                   control={form.control}
@@ -573,23 +567,7 @@ const FinalInvoiceDetail = () => {
                   )}
                 />
 
-                {form.watch('status') === 'paid' && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="paymentreference"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Référence de paiement</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
+                
 
                 {invoice.proformaId && (
                   <div>
@@ -693,6 +671,10 @@ const FinalInvoiceDetail = () => {
                   {invoice.client?.taxid} 
                 </div>
                 <div>
+                  <strong className="font-semibold">TIN:</strong>{" "}
+                  {invoice.client?.city}
+                </div>
+                <div>
                   <strong className="font-semibold">NIS:</strong>{" "}
                   {invoice.client?.nis}
                 </div>
@@ -724,10 +706,7 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Address:</strong>{" "}
                   {invoice.client?.address}
                 </div>
-                <div>
-                  <strong className="font-semibold">Ville:</strong>{" "}
-                  {invoice.client?.city}, {invoice.client?.country}
-                </div>
+                
                 <div>
                   <strong className="font-semibold">Contact:</strong>{" "}
                   {invoice.client?.phone} | {invoice.client?.email}
@@ -748,23 +727,14 @@ const FinalInvoiceDetail = () => {
                   <strong className="font-semibold">Date d'émission:</strong>{" "}
                   {formatDate(invoice.issuedate)}
                 </div>
-                
-                {invoice.payment_type && (
-                  <div>
-                    <strong className="font-semibold">Type de paiement:</strong>{" "}
-                    <Badge variant="outline">
-                      {invoice.payment_type === 'cash' ? 'Espèces' : 'Chèque'}
-                    </Badge>
-                  </div>
-                )}
-
-                {invoice.payment_type === 'cash' && invoice.stamp_tax && (
-                  <div>
-                    <strong className="font-semibold">Taxe de timbre:</strong>{" "}
-                    {formatCurrency(invoice.stamp_tax)}
-                  </div>
-                )}
-                
+                <div>
+                  <strong className="font-semibold">Mode de paiement:</strong>{" "}
+                  
+                    
+                    {invoice.payment_type}
+                    
+                  
+                </div>
                 <div>
                   <strong className="font-semibold">Statut:</strong>{" "}
                   <Badge
@@ -789,17 +759,7 @@ const FinalInvoiceDetail = () => {
                   </span>
                 </div>
                 
-                {invoice.status === 'paid' && (
-                  <>
-                    
-                    {invoice.paymentReference && (
-                      <div>
-                        <strong className="font-semibold">Référence de paiement:</strong>{" "}
-                        {invoice.paymentReference}
-                      </div>
-                    )}
-                  </>
-                )}
+                
 
                 {invoice.proformaId && (
                   <div>
@@ -812,6 +772,10 @@ const FinalInvoiceDetail = () => {
                     </Link>
                   </div>
                 )}
+                <div>
+                  <strong className="font-semibold">Bon de commande:</strong>{" "}
+                  {invoice.bc}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -867,12 +831,22 @@ const FinalInvoiceDetail = () => {
                   </tr>
                   <tr>
                     <td colSpan={5} className="px-4 py-2 text-right font-semibold">
-                      Taxe Total:
+                      TVA:
                     </td>
                     <td colSpan={3} className="px-4 py-2 text-right">
                       {formatCurrency(invoice.taxTotal)}
                     </td>
                   </tr>
+                  
+                  <tr>
+                    <td colSpan={5} className="px-4 py-2 text-right font-semibold">
+                      droit de timbre:
+                    </td>
+                    <td colSpan={3} className="px-4 py-2 text-right">
+                      {formatCurrency(invoice.stamp_tax)}
+                    </td>
+                  </tr>
+                  
                   <tr className="border-t">
                     <td colSpan={5} className="px-4 py-2 text-right font-bold text-lg">
                       Total:
@@ -968,25 +942,18 @@ const FinalInvoiceDetail = () => {
                         Souhaitez-vous ajouter une référence de paiement ?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <div className="py-4">
-                      <Input
-                        placeholder="Payment reference (optional)"
-                        id="paymentReference"
-                        className="mb-2"
-                      />
-                    </div>
+                    
                     <AlertDialogFooter>
                       <AlertDialogCancel>Annuler</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => {
-                          const paymentRef = (document.getElementById('paymentReference') as HTMLInputElement)?.value;
                           const paymentdate = new Date().toISOString().split('T')[0];
                           const data = {
                             status: 'paid',
                             payment_date: paymentdate,
                             amount_paid: invoice.total,
-                            client_debt: 0,
-                            ...(paymentRef ? { paymentreference: paymentRef } : {})
+                            client_debt: 0
+                            
                           };
                           statusUpdateMutation.mutate(data);
                         }}

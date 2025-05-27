@@ -234,15 +234,11 @@ export const createFinalInvoice = async (data: any) => {
       throw new Error("User not authenticated. Cannot create final invoice without user ID.");
     }
     
-    // Add user ID to the data and ensure payment fields are included
+    // Add user ID to the data
     const invoiceData = {
       ...data,
-      created_by_userid: userId,
-      payment_type: data.payment_type || null,
-      stamp_tax: data.stamp_tax || null
+      created_by_userid: userId
     };
-    
-    console.log('Creating final invoice with payment data:', invoiceData);
     
     const { data: result, error } = await supabase
       .from('final_invoices')
@@ -260,18 +256,9 @@ export const createFinalInvoice = async (data: any) => {
 // Update final invoice functions
 export const updateFinalInvoice = async (id: string, data: any) => {
   try {
-    // Ensure payment_type and stamp_tax are included in updates
-    const updateData = {
-      ...data,
-      payment_type: data.payment_type || null,
-      stamp_tax: data.stamp_tax || null
-    };
-    
-    console.log('Updating final invoice with payment data:', updateData);
-    
     const { error } = await supabase
       .from('final_invoices')
-      .update(updateData)
+      .update(data)
       .eq('id', id);
     
     if (error) throw error;
@@ -651,41 +638,6 @@ export const deleteInvoicePayment = async (paymentId: string, invoiceId: string)
   } catch (error) {
     console.error('Error deleting invoice payment:', error);
     await rollbackTransaction();
-    throw error;
-  }
-};
-
-// Helper functions for data formatting
-export const formatInvoiceData = (invoice: any) => {
-  return {
-    ...invoice,
-    created_by_userid: invoice.created_by_userid || null,
-    amount_paid: invoice.amount_paid || 0,
-    client_debt: invoice.client_debt || 0,
-    payment_type: invoice.payment_type || null,
-    stamp_tax: invoice.stamp_tax || null
-  };
-};
-
-// Function to transfer proforma data to final invoice including payment info
-export const convertProformaToFinalInvoice = async (proformaData: any) => {
-  try {
-    const finalInvoiceData = {
-      ...proformaData,
-      // Transfer payment information from proforma
-      payment_type: proformaData.payment_type || null,
-      stamp_tax: proformaData.stamp_tax || null,
-      status: 'unpaid',
-      amount_paid: 0,
-      client_debt: proformaData.total,
-      proformaId: proformaData.id
-    };
-    
-    console.log('Converting proforma to final invoice with payment data:', finalInvoiceData);
-    
-    return await createFinalInvoice(finalInvoiceData);
-  } catch (error) {
-    console.error('Error converting proforma to final invoice:', error);
     throw error;
   }
 };

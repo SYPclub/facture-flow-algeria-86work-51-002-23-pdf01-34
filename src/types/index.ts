@@ -71,6 +71,7 @@ export interface ProformaInvoice extends BaseInvoice {
   finalInvoiceId?: string; // If approved and converted to final invoice
   payment_type?: string; // 'cheque' or 'cash'
   stamp_tax?: number; // For cash payment tax
+  bc?: string;
 }
 
 export interface InvoicePayment {
@@ -89,11 +90,12 @@ export interface FinalInvoice extends BaseInvoice {
   proformaId?: string; // Reference to the source proforma invoice
   payment_date?: string;
   paymentreference?: string;
+  bc?: string;
+  payment_type?: string;
+  stamp_tax?: string;
   amount_paid?: number;
   client_debt?: number;
   payments?: InvoicePayment[];
-  payment_type?: string; // 'cheque' or 'cash'
-  stamp_tax?: number; // For cash payment tax
 }
 
 export interface DeliveryNote {

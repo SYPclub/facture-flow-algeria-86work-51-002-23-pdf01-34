@@ -349,7 +349,10 @@ class MockDataService {
         status: invoice.status as 'draft' | 'sent' | 'approved' | 'rejected',
         finalInvoiceId: invoice.finalinvoiceid,
         createdAt: invoice.createdat || new Date().toISOString(),
-        updatedAt: invoice.updatedat || new Date().toISOString()
+        updatedAt: invoice.updatedat || new Date().toISOString(),
+        payment_type: invoice.payment_type, // Ajouté
+        stamp_tax: invoice.stamp_tax, // Ajouté
+        bc: invoice.bc, // Ajouté
       });
     }
     
@@ -458,7 +461,10 @@ class MockDataService {
       status: invoice.status as 'draft' | 'sent' | 'approved' | 'rejected',
       finalInvoiceId: invoice.finalinvoiceid,
       createdAt: invoice.createdat || new Date().toISOString(),
-      updatedAt: invoice.updatedat || new Date().toISOString()
+      updatedAt: invoice.updatedat || new Date().toISOString(),
+      payment_type: invoice.payment_type, // Ajouté
+      stamp_tax: invoice.stamp_tax, // Ajouté
+      bc: invoice.bc // Ajouté
     };
   }
 
@@ -481,7 +487,10 @@ class MockDataService {
             subtotal: proforma.subtotal,
             taxtotal: proforma.taxTotal,
             total: proforma.total,
-            status: proforma.status || 'draft'
+            status: proforma.status || 'draft',
+            payment_type: proforma.payment_type || 'cheque', // Ajouté
+            stamp_tax: proforma.stamp_tax, // Ajouté
+            bc: proforma.bc // Ajouté
           })
           .select()
           .single();
@@ -547,6 +556,7 @@ class MockDataService {
             subtotal: data.subtotal,
             taxtotal: data.taxTotal,
             stamp_tax: data.stampTax,
+            bc:data.bc,
             total: data.total,
             status: data.status
           })
@@ -653,6 +663,9 @@ class MockDataService {
             issuedate: proforma.issuedate,
             duedate: proforma.duedate,
             notes: proforma.notes,
+            bc: proforma.bc,
+            payment_type: proforma.payment_type,
+            stamp_tax: proforma.stamp_tax,
             subtotal: proforma.subtotal,
             taxtotal: proforma.taxTotal,
             total: proforma.total,
@@ -806,6 +819,9 @@ class MockDataService {
         proformaId: invoice.proformaid,
         paymentDate: invoice.paymentdate,
         paymentReference: invoice.paymentreference,
+        bc: invoice.bc,
+        stamp_tax: invoice.stamp_tax,
+        payment_type: invoice.payment_type,
         createdAt: invoice.createdat || new Date().toISOString(),
         updatedAt: invoice.updatedat || new Date().toISOString()
       });
@@ -917,6 +933,9 @@ class MockDataService {
       proformaId: invoice.proformaid,
       paymentDate: invoice.paymentdate,
       paymentReference: invoice.paymentreference,
+      bc: invoice.bc,
+      stamp_tax: invoice.stamp_tax,
+      payment_type: invoice.payment_type,
       createdAt: invoice.createdat || new Date().toISOString(),
       updatedAt: invoice.updatedat || new Date().toISOString()
     };
