@@ -1204,7 +1204,115 @@ class MockDataService {
       updatedAt: note.updatedat || new Date().toISOString()
     };
   }
-
+  async getDeliveryNotesByFinalInvoiceId(finalInvoiceId: string): Promise<DeliveryNote[]> {
+    const { data: notesData, error: notesError } = await supabase
+      .from('delivery_notes')
+      .select('*, clients(*)')
+      .eq('finalinvoiceid', finalInvoiceId);
+    
+    if (notesError) {
+      console.error('Error fetching delivery notes by final invoice ID:', notesError);
+      return [];
+    }
+    
+    const deliveryNotes: DeliveryNote[] = [];
+    
+    for (const note of notesData) {
+      const { data: itemsJoinData, error: itemsJoinError } = await supabase
+        .from('delivery_note_items')
+        .select('*, invoice_items(*)')
+        .eq('deliverynoteid', note.id);
+      
+      if (itemsJoinError) {
+        console.error(`Error fetching items for delivery note ${note.id}:`, itemsJoinError);
+        continue;
+      }
+      
+      const items = await Promise.all(itemsJoinData.map(async (joinItem) => {
+        const item = joinItem.invoice_items;
+        let product = null;
+        
+        if (item.productid) {
+          const { data: productData, error: productError } = await supabase
+            .from('products')
+            .select('*')
+            .eq('id', item.productid)
+            .single();
+          
+          if (!productError) {
+            product = {
+              id: productData.id,
+              code: productData.code,
+              name: productData.name,
+              description: productData.description,
+              unitprice: productData.unitprice,
+              unit: productData.unit,
+              taxrate: productData.taxrate,
+              stockquantity: productData.stockquantity,
+              createdAt: productData.createdat || new Date().toISOString(),
+              updatedAt: productData.updatedat || new Date().toISOString()
+            };
+          }
+        }
+        
+        return {
+          id: item.id,
+          productId: item.productid,
+          product,
+          quantity: item.quantity,
+          unitprice: item.unitprice,
+          unit: item.unit,
+          taxrate: item.taxrate,
+          discount: item.discount,
+          totalExcl: item.totalexcl,
+          totalTax: item.totaltax,
+          total: item.total
+        };
+      }));
+      
+      const client = note.clients ? {
+        id: note.clients.id,
+        name: note.clients.name,
+        address: note.clients.address,
+        taxid: note.clients.taxid,
+        phone: note.clients.phone,
+        email: note.clients.email,
+        country: note.clients.country,
+        city: note.clients.city,
+        nis: note.clients.nis,
+        rib: note.clients.rib,
+        ai: note.clients.ai,
+        ccp: note.clients.ccp,
+        contact: note.clients.contact,
+        telcontact: note.clients.telcontact,
+        rc: note.clients.rc,
+        createdAt: note.clients.createdat || new Date().toISOString(),
+        updatedAt: note.clients.updatedat || new Date().toISOString()
+      } : undefined;
+      
+      deliveryNotes.push({
+        id: note.id,
+        number: note.number,
+        finalInvoiceId: note.finalinvoiceid,
+        created_by_userid: note.created_by_userid,
+        finalInvoice: undefined, // We don't need to fetch this for this method
+        clientid: note.clientid,
+        client,
+        issuedate: note.issuedate,
+        deliverydate: note.deliverydate,
+        drivername: note.drivername,
+        truck_id: note.truck_id,
+        delivery_company: note.delivery_company,
+        items,
+        notes: note.notes || '',
+        status: note.status as 'pending' | 'delivered' | 'cancelled',
+        createdAt: note.createdat || new Date().toISOString(),
+        updatedAt: note.updatedat || new Date().toISOString()
+      });
+    }
+    
+    return deliveryNotes;
+  }
   async createDeliveryNote(deliveryNote: any): Promise<DeliveryNote> {
     try {
       await beginTransaction();

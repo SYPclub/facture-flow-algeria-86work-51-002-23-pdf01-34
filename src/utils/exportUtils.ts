@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import { FinalInvoice, ProformaInvoice, DeliveryNote, Client } from '@/types';
 import { fetchCompanyInfo } from '@/components/exports/CompanyInfoHeader';
 import n2words from 'n2words';
+import { mockDataService } from '@/services/mockDataService';
 
 export const convertNumberToFrenchWords = (num: number): string => {
   return n2words(num, { lang: 'fr' });
@@ -442,6 +443,8 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
 
 // FINAL INVOICE EXPORT
 export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
+  
+  const deliveryNotes = await mockDataService.getDeliveryNotesByFinalInvoiceId(invoice.id);
   const pdf = new jsPDF();
 
   const maxRowsPerPage = 5;
@@ -496,7 +499,40 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
 
   // On last page: totals, words, notes, payments
   
-
+  if (deliveryNotes && deliveryNotes.length > 0) {
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Bons de livraison associés:', 20, yPosition);
+    yPosition += 10;
+    
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    
+    const deliveryNoteData = deliveryNotes.map(note => [
+      note.number,
+      new Date(note.issuedate).toLocaleDateString('fr-FR'),
+      note.deliverydate ? new Date(note.deliverydate).toLocaleDateString('fr-FR') : 'Non livré',
+      note.status === 'delivered' ? 'Livré' : note.status === 'pending' ? 'En attente' : 'Annulé',
+      note.drivername || 'N/A'
+    ]);
+    
+    (pdf as any).autoTable({
+      head: [['Numéro', 'Date émission', 'Date livraison', 'Statut', 'Conducteur']],
+      body: deliveryNoteData,
+      startY: yPosition,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [66, 139, 202] },
+      columnStyles: {
+        0: { cellWidth: 30 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 35 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 35 }
+      }
+    });
+    
+    yPosition = (pdf as any).lastAutoTable.finalY + 10;
+  }
 
   addFooter(pdf);
   pdf.save(`Invoice_${invoice.number}.pdf`);
