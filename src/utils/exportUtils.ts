@@ -599,7 +599,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
         pdf.text(values[i], boxX + col1Width + 2, rowY);
       });
 
-      currentY += tableHeight + 10;
+      currentY = tableHeight + 10;
     }
       // Add notes and signature on last page
     const notesY = addNotes(pdf, deliveryNote.notes, currentY + 10);
