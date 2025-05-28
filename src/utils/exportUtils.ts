@@ -477,7 +477,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
   for (const chunk of itemChunks) {
     if (pageIndex > 0) pdf.addPage();
 
-    const { yPos } = await addHeader(pdf, "       FACTURE     ", invoice.number, invoice.status);
+    const { yPos } = await addHeader(pdf, "FACTURE ", invoice.number, invoice.status);
     currentY = yPos;
 
     if (pageIndex === 0) {
