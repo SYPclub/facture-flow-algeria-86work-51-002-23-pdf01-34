@@ -495,11 +495,11 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     const notesY = addNotes(pdf, invoice.notes, wordsY);
     notesYY = wordsY;
     if (deliveryNotes && deliveryNotes.length > 0) {
-        let yPosition=notesYY;
-        pdf.setFontSize(14);
-        pdf.setFont('helvetica', 'bold');
+        let yPosition=totalsY;
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica');
         pdf.text('Bons de livraison associés:', 20, yPosition);
-        yPosition += 10;
+        yPosition += 5;
         
         pdf.setFontSize(10);
         pdf.setFont('helvetica', 'normal');
