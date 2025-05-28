@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -55,6 +56,7 @@ import { getCurrentDate, generateId } from '@/types';
 
 const deliveryNoteSchema = z.object({
   clientid: z.string().min(1, 'Client is required'),
+  finalInvoiceId: z.string().optional(),
   issuedate: z.string().min(1, 'Issue date is required'),
   notes: z.string().optional(),
   drivername: z.string().min(1, 'Driver name is required'),
@@ -101,6 +103,11 @@ const NewDeliveryNote = () => {
     queryFn: () => mockDataService.getProducts(),
   });
 
+  const { data: finalInvoices = [] } = useQuery({
+    queryKey: ['finalInvoices'],
+    queryFn: () => mockDataService.getFinalInvoices(),
+  });
+
   const { data: invoice, isLoading: invoiceLoading } = useQuery({
     queryKey: ['finalInvoice', invoiceId],
     queryFn: () => mockDataService.getFinalInvoiceById(invoiceId!),
@@ -111,6 +118,7 @@ const NewDeliveryNote = () => {
     resolver: zodResolver(deliveryNoteSchema),
     defaultValues: {
       clientid: '',
+      finalInvoiceId: '',
       issuedate: getCurrentDate(),
       notes: '',
       drivername: 'Unknown Driver', // Initialize with a default value
@@ -129,6 +137,7 @@ const NewDeliveryNote = () => {
   useEffect(() => {
     if (invoice) {
       form.setValue('clientid', invoice.clientid);
+      form.setValue('finalInvoiceId', invoice.id);
       form.setValue('notes', `Delivery for invoice ${invoice.number}`);
       
       if (invoice.items && invoice.items.length > 0) {
@@ -194,7 +203,7 @@ const NewDeliveryNote = () => {
       // Always ensure non-empty values for required fields
       const deliveryNote = {
         clientid: data.clientid,
-        finalInvoiceId: invoiceId || null,
+        finalInvoiceId: data.finalInvoiceId || null,
         issuedate: data.issuedate || getCurrentDate(),
         deliverydate: null, // Default to null
         notes: data.notes || '',
@@ -282,7 +291,7 @@ const NewDeliveryNote = () => {
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">
-            az
+            Nouveau bon de livraison
           </h1>
         </div>
       </div>
@@ -294,7 +303,7 @@ const NewDeliveryNote = () => {
               <CardTitle>Informations sur le client</CardTitle>
               <CardDescription>Sélectionner le client pour ce bon de livraison</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <FormField
                 control={form.control}
                 name="clientid"
@@ -315,6 +324,35 @@ const NewDeliveryNote = () => {
                         {clients.map(client => (
                           <SelectItem key={client.id} value={client.id}>
                             {client.name} ({client.taxid})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="finalInvoiceId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Facture finale (optionnel)</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner une facture finale" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {finalInvoices.map(invoice => (
+                          <SelectItem key={invoice.id} value={invoice.id}>
+                            {invoice.number} - {clients.find(c => c.id === invoice.clientid)?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
