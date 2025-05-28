@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -170,6 +171,7 @@ const DeliveryNoteDetail = () => {
         items // This will be handled separately in the updateDeliveryNote function
       };
       
+      console.log('Submitting delivery note data:', deliveryNoteData);
       if (!id) throw new Error('No delivery note ID provided');
       return updateDeliveryNote(id, deliveryNoteData);
     },
@@ -277,7 +279,15 @@ const DeliveryNoteDetail = () => {
     };
     
     console.log('Adding new item with UUID:', newItem.id);
-    form.setValue('items', [...currentItems, newItem]);
+    console.log('Current items before adding:', currentItems);
+    
+    const updatedItems = [...currentItems, newItem];
+    form.setValue('items', updatedItems);
+    
+    console.log('Items after adding:', updatedItems);
+    
+    // Force re-render by triggering validation
+    form.trigger('items');
   };
 
   const removeItem = (index: number) => {
@@ -290,13 +300,18 @@ const DeliveryNoteDetail = () => {
       });
       return;
     }
+    
+    console.log('Removing item at index:', index);
     currentItems.splice(index, 1);
     form.setValue('items', currentItems);
+    form.trigger('items');
   };
 
   const updateItemProduct = (index: number, productId: string) => {
     const product = products.find(p => p.id === productId);
     const items = [...form.getValues('items')];
+    
+    console.log('Updating item at index:', index, 'with product:', productId);
     
     if (product) {
       items[index] = {
@@ -307,11 +322,25 @@ const DeliveryNoteDetail = () => {
         taxrate: product.taxrate
       };
       
-      console.log('Updated item at index', index, 'with product:', product.name);
+      console.log('Updated item:', items[index]);
       form.setValue('items', items);
+      form.trigger('items');
     } else {
       console.error('Product not found for ID:', productId);
     }
+  };
+
+  const updateItemQuantity = (index: number, quantity: number) => {
+    const items = [...form.getValues('items')];
+    console.log('Updating quantity at index:', index, 'to:', quantity);
+    
+    items[index] = {
+      ...items[index],
+      quantity: quantity
+    };
+    
+    form.setValue('items', items);
+    form.trigger('items');
   };
 
   const onSubmit = (data: DeliveryNoteFormValues) => {
@@ -553,7 +582,7 @@ const DeliveryNoteDetail = () => {
                       </thead>
                       <tbody>
                         {form.watch('items')?.map((item, index) => (
-                          <tr key={item.id || index} className="border-b">
+                          <tr key={`${item.id}-${index}`} className="border-b">
                             <td className="px-4 py-2">
                               <Select
                                 value={item.productId}
@@ -582,9 +611,8 @@ const DeliveryNoteDetail = () => {
                                 min="1"
                                 value={item.quantity}
                                 onChange={(e) => {
-                                  const items = [...form.watch('items')];
-                                  items[index].quantity = parseInt(e.target.value) || 1;
-                                  form.setValue('items', items);
+                                  const newQuantity = parseInt(e.target.value) || 1;
+                                  updateItemQuantity(index, newQuantity);
                                 }}
                                 className="text-right"
                               />
