@@ -541,7 +541,7 @@ const DeliveryNoteDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {form.getValues('items')?.map((item, index) => (
+                        {form.watch('items')?.map((item, index) => (
                           <tr key={item.id || index} className="border-b">
                             <td className="px-4 py-2">
                               <Select
@@ -571,7 +571,7 @@ const DeliveryNoteDetail = () => {
                                 min="1"
                                 value={item.quantity}
                                 onChange={(e) => {
-                                  const items = [...form.getValues('items')];
+                                  const items = [...form.watch('items')];
                                   items[index].quantity = parseInt(e.target.value) || 1;
                                   form.setValue('items', items);
                                 }}
