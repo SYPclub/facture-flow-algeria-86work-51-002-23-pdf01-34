@@ -534,7 +534,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   for (const chunk of itemChunks) {
     if (pageIndex > 0) pdf.addPage();
 
-    const { yPos } = await addHeader(pdf, "BON DE COMMANDE", deliveryNote.number, deliveryNote.status);
+    const { yPos } = await addHeader(pdf, "BON DE LIVRAISON", deliveryNote.number, deliveryNote.status);
     currentY = yPos;
     currentY = addClientInfo(pdf, deliveryNote.client, deliveryNote, yPos);
 
