@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -15,7 +14,8 @@ import { mockDataService } from '@/services/mockDataService';
 import { 
   supabase, 
   updateDeliveryNote, 
-  deleteDeliveryNote 
+  deleteDeliveryNote,
+  generateUUID
 } from '@/integrations/supabase/client';
 import { 
   ArrowLeft, 
@@ -68,8 +68,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
@@ -269,7 +267,7 @@ const DeliveryNoteDetail = () => {
     form.setValue('items', [
       ...currentItems,
       {
-        id: Math.random().toString(36).substring(2, 15),
+        id: generateUUID(),
         productId: '',
         quantity: 1,
         unitprice: 0,
