@@ -508,7 +508,7 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
 export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
   const pdf = new jsPDF();
 
-  const maxRowsPerPage = 8;
+  const maxRowsPerPage = 5;
   const chunkArray = <T>(arr: T[], size: number): T[][] =>
     Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
 
