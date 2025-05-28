@@ -347,84 +347,180 @@ export const createDeliveryNote = async (data: any) => {
 
 // Update delivery note functions
 export const updateDeliveryNote = async (id: string, data: any) => {
-  try {
-    // Remove items property from the data as it's not a column in delivery_notes table
-    const { items, ...deliveryNoteData } = data;
+    // Start a transaction
+    await beginTransaction();
     
-    // Handle empty string and null dates properly
-    if (deliveryNoteData.deliverydate === '' || deliveryNoteData.deliverydate === undefined) {
-      deliveryNoteData.deliverydate = null;
+    try {
+      // Remove items property from the data for the main update
+      const { items, ...deliveryNoteData } = data;
+      
+      // Handle empty string and null dates properly
+      if (deliveryNoteData.deliverydate === '' || deliveryNoteData.deliverydate === undefined) {
+        deliveryNoteData.deliverydate = null;
+      }
+      
+      if (deliveryNoteData.issuedate === '') {
+        deliveryNoteData.issuedate = null;
+      }
+      
+      // Ensure transportation fields are properly handled
+      deliveryNoteData.drivername = deliveryNoteData.drivername || 'Unknown Driver';
+      deliveryNoteData.truck_id = deliveryNoteData.truck_id || null;
+      deliveryNoteData.delivery_company = deliveryNoteData.delivery_company || null;
+      
+      console.log('Updating delivery note with data:', deliveryNoteData);
+      
+      // Update the delivery note
+      const { error: updateError } = await supabase
+        .from('delivery_notes')
+        .update(deliveryNoteData)
+        .eq('id', id);
+      
+      if (updateError) throw updateError;
+      
+      // Handle items if provided
+      if (items && Array.isArray(items) && items.length > 0) {
+        // Delete existing items for this delivery note
+        const { error: deleteError } = await supabase
+          .from('delivery_note_items')
+          .delete()
+          .eq('deliverynoteid', id);
+        
+        if (deleteError) throw deleteError;
+        
+        // Create new items and link them
+        for (const item of items) {
+          // Create the invoice item with full details
+          const { data: createdItem, error: itemError } = await supabase
+            .from('invoice_items')
+            .insert({
+              productid: item.productId,
+              quantity: item.quantity,
+              unitprice: item.unitprice,
+              unit: item.unit,
+              taxrate: item.taxrate,
+              discount: item.discount || 0,
+              totalexcl: item.totalExcl,
+              totaltax: item.totalTax,
+              total: item.total
+            })
+            .select()
+            .single();
+          
+          if (itemError) throw itemError;
+          
+          // Link the item to the delivery note
+          const { error: linkError } = await supabase
+            .from('delivery_note_items')
+            .insert({
+              deliverynoteid: id,
+              itemid: createdItem.id
+            });
+          
+          if (linkError) throw linkError;
+        }
+      }
+      
+      // Commit the transaction
+      await commitTransaction();
+      
+      return { success: true };
+    } catch (error) {
+      await rollbackTransaction();
+      throw error;
     }
-    
-    if (deliveryNoteData.issuedate === '') {
-      deliveryNoteData.issuedate = null;
-    }
-    
-    // Ensure transportation fields are properly handled
-    deliveryNoteData.drivername = deliveryNoteData.drivername || 'Unknown Driver';
-    deliveryNoteData.truck_id = deliveryNoteData.truck_id || null;
-    deliveryNoteData.delivery_company = deliveryNoteData.delivery_company || null;
-    
-    console.log('Updating delivery note with data:', deliveryNoteData);
-    
-    // Update the delivery note
-    const { error } = await supabase
-      .from('delivery_notes')
-      .update(deliveryNoteData)
-      .eq('id', id);
-    
-    if (error) throw error;
-    
-    // If items are provided and need to be updated, handle them separately
-    if (items && items.length > 0) {
-      await updateDeliveryNoteItems(id, items);
-    }
-    
-    return { success: true };
   } catch (error) {
     console.error('Error updating delivery note:', error);
     throw error;
   }
 };
 
-export const updateDeliveryNoteItems = async (deliveryNoteId: string, items: any[]) => {
+export const updateDeliveryNote = async (id: string, data: any) => {
   try {
     // Start a transaction
     await beginTransaction();
     
-    // Delete existing items for this delivery note
-    const { error: deleteError } = await supabase
-      .from('delivery_note_items')
-      .delete()
-      .eq('deliverynoteid', deliveryNoteId);
-    
-    if (deleteError) {
+    try {
+      // Remove items property from the data for the main update
+      const { items, ...deliveryNoteData } = data;
+      
+      // Handle empty string and null dates properly
+      if (deliveryNoteData.deliverydate === '' || deliveryNoteData.deliverydate === undefined) {
+        deliveryNoteData.deliverydate = null;
+      }
+      
+      if (deliveryNoteData.issuedate === '') {
+        deliveryNoteData.issuedate = null;
+      }
+      
+      // Ensure transportation fields are properly handled
+      deliveryNoteData.drivername = deliveryNoteData.drivername || 'Unknown Driver';
+      deliveryNoteData.truck_id = deliveryNoteData.truck_id || null;
+      deliveryNoteData.delivery_company = deliveryNoteData.delivery_company || null;
+      
+      console.log('Updating delivery note with data:', deliveryNoteData);
+      
+      // Update the delivery note
+      const { error: updateError } = await supabase
+        .from('delivery_notes')
+        .update(deliveryNoteData)
+        .eq('id', id);
+      
+      if (updateError) throw updateError;
+      
+      // Handle items if provided
+      if (items && Array.isArray(items) && items.length > 0) {
+        // Delete existing items for this delivery note
+        const { error: deleteError } = await supabase
+          .from('delivery_note_items')
+          .delete()
+          .eq('deliverynoteid', id);
+        
+        if (deleteError) throw deleteError;
+        
+        // Create new items and link them
+        for (const item of items) {
+          // Create the invoice item with full details
+          const { data: createdItem, error: itemError } = await supabase
+            .from('invoice_items')
+            .insert({
+              productid: item.productId,
+              quantity: item.quantity,
+              unitprice: item.unitprice,
+              unit: item.unit,
+              taxrate: item.taxrate,
+              discount: item.discount || 0,
+              totalexcl: item.totalExcl,
+              totaltax: item.totalTax,
+              total: item.total
+            })
+            .select()
+            .single();
+          
+          if (itemError) throw itemError;
+          
+          // Link the item to the delivery note
+          const { error: linkError } = await supabase
+            .from('delivery_note_items')
+            .insert({
+              deliverynoteid: id,
+              itemid: createdItem.id
+            });
+          
+          if (linkError) throw linkError;
+        }
+      }
+      
+      // Commit the transaction
+      await commitTransaction();
+      
+      return { success: true };
+    } catch (error) {
       await rollbackTransaction();
-      throw deleteError;
+      throw error;
     }
-    
-    // Insert new items
-    const itemLinks = items.map(item => ({
-      deliverynoteid: deliveryNoteId,
-      itemid: item.id
-    }));
-    
-    const { error: insertError } = await supabase
-      .from('delivery_note_items')
-      .insert(itemLinks);
-    
-    if (insertError) {
-      await rollbackTransaction();
-      throw insertError;
-    }
-    
-    // Commit the transaction
-    await commitTransaction();
-    
-    return { success: true };
   } catch (error) {
-    console.error('Error updating delivery note items:', error);
-    await rollbackTransaction();
+    console.error('Error updating delivery note:', error);
     throw error;
   }
 };
