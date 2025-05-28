@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { getCurrentDate, generateId } from '@/types';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -269,7 +270,7 @@ const DeliveryNoteDetail = () => {
     form.setValue('items', [
       ...currentItems,
       {
-        id: Math.random().toString(36).substring(2, 15),
+        id: generateId(),
         productId: '',
         quantity: 1,
         unitprice: 0,
