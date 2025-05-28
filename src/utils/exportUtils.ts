@@ -153,7 +153,7 @@ const addHeader = async (pdf: jsPDF, documentType: string, documentNumber: strin
 // Add client info section with styled design
 const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: any, startY: number) => {
   pdf.setTextColor(70, 70, 70);
-  pdf.text(`Le: ${formatDate(invoiceDetails.issuedate)}`, 110 , 21);
+  pdf.text(`Le: ${formatDate(invoiceDetails.issuedate)}`, 110 , startY -10 );
   // Colors
   const lightBlue = "#F1FAEE";  // Light blue background
   const darkBlue = "#E63946";   // Dark blue for accent
