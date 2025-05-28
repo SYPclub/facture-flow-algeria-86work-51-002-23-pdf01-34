@@ -556,11 +556,12 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(pdfFontSize);
 
-      const labels = ["Chauffeur", "Matricule", "Entreprise de transport"];
+      const labels = ["Entreprise de transport","Chauffeur", "Matricule" ];
       const values = [
+        deliveryNote.delivery_company || "-",
         deliveryNote.drivername || "-",
         deliveryNote.truck_id || "-",
-        deliveryNote.delivery_company || "-"
+        
       ];
 
       // Measure max width of label and value
