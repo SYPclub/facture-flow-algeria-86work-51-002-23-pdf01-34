@@ -577,7 +577,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
       const tableHeight = (labels.length * rowSpacing) + 10;
 
       const boxX = 14;
-      const boxY = lastTableY;
+      const boxY = lastTableY +7;
 
       // Draw background box
       drawRoundedRect(pdf, boxX, boxY, tableWidth, tableHeight, 3, lightPurple);
@@ -602,7 +602,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
       currentY += tableHeight + 10;
     }
       // Add notes and signature on last page
-    const notesY = addNotes(pdf, deliveryNote.notes, lastTableY + 10);
+    const notesY = addNotes(pdf, deliveryNote.notes, currentY + 10);
     const signatureY = notesY + 1;
 
     pdf.setFont("helvetica", "normal");
@@ -610,7 +610,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
     pdf.setTextColor(59, 130, 246);
 
     // Signature lines
-    pdf.line(30, signatureY + 20, 80, signatureY + 20);
+    
     
     drawRoundedRect(pdf, 14, signatureY, 60, 40, 3,'#FFFFFF' ,'#003049');
 
