@@ -270,7 +270,7 @@ const DeliveryNoteDetail = () => {
     form.setValue('items', [
       ...currentItems,
       {
-        id: generateId() ,
+        id: generateId()  ,
         productId: '',
         quantity: 1,
         unitprice: 0,
