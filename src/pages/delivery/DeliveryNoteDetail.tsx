@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -68,8 +67,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-
+import { generateUUID } from '@/utils/uuid';
 
 const deliveryNoteFormSchema = z.object({
   notes: z.string().optional(),
@@ -266,20 +264,20 @@ const DeliveryNoteDetail = () => {
 
   const addItem = () => {
     const currentItems = form.getValues('items') || [];
-    form.setValue('items', [
-      ...currentItems,
-      {
-        id: Math.random().toString(36).substring(2, 15),
-        productId: '',
-        quantity: 1,
-        unitprice: 0,
-        taxrate: 0,
-        discount: 0,
-        totalExcl: 0,
-        totalTax: 0,
-        total: 0
-      }
-    ]);
+    const newItem = {
+      id: generateUUID(),
+      productId: '',
+      quantity: 1,
+      unitprice: 0,
+      taxrate: 0,
+      discount: 0,
+      totalExcl: 0,
+      totalTax: 0,
+      total: 0
+    };
+    
+    console.log('Adding new item with UUID:', newItem.id);
+    form.setValue('items', [...currentItems, newItem]);
   };
 
   const removeItem = (index: number) => {
@@ -299,13 +297,26 @@ const DeliveryNoteDetail = () => {
   const updateItemProduct = (index: number, productId: string) => {
     const product = products.find(p => p.id === productId);
     const items = [...form.getValues('items')];
-    items[index].productId = productId;
-    items[index].product = product;
-    form.setValue('items', items);
+    
+    if (product) {
+      items[index] = {
+        ...items[index],
+        productId: productId,
+        product: product,
+        unitprice: product.unitprice,
+        taxrate: product.taxrate
+      };
+      
+      console.log('Updated item at index', index, 'with product:', product.name);
+      form.setValue('items', items);
+    } else {
+      console.error('Product not found for ID:', productId);
+    }
   };
 
   const onSubmit = (data: DeliveryNoteFormValues) => {
     if (!id) return;
+    console.log('Submitting delivery note with data:', data);
     updateDeliveryNoteMutation.mutate(data);
   };
 
