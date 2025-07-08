@@ -106,11 +106,11 @@ const MainLayout = () => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r bg-white transition-all duration-300 ease-in-out lg:relative",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-white bg-white transition-all duration-300 ease-in-out lg:relative",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:w-20"
         )}
       >
-        <div className={cn("flex h-16 items-center border-b px-4", !sidebarOpen && "justify-center")}>
+        <div className={cn("flex h-16 items-center border-b border-white px-4", !sidebarOpen && "justify-center")}>
           <h2 className={cn("text-xl font-bold text-primary", !sidebarOpen && "hidden")}>FactureFlow</h2>
           {!sidebarOpen && <FileText className="h-6 w-6 text-primary" />}
         </div>
@@ -189,12 +189,7 @@ const MainLayout = () => {
               href="/admin/company-info"
               allowedRoles={[UserRole.ADMIN]}
             />
-            <SidebarItem 
-              icon={FileCode} 
-              title="PDF Templates" 
-              href="/admin/pdf-templates"
-              allowedRoles={[UserRole.ADMIN]}
-            />
+            
           </SidebarItem>
         </nav>
 
@@ -232,7 +227,7 @@ const MainLayout = () => {
       {/* Main content */}
       <div className="flex flex-1 flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-4 shadow-sm">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white bg-white px-4 shadow-sm">
           <Button
             variant="ghost"
             size="icon"

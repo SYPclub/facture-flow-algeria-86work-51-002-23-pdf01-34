@@ -62,6 +62,8 @@ const deliveryNoteSchema = z.object({
   drivername: z.string().min(1, 'Driver name is required'),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
+  driverlisence: z.string().optional(),
+  drivertel: z.string().optional(),
   items: z.array(
     z.object({
       id: z.string(),
@@ -121,9 +123,11 @@ const NewDeliveryNote = () => {
       finalInvoiceId: '',
       issuedate: getCurrentDate(),
       notes: '',
-      drivername: 'Unknown Driver', // Initialize with a default value
+      drivername: '', // Initialize with a default value
       truck_id: '',
       delivery_company: '',
+      driverlisence: '',
+      drivertel: '',
       items: [
         {
           id: generateId(),
@@ -138,7 +142,7 @@ const NewDeliveryNote = () => {
     if (invoice) {
       form.setValue('clientid', invoice.clientid);
       form.setValue('finalInvoiceId', invoice.id);
-      form.setValue('notes', `Delivery for invoice ${invoice.number}`);
+      form.setValue('notes', `BL Facture ${invoice.number}`);
       
       if (invoice.items && invoice.items.length > 0) {
         const items = invoice.items.map(item => ({
@@ -207,11 +211,13 @@ const NewDeliveryNote = () => {
         issuedate: data.issuedate || getCurrentDate(),
         deliverydate: null, // Default to null
         notes: data.notes || '',
-        status: 'pending',
+        status: 'en_attente_de_livraison',
         // Ensure all transportation fields are properly included
-        drivername: data.drivername.trim() || 'Unknown Driver',
+        drivername: data.drivername.trim() || '-',
         truck_id: data.truck_id || null, 
         delivery_company: data.delivery_company || null,
+        driverlisence: data.driverlisence || null,
+        drivertel: data.drivertel || null,
         items: data.items.map(item => {
           const product = products.find(p => p.id === item.productId);
           return {
@@ -384,7 +390,21 @@ const NewDeliveryNote = () => {
                 )}
               />
 
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-5">
+                <FormField
+                  control={form.control}
+                  name="delivery_company"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Société de livraison</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Saisir le nom de l'entreprise de livraison" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
                 <FormField
                   control={form.control}
                   name="drivername"
@@ -396,6 +416,32 @@ const NewDeliveryNote = () => {
                           {...field} 
                           placeholder="Saisir le nom du conducteur"
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="driverlisence"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>N° permi</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Saisir le N permi" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="drivertel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>N° tel</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Saisir le num tel" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -419,19 +465,7 @@ const NewDeliveryNote = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="delivery_company"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Société de livraison</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Saisir le nom de l'entreprise de livraison" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
               </div>
 
               <FormField

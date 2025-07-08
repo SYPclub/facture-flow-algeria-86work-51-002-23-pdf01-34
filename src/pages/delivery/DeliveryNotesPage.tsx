@@ -80,11 +80,11 @@ const DeliveryNotesPage = () => {
   // Get status badge variant
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'delivered':
+      case 'livrée':
         return 'default';
-      case 'pending':
+      case 'en_attente_de_livraison':
         return 'secondary';
-      case 'cancelled':
+      case 'annulé':
         return 'destructive';
       default:
         return 'outline';
@@ -142,9 +142,9 @@ const DeliveryNotesPage = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setStatusFilter(null)}>Tous</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('pending')}>En attente</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('delivered')}>Livré</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter('cancelled')}>Annulé</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('en_attente_de_livraison')}>En attente</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('livrée')}>Livré</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('annulé')}>Annulé</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -200,49 +200,51 @@ const DeliveryNotesPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredDeliveryNotes.map((note) => (
-                    <TableRow key={note.id} className={isOwnedByCurrentUser(note) ? "bg-muted/20" : ""}>
-                      <TableCell className="font-mono font-medium">
-                        {note.number}
-                      </TableCell>
-                      <TableCell>
-                        {note.client?.name || 'Client inconnu'}
-                      </TableCell>
-                      <TableCell>
-                        <Link 
-                          to={`/invoices/final/${note.finalInvoiceId}`}
-                          className="text-sm text-primary hover:underline"
-                        >
-                          {/* Would normally fetch the actual invoice number */}
-                          F-{note.finalInvoiceId?.padStart(4, '0')}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {note.issuedate}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusBadgeVariant(note.status)}>
-                          {note.status.charAt(0).toUpperCase() + note.status.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-xs">
-                          <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
-                            {getCreatorEmailDisplay(note)}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Link
-                          to={`/delivery-notes/${note.id}`}
-                          className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
-                        >
-                          View Details
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {[...filteredDeliveryNotes]
+                    .sort((a, b) => new Date(b.issuedate).getTime() - new Date(a.issuedate).getTime())
+                    .map((note) => (
+                      <TableRow key={note.id} className={isOwnedByCurrentUser(note) ? "bg-muted/20" : ""}>
+                        <TableCell className="font-mono font-medium">
+                          {note.number}
+                        </TableCell>
+                        <TableCell>
+                          {note.client?.name || 'Client inconnu'}
+                        </TableCell>
+                        <TableCell>
+                          <Link 
+                            to={`/invoices/final/${note.finalInvoiceId}`}
+                            className="text-sm text-primary hover:underline"
+                          >
+                            F-{note.finalInvoiceId?.padStart(4, '0')}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {note.issuedate}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusBadgeVariant(note.status)}>
+                            {note.status.charAt(0).toUpperCase() + note.status.slice(1)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs">
+                            <span className={isOwnedByCurrentUser(note) ? "font-medium" : ""}>
+                              {getCreatorEmailDisplay(note)}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Link
+                            to={`/delivery-notes/${note.id}`}
+                            className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
+                          >
+                            View Details
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
+
               </Table>
             </div>
           )}

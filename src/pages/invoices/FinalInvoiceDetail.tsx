@@ -160,7 +160,7 @@ const FinalInvoiceDetail = () => {
       notes: invoice?.notes || '',
       issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
-      status: invoice?.status || 'unpaid',
+      status: invoice?.status || 'NonPayé',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
       bc: invoice?.bc || '',
@@ -171,7 +171,7 @@ const FinalInvoiceDetail = () => {
       notes: invoice?.notes || '',
       issuedate: invoice?.issuedate || null,
       duedate: invoice?.duedate || null,
-      status: invoice?.status || 'unpaid',
+      status: invoice?.status || 'NonPayé',
       paymentdate: invoice?.paymentDate || '',
       paymentreference: invoice?.paymentReference || '',
       bc: invoice?.bc || '',
@@ -248,13 +248,13 @@ const FinalInvoiceDetail = () => {
   });
 
   // Handle status update
-  const handleUpdateStatus = (status: 'unpaid' | 'paid' | 'partially_paid' | 'cancelled' | 'credited', additionalData = {}) => {
+  const handleUpdateStatus = (status: 'NonPayé' | 'payé' | 'partially_paid' | 'annulé' | 'credited', additionalData = {}) => {
     if (!id || !invoice) return;
     
     let updateData = { status, ...additionalData };
     
-    // If marking as paid, calculate the amount paid and client debt
-    if (status === 'paid' && !additionalData.amount_paid) {
+    // If marking as payé, calculate the amount payé and client debt
+    if (status === 'payé' && !additionalData.amount_paid) {
       updateData = {
         ...updateData,
         amount_paid: invoice.total,
@@ -262,8 +262,8 @@ const FinalInvoiceDetail = () => {
       };
     }
     
-    // If reverting to unpaid, handle payment data
-    if (status === 'unpaid') {
+    // If reverting to NonPayé, handle payment data
+    if (status === 'NonPayé') {
       // Don't reset amount_paid if there are actual payments, just status
       const totalPaid = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
       if (totalPaid > 0) {
@@ -288,12 +288,12 @@ const FinalInvoiceDetail = () => {
     statusUpdateMutation.mutate(updateData);
   };
 
-  // Mark as paid handler 
+  // Mark as payé handler 
   const handleMarkAsPaid = () => {
     if (!invoice) return;
     
     const payment_date = new Date().toISOString().split('T')[0];
-    handleUpdateStatus('paid', { 
+    handleUpdateStatus('payé', { 
       payment_date, 
       amount_paid: invoice.total, 
       client_debt: 0 
@@ -387,10 +387,10 @@ const FinalInvoiceDetail = () => {
 
   // Status styling
   const statusColor = {
-    unpaid: "bg-amber-500",
-    paid: "bg-green-500",
+    NonPayé: "bg-amber-500",
+    payé: "bg-green-500",
     partially_paid: "bg-blue-500",
-    cancelled: "bg-red-500",
+    annulé: "bg-red-500",
     credited: "bg-purple-500",
   };
 
@@ -401,11 +401,11 @@ const FinalInvoiceDetail = () => {
   // Compute status from payment amounts
   let computedStatus = invoice.status;
   if (amountPaid >= invoice.total) {
-    computedStatus = 'paid';
+    computedStatus = 'payé';
   } else if (amountPaid > 0) {
     computedStatus = 'partially_paid';
-  } else if (invoice.status !== 'cancelled' && invoice.status !== 'credited') {
-    computedStatus = 'unpaid';
+  } else if (invoice.status !== 'annulé' && invoice.status !== 'credited') {
+    computedStatus = 'NonPayé';
   }
 
   return (
@@ -437,7 +437,7 @@ const FinalInvoiceDetail = () => {
               <CardHeader>
                 <CardTitle>Client Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="p-6 pt-0 grid gap-4 sm:grid-cols-3">
                 <div>
                   <strong className="font-semibold">Nom:</strong>{" "}
                   {invoice.client?.name}
@@ -494,7 +494,7 @@ const FinalInvoiceDetail = () => {
               <CardHeader>
                 <CardTitle>Détails de la facture</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                   {invoice.number}
@@ -512,7 +512,19 @@ const FinalInvoiceDetail = () => {
                     </FormItem>
                   )}
                 />
-                
+                <FormField
+                  control={form.control}
+                  name="bc"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bon de Commande:</FormLabel>
+                      <FormControl>
+                        <Input type="BC .." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 
                 <FormField
                   control={form.control}
@@ -555,11 +567,11 @@ const FinalInvoiceDetail = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="unpaid">Non payé</SelectItem>
+                          <SelectItem value="NonPayé">Non payé</SelectItem>
                           <SelectItem value="partially_paid">Partiellement Payé</SelectItem>
-                          <SelectItem value="paid">Payé</SelectItem>
-                          <SelectItem value="cancelled">Annulé</SelectItem>
-                          <SelectItem value="credited">Crédité</SelectItem>
+                          <SelectItem value="payé">Payé</SelectItem>
+                          <SelectItem value="annulé">Annulé</SelectItem>
+                          <SelectItem value="credited">Archiver</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -597,7 +609,7 @@ const FinalInvoiceDetail = () => {
                       <TableHead className="text-right">Unité</TableHead>
                       <TableHead className="text-right">Prix unitaire</TableHead>
                       <TableHead className="text-right">Tax %</TableHead>
-                      <TableHead className="text-right">Remise %</TableHead>
+                      <TableHead className="text-right">Remise</TableHead>
                       <TableHead className="text-right">Total Excl..</TableHead>
                       <TableHead className="text-right">Montant de l'impôt</TableHead>
                       <TableHead className="text-right">Total inclus.</TableHead>
@@ -616,7 +628,7 @@ const FinalInvoiceDetail = () => {
                         <TableCell className="text-right">{item.unit}</TableCell>
                         <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                         <TableCell className="text-right">{item.taxrate}%</TableCell>
-                        <TableCell className="text-right">{item.discount}%</TableCell>
+                        <TableCell className="text-right">{formatCurrency(item.discount)}</TableCell>
                         <TableCell className="text-right">{formatCurrency(item.totalExcl)}</TableCell>
                         <TableCell className="text-right">{formatCurrency(item.totalTax)}</TableCell>
                         <TableCell className="text-right font-medium">{formatCurrency(item.total)}</TableCell>
@@ -661,7 +673,7 @@ const FinalInvoiceDetail = () => {
               <CardHeader>
                 <CardTitle>Informations sur le client</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <strong className="font-semibold">Nom:</strong>{" "}
                   {invoice.client?.name}
@@ -718,7 +730,7 @@ const FinalInvoiceDetail = () => {
               <CardHeader>
                 <CardTitle>Détails de la facture</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                   {invoice.number}
@@ -794,7 +806,7 @@ const FinalInvoiceDetail = () => {
                     <TableHead className="text-right">unité</TableHead>
                     <TableHead className="text-right">Prix unitaire</TableHead>
                     <TableHead className="text-right">Tax %</TableHead>
-                    <TableHead className="text-right">Remise %</TableHead>
+                    <TableHead className="text-right">Remise</TableHead>
                     <TableHead className="text-right">Total Excl..</TableHead>
                     <TableHead className="text-right">Montant de l'impôt</TableHead>
                     <TableHead className="text-right">Total inclus.</TableHead>
@@ -813,7 +825,7 @@ const FinalInvoiceDetail = () => {
                       <TableCell className="text-right">{item.unit}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                       <TableCell className="text-right">{item.taxrate}%</TableCell>
-                      <TableCell className="text-right">{item.discount}%</TableCell>
+                      <TableCell className="text-right">{formatCurrency(item.discount)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalExcl)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalTax)}</TableCell>
                       <TableCell className="text-right font-medium">{formatCurrency(item.total)}</TableCell>
@@ -926,13 +938,10 @@ const FinalInvoiceDetail = () => {
                 </Button>
               )}
               
-              {computedStatus === 'unpaid' && canEdit && (
+              {computedStatus === 'NonPayé' && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="default" className="bg-green-600 hover:bg-green-700">
-                      <Check className="mr-2 h-4 w-4" />
-                      Marquer comme payé
-                    </Button>
+                    
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -949,7 +958,7 @@ const FinalInvoiceDetail = () => {
                         onClick={() => {
                           const paymentdate = new Date().toISOString().split('T')[0];
                           const data = {
-                            status: 'paid',
+                            status: 'payé',
                             payment_date: paymentdate,
                             amount_paid: invoice.total,
                             client_debt: 0
@@ -965,7 +974,7 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {computedStatus !== 'cancelled' && computedStatus !== 'credited' && canEdit && clientDebt > 0 && (
+              {computedStatus !== 'annulé' && computedStatus !== 'credited' && canEdit && clientDebt > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="bg-blue-50 hover:bg-blue-100">
@@ -990,7 +999,7 @@ const FinalInvoiceDetail = () => {
                 </Dialog>
               )}
 
-              {computedStatus === 'unpaid' && canEdit && (
+              {computedStatus === 'NonPayé' && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-red-50 hover:bg-red-100">
@@ -1009,7 +1018,7 @@ const FinalInvoiceDetail = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Non, gardez-le</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => handleUpdateStatus('cancelled')}
+                        onClick={() => handleUpdateStatus('annulé')}
                         className="bg-red-500 hover:bg-red-600"
                       >
                         Oui, annuler
@@ -1019,7 +1028,7 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {canEdit && computedStatus === 'unpaid' && (
+              {canEdit && computedStatus === 'NonPayé' && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
@@ -1047,7 +1056,7 @@ const FinalInvoiceDetail = () => {
                 </AlertDialog>
               )}
 
-              {(computedStatus === 'paid' || computedStatus === 'partially_paid' || computedStatus === 'cancelled') && canEdit && (
+              {(computedStatus === 'payé' || computedStatus === 'partially_paid' || computedStatus === 'annulé') && canEdit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
@@ -1067,7 +1076,7 @@ const FinalInvoiceDetail = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Annuler</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => handleUpdateStatus('unpaid')}
+                        onClick={() => handleUpdateStatus('NonPayé')}
                       >
                         Confirmer
                       </AlertDialogAction>
@@ -1080,13 +1089,7 @@ const FinalInvoiceDetail = () => {
                 <Printer className="mr-2 h-4 w-4" />
                 Imprimer / Télécharger
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/print/v3/final/${id}`)}
-              >
-                <Printer className="mr-2 h-4 w-4" />
-                Print V3
-              </Button>
+              
             </CardContent>
           </Card>
         </>

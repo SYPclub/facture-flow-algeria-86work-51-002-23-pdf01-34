@@ -120,6 +120,8 @@ export type Database = {
           created_by_userid: string | null
           createdat: string | null
           delivery_company: string | null
+          driverlisence: string | null
+          drivertel: string | null
           deliverydate: string | null
           drivername: string | null
           finalinvoiceid: string | null
@@ -137,6 +139,8 @@ export type Database = {
           created_by_userid?: string | null
           createdat?: string | null
           delivery_company?: string | null
+          drivertel?: string | null
+          driverlisence?: string | null
           deliverydate?: string | null
           drivername?: string | null
           finalinvoiceid?: string | null
@@ -154,6 +158,8 @@ export type Database = {
           created_by_userid?: string | null
           createdat?: string | null
           delivery_company?: string | null
+          driverlisence?: string | null
+          drivertel?: string | null
           deliverydate?: string | null
           drivername?: string | null
           finalinvoiceid?: string | null

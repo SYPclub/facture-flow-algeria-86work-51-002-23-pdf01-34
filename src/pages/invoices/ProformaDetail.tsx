@@ -646,7 +646,7 @@ const ProformaDetail = () => {
               <CardHeader>
                 <CardTitle>Détails de la facture</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="grid gap-4 sm:grid-cols-3">
                 <div>
                   <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                   {proforma.number}   
@@ -918,7 +918,7 @@ const ProformaDetail = () => {
             <CardHeader>
               <CardTitle>Informations sur le client</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="grid gap-4 sm:grid-cols-3">
               <div>
                 <strong className="font-semibold">Nom:</strong>{" "}
                 {proforma.client?.name}
@@ -975,7 +975,7 @@ const ProformaDetail = () => {
             <CardHeader>
               <CardTitle>Détails de la facture</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="grid gap-4 sm:grid-cols-3">
               <div>
                 <strong className="font-semibold">Numéro de la facture:</strong>{" "}
                 {proforma.number}
@@ -1057,7 +1057,7 @@ const ProformaDetail = () => {
                       <TableCell className="text-right">{item.unit}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.unitprice)}</TableCell>
                       <TableCell className="text-right">{item.taxrate}%</TableCell>
-                      <TableCell className="text-right">{item.discount}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(item.discount)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalExcl)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(item.totalTax)}</TableCell>
                       <TableCell className="text-right font-medium">{formatCurrency(item.total)}</TableCell>
@@ -1204,12 +1204,12 @@ const ProformaDetail = () => {
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
                       <Undo className="mr-2 h-4 w-4 text-yellow-600" />
-                      Annuler l'approbation
+                      Annuler la validation d'Admin
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Annuler l'approbation</AlertDialogTitle>
+                      <AlertDialogTitle>Annuler la validation d'Admin</AlertDialogTitle>
                       <AlertDialogDescription>
                         Le statut redeviendra alors "envoyé".
                         Êtes-vous sûr de vouloir continuer ?
@@ -1241,12 +1241,12 @@ const ProformaDetail = () => {
                     <AlertDialogTrigger asChild>
                       <Button variant="outline" className="bg-yellow-50 hover:bg-yellow-100">
                         <Undo className="mr-2 h-4 w-4 text-yellow-600" />
-                        Annuler la conversion
+                        Annuler la transformation finale
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Annuler la conversion</AlertDialogTitle>
+                        <AlertDialogTitle>Annuler la transformation finale</AlertDialogTitle>
                         <AlertDialogDescription>
                           Cette opération supprimera la facture finale liée et réinitialisera ce formulaire.
                           Etes-vous sûr de vouloir continuer ?
@@ -1270,13 +1270,7 @@ const ProformaDetail = () => {
                 <Printer className="mr-2 h-4 w-4" />
                 Imprimer / Télécharger
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/print/v3/proforma/${id}`)}
-              >
-                <Printer className="mr-2 h-4 w-4" />
-                Print V3
-              </Button>
+              
 
               
               {canEdit && proforma.status === 'draft' && (

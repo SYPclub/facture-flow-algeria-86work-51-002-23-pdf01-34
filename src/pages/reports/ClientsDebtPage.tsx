@@ -50,7 +50,7 @@ const ClientsDebtPage = () => {
           ...client,
           totalDebt,
           invoiceCount: client.final_invoices.length,
-          unpaidInvoiceCount: client.final_invoices.filter(inv => inv.client_debt > 0).length
+          NonPayéInvoiceCount: client.final_invoices.filter(inv => inv.client_debt > 0).length
         };
       });
     }
@@ -122,7 +122,7 @@ const ClientsDebtPage = () => {
                             currency: 'DZD' 
                           })}
                         </TableCell>
-                        <TableCell>{client.unpaidInvoiceCount} / {client.invoiceCount}</TableCell>
+                        <TableCell>{client.NonPayéInvoiceCount} / {client.invoiceCount}</TableCell>
                         <TableCell>
                           <Button
                             variant="ghost"

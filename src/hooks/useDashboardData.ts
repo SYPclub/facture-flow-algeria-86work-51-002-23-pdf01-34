@@ -131,7 +131,7 @@ export const useDashboardData = () => {
           subtotal: invoice.subtotal,
           taxTotal: invoice.taxtotal,
           total: invoice.total,
-          status: invoice.status as 'unpaid' | 'paid' | 'cancelled' | 'credited',
+          status: invoice.status as 'NonPayé' | 'payé' | 'annulé' | 'credited',
           proformaId: invoice.proformaid,
           paymentDate: invoice.paymentdate,
           paymentReference: invoice.paymentreference,

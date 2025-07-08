@@ -198,42 +198,45 @@ const ProformaInvoicesPage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredInvoices.map((invoice) => (
-                    <TableRow key={invoice.id} className={isOwnedByCurrentUser(invoice) ? "bg-muted/20" : ""}>
-                      <TableCell className="font-mono font-medium">
-                        {invoice.number}
-                      </TableCell>
-                      <TableCell>
-                        {invoice.client?.name || 'Client inconnu'}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {invoice.issuedate}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusBadgeVariant(invoice.status)}>
-                          {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-xs">
-                          <span className={isOwnedByCurrentUser(invoice) ? "font-medium" : ""}>
-                            {getCreatorEmailDisplay(invoice)}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(invoice.total)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Link
-                          to={`/invoices/proforma/${invoice.id}`}
-                          className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
-                        >
-                          Voir 
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {[...filteredInvoices]
+                    .sort((a, b) => new Date(b.issuedate).getTime() - new Date(a.issuedate).getTime())
+                    .map((invoice) => (
+
+                      <TableRow key={invoice.id} className={isOwnedByCurrentUser(invoice) ? "bg-muted/20" : ""}>
+                        <TableCell className="font-mono font-medium">
+                          {invoice.number}
+                        </TableCell>
+                        <TableCell>
+                          {invoice.client?.name || 'Client inconnu'}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {invoice.issuedate}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusBadgeVariant(invoice.status)}>
+                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1 text-xs">
+                            <span className={isOwnedByCurrentUser(invoice) ? "font-medium" : ""}>
+                              {getCreatorEmailDisplay(invoice)}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(invoice.total)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Link
+                            to={`/invoices/proforma/${invoice.id}`}
+                            className="rounded-md px-2 py-1 text-sm font-medium text-primary hover:underline"
+                          >
+                            Voir 
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </div>

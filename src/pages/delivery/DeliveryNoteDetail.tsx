@@ -77,6 +77,8 @@ const deliveryNoteFormSchema = z.object({
   drivername: z.string().optional(),
   truck_id: z.string().optional(),
   delivery_company: z.string().optional(),
+  driverlisence: z.string().optional(),
+  drivertel: z.string().optional(),
   issuedate: z.string(),
   deliverydate: z.string().optional().nullable(),
   items: z.array(
@@ -137,6 +139,8 @@ const DeliveryNoteDetail = () => {
       drivername: '',
       truck_id: '',
       delivery_company: '',
+      driverlisence: '',
+      drivertel: '',
       issuedate: '',
       deliverydate: null,
       items: []
@@ -152,6 +156,8 @@ const DeliveryNoteDetail = () => {
         drivername: deliveryNote.drivername || '',
         truck_id: deliveryNote.truck_id || null,
         delivery_company: deliveryNote.delivery_company || '',
+        driverlisence: deliveryNote.driverlisence || '',
+        drivertel: deliveryNote.drivertel || '',
         issuedate: deliveryNote.issuedate || '',
         deliverydate: deliveryNote.deliverydate || null,
         items: deliveryNote.items || []
@@ -168,6 +174,8 @@ const DeliveryNoteDetail = () => {
         drivername,
         truck_id,
         delivery_company,
+        drivertel,
+        driverlisence,
         issuedate,
         deliverydate, // Now correctly handled in updateDeliveryNote
         items // This will be handled separately in the updateDeliveryNote function
@@ -198,7 +206,7 @@ const DeliveryNoteDetail = () => {
     mutationFn: () => {
       if (!id) throw new Error('No delivery note ID provided');
       return updateDeliveryNote(id, { 
-        status: 'delivered', 
+        status: 'livrée', 
         deliverydate: new Date().toISOString().split('T')[0] 
       });
     },
@@ -206,11 +214,11 @@ const DeliveryNoteDetail = () => {
       queryClient.invalidateQueries({ queryKey: ['deliveryNotes'] });
       toast({
         title: 'Status Updated',
-        description: 'Delivery note has been marked as delivered'
+        description: 'Delivery note has been marked as livrée'
       });
     },
     onError: (error) => {
-      console.error('Error marking as delivered:', error);
+      console.error('Error marking as livrée:', error);
       toast({
         variant: 'destructive',
         title: 'Update Failed',
@@ -254,11 +262,11 @@ const DeliveryNoteDetail = () => {
   const getStatusBadgeVariant = (status?: string) => {
     if (!status) return 'outline';
     switch (status) {
-      case 'delivered':
+      case 'livrée':
         return 'default';
-      case 'pending':
+      case 'en_attente_de_livraison':
         return 'secondary';
-      case 'cancelled':
+      case 'annulé':
         return 'destructive';
       default:
         return 'outline';
@@ -478,10 +486,50 @@ const DeliveryNoteDetail = () => {
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
+                      name="delivery_company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Société de livraison (facultatif)</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
                       name="drivername"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Nom du conducteur</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="driverlisence"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>N° permi </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="drivertel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>N° tel chaufeur</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -504,19 +552,7 @@ const DeliveryNoteDetail = () => {
                       )}
                     />
                     
-                    <FormField
-                      control={form.control}
-                      name="delivery_company"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Société de livraison (facultatif)</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    
                   </div>
                 </CardContent>
               </Card>
@@ -679,7 +715,7 @@ const DeliveryNoteDetail = () => {
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Date de livraison:</span>
                        
-                      <span>{deliveryNote.deliverydate || 'Not delivered yet'}</span>
+                      <span>{deliveryNote.deliverydate || 'Not livrée yet'}</span>
                     </div>
                     <div className="grid grid-cols-2">
                       <span className="text-sm text-muted-foreground">Statut:</span>
@@ -713,11 +749,33 @@ const DeliveryNoteDetail = () => {
                 <div className="space-y-2">
                   <div className="grid grid-cols-2">
                     <span className="text-sm text-muted-foreground flex items-center">
+                      <Building className="mr-2 h-4 w-4" />
+                      Société de livraison:
+                    </span>
+                    <span>{deliveryNote.delivery_company || '-'}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       Conducteur:
                     </span>
-                    <span> d :{deliveryNote.drivername?.trim() ? deliveryNote.drivername : 'Non spécifié'}</span>
+                    <span> {deliveryNote.drivername?.trim() ? deliveryNote.drivername : 'Non spécifié'}</span>
 
+                  </div>
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <Building className="mr-2 h-4 w-4" />
+                      N° permi:
+                    </span>
+                    <span>{deliveryNote.driverlisence || '-'}</span>
+                  </div>
+                  <div className="grid grid-cols-2">
+                    <span className="text-sm text-muted-foreground flex items-center">
+                      <Building className="mr-2 h-4 w-4" />
+                      N° tel:
+                    </span>
+                    <span>{deliveryNote.drivertel || '-'}</span>
                   </div>
                   
                   <div className="grid grid-cols-2">
@@ -728,13 +786,7 @@ const DeliveryNoteDetail = () => {
                     <span>{deliveryNote.truck_id || 'Non spécifié'}</span>
                   </div>
                   
-                  <div className="grid grid-cols-2">
-                    <span className="text-sm text-muted-foreground flex items-center">
-                      <Building className="mr-2 h-4 w-4" />
-                      Société de livraison:
-                    </span>
-                    <span>{deliveryNote.delivery_company || 'Not specified'}</span>
-                  </div>
+                  
                 </div>
               </CardContent>
             </Card>
@@ -785,15 +837,9 @@ const DeliveryNoteDetail = () => {
                 <Printer className="mr-2 h-4 w-4" />
                 Imprimer le bon de livraison
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/print/v3/delivery-notes/${id}`)}
-              >
-                <Printer className="mr-2 h-4 w-4" />
-                Print V3
-              </Button>
               
-              {canEdit && deliveryNote.status === 'pending' && (
+              
+              {canEdit && deliveryNote.status === 'en_attente_de_livraison' && (
                 <Button asChild variant="outline">
                   <Link to={`/delivery-notes/edit/${deliveryNote.id}`}>
                     <Edit className="mr-2 h-4 w-4" />
@@ -802,7 +848,7 @@ const DeliveryNoteDetail = () => {
                 </Button>
               )}
               
-              {canEdit && deliveryNote.status === 'pending' && (
+              {canEdit && deliveryNote.status === 'en_attente_de_livraison' && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
@@ -830,7 +876,7 @@ const DeliveryNoteDetail = () => {
                 </AlertDialog>
               )}
               
-              {deliveryNote.status === 'pending' && (
+              {deliveryNote.status === 'en_attente_de_livraison' && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button>

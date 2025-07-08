@@ -73,7 +73,7 @@ const PDFTemplateDesigner: React.FC = () => {
         { name: "invoice.taxtotal", description: "Total tax amount", example: "190.00" },
         { name: "invoice.total", description: "Total amount", example: "1190.00" },
         { name: "invoice.notes", description: "Invoice notes", example: "Payment due within 30 days" },
-        { name: "invoice.status", description: "Invoice status", example: "paid" }
+        { name: "invoice.status", description: "Invoice status", example: "payé" }
       ]
     },
     {
@@ -204,7 +204,7 @@ const PDFTemplateDesigner: React.FC = () => {
         ${type === 'delivery_note' ? `
         <div class="signatures">
           <div class="signature-block">
-            <p>Delivered by:</p>
+            <p>livrée by:</p>
             <div class="signature-line"></div>
           </div>
           <div class="signature-block">

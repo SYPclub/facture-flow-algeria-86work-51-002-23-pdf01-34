@@ -368,6 +368,8 @@ export const updateDeliveryNote = async (id: string, data: any) => {
       deliveryNoteData.drivername = deliveryNoteData.drivername || 'Unknown Driver';
       deliveryNoteData.truck_id = deliveryNoteData.truck_id || null;
       deliveryNoteData.delivery_company = deliveryNoteData.delivery_company || null;
+      deliveryNoteData.driverlisence = deliveryNoteData.driverlisence || null;
+      deliveryNoteData.drivertel = deliveryNoteData.drivertel || null;
       
       console.log('Updating delivery note with data:', deliveryNoteData);
       
@@ -518,11 +520,11 @@ export const addInvoicePayment = async (invoiceId: string, paymentData: any) => 
     let newStatus = invoice.status;
     
     if (newAmountPaid >= invoice.total) {
-      newStatus = 'paid';
+      newStatus = 'payé';
     } else if (newAmountPaid > 0 && newAmountPaid < invoice.total) {
       newStatus = 'partially_paid';
     } else if (newAmountPaid <= 0) {
-      newStatus = 'unpaid';
+      newStatus = 'NonPayé';
     }
     
     // Update the invoice with the new amounts and status
@@ -620,9 +622,9 @@ export const deleteInvoicePayment = async (paymentId: string, invoiceId: string)
     const newClientDebt = invoice.total - newAmountPaid;
     
     // Determine the new status
-    let newStatus = 'unpaid';
+    let newStatus = 'NonPayé';
     if (newAmountPaid >= invoice.total) {
-      newStatus = 'paid';
+      newStatus = 'payé';
     } else if (newAmountPaid > 0) {
       newStatus = 'partially_paid';
     }

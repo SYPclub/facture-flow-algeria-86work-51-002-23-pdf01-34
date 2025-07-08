@@ -193,11 +193,12 @@ const addClientInfo = (pdf: jsPDF, client: Client | undefined, invoiceDetails: a
   pdf.text(clientInfo, 20, startY + 13);
   
   // Right side: Invoice details
+  /*
   pdf.setTextColor(darkBlue);
   pdf.setFontSize(11);
   pdf.setFont("helvetica", "bold");
   pdf.text("Information de la facture:", 115, startY + 7);
-  
+  */
   // Create array of invoice details
   pdf.setTextColor(darkGray);
   pdf.setFont("helvetica", "normal");
@@ -259,7 +260,7 @@ const addStylizedTable = (pdf: jsPDF, headers: string[], rows: any[][], startY: 
 };
 
 // Add totals section with styled design
-const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
+const addTotals = (pdf: jsPDF, invoice: any, startY: number, tdiscount: number) => {
   const primaryColor = "#003049";  // Blue
   const lightGray = "#F1FAEE";     // Light gray for background
   const darkGray = "#374151";      // Dark gray for text
@@ -272,16 +273,16 @@ const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
   pdf.setFont("helvetica", "normal");
   pdf.setTextColor(darkGray);
   pdf.setFontSize(9);
-  
-  pdf.text("sous-total:", pdf.internal.pageSize.width - 75, startY + 10);
-  pdf.text("TVA:", pdf.internal.pageSize.width - 75, startY + 20);
+  pdf.text("Remise:", pdf.internal.pageSize.width - 75, startY + 10);
+  pdf.text("sous-total:", pdf.internal.pageSize.width - 75, startY + 17);
+  pdf.text("TVA:", pdf.internal.pageSize.width - 75, startY + 24);
   
   let nextY = startY + 30;
   
-  // Add stamp tax line if applicable
-  if (invoice.payment_type === 'cash' && invoice.stamp_tax > 0) {
+  // Add stamp tax line if applicable invoice.payment_type === 'cash' && invoice.stamp_tax > 0
+  if (true) {
     pdf.text("Tembre:", pdf.internal.pageSize.width - 75, nextY);
-    pdf.text(formatCurrency(invoice.stamp_tax), pdf.internal.pageSize.width - 20, nextY, { align: 'right' });
+    pdf.text(`${formatCurrency(invoice.stamp_tax) || '-'}`, pdf.internal.pageSize.width - 20, nextY, { align: 'right' });
     nextY += 10;
   }
   
@@ -299,8 +300,9 @@ const addTotals = (pdf: jsPDF, invoice: any, startY: number) => {
   pdf.setFont("helvetica", "normal");
   pdf.setTextColor(darkGray);
   pdf.setFontSize(9);
-  pdf.text(formatCurrency(invoice.subtotal), pdf.internal.pageSize.width - 20, startY + 10, { align: 'right' });
-  pdf.text(formatCurrency(invoice.taxTotal), pdf.internal.pageSize.width - 20, startY + 20, { align: 'right' });
+  pdf.text(formatCurrency(tdiscount), pdf.internal.pageSize.width - 20, startY + 10, { align: 'right' });
+  pdf.text(formatCurrency(invoice.subtotal), pdf.internal.pageSize.width - 20, startY + 17, { align: 'right' });
+  pdf.text(formatCurrency(invoice.taxTotal), pdf.internal.pageSize.width - 20, startY + 24, { align: 'right' });
   
   // Add total with primary color
   pdf.setFont("helvetica", "bold");
@@ -393,11 +395,12 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
     item.unit ? item.unit.toString() : '-',
     formatCurrency(item.unitprice),
     `${item.taxrate}%`,
-    `${item.discount}%`,
+    formatCurrency(item.discount),
     formatCurrency(item.totalExcl),
     formatCurrency(item.totalTax),
     formatCurrency(item.total)
   ]);
+  const tdiscount = proforma.items.reduce((acc, item) => acc + (item.discount || 0), 0);
   const itemChunks = chunkArray(itemRows, maxRowsPerPage);
 
   let currentY = 3;
@@ -414,13 +417,13 @@ export const exportProformaInvoiceToPDF = async (proforma: ProformaInvoice) => {
 
     const tableY = addStylizedTable(
       pdf,
-      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise %', 'Hors taxe', 'TVA', 'Total'],
+      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'remise ', 'Hors taxe', 'TVA', 'Total'],
       chunk,
       currentY + 3
     );
     lastTableY = tableY;
     let yAfterTable = lastTableY + 10;
-    const totalsY = addTotals(pdf, proforma, yAfterTable);
+    const totalsY = addTotals(pdf, proforma, yAfterTable,tdiscount);
     const wordsY = addAmountInWords(pdf, proforma.total, yAfterTable +15);
     const notesY = addNotes(pdf, proforma.notes, wordsY);
     
@@ -462,12 +465,12 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
     item.quantity.toString(),
     item.unit ? item.unit.toString() : '-',
     formatCurrency(item.unitprice),
-    `${item.taxrate}%`,
+    formatCurrency(item.discount),
     formatCurrency(item.totalExcl),
     formatCurrency(item.totalTax),
     formatCurrency(item.total)
   ]);
-
+  const tdiscount = invoice.items.reduce((acc, item) => acc + (item.discount || 0), 0);
   const itemChunks = chunkArray(itemRows, maxRowsPerPage);
   let currentY = 3;
   let pageIndex = 0;
@@ -486,14 +489,14 @@ export const exportFinalInvoiceToPDF = async (invoice: FinalInvoice) => {
 
     const tableY = addStylizedTable(
       pdf,
-      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'TVA %', 'Hors taxe', 'TVA', 'Total'],
+      ['No', 'Produit', 'Qty', 'Unité', 'Prix unitaire', 'Remise', 'Hors taxe', 'TVA', 'Total'],
       chunk,
       currentY + 3
     );
 
     lastTableY = tableY;
     let yAfterTable = lastTableY + 10;
-    const totalsY = addTotals(pdf, invoice, yAfterTable);
+    const totalsY = addTotals(pdf, invoice, yAfterTable,tdiscount);
     const wordsY = addAmountInWords(pdf, invoice.total, yAfterTable +15);
     const notesY = addNotes(pdf, invoice.notes, wordsY);
     notesYY = wordsY;
@@ -567,7 +570,7 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
       pdf,
       ['No', 'Produit', 'Quantity', 'Unité', 'Description'],
       chunk,
-      currentY + 10
+      currentY + 4
     );
 
     lastTableY = tableY;
@@ -580,10 +583,12 @@ export const exportDeliveryNoteToPDF = async (deliveryNote: DeliveryNote) => {
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(pdfFontSize);
 
-      const labels = ["Entreprise de transport","Chauffeur", "Matricule" ];
+      const labels = ["Entreprise de transport","Chauffeur","N° permi","N° tel", "Matricule" ];
       const values = [
         deliveryNote.delivery_company || "-",
         deliveryNote.drivername || "-",
+        deliveryNote.driverlisence || "-",
+        deliveryNote.drivertel || "-",
         deliveryNote.truck_id || "-",
         
       ];
@@ -865,15 +870,15 @@ export const exportEtat104ToExcel = (
 // Helper function for status colors
 function getStatusColor(status: string): string {
   switch (status) {
-    case 'paid':
+    case 'payé':
     case 'approved':
-    case 'delivered':
+    case 'livrée':
       return "#22C55E"; // Green
-    case 'unpaid':
+    case 'NonPayé':
     case 'sent':
-    case 'pending':
+    case 'en_attente_de_livraison':
       return "#3B82F6"; // Blue
-    case 'cancelled':
+    case 'annulé':
     case 'rejected':
       return "#EF4444"; // Red
     case 'credited':

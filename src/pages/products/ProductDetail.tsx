@@ -471,7 +471,7 @@ const ProductDetail = () => {
                     <FormItem>
                       <FormLabel>Taux d'imposition (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input  type="number" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

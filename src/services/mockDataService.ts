@@ -669,7 +669,7 @@ class MockDataService {
             subtotal: proforma.subtotal,
             taxtotal: proforma.taxTotal,
             total: proforma.total,
-            status: 'unpaid'
+            status: 'NonPayé'
           })
           .select()
           .single();
@@ -815,7 +815,7 @@ class MockDataService {
         subtotal: invoice.subtotal,
         taxTotal: invoice.taxtotal,
         total: invoice.total,
-        status: invoice.status as 'unpaid' | 'paid' | 'cancelled' | 'credited',
+        status: invoice.status as 'NonPayé' | 'payé' | 'annulé' | 'credited',
         proformaId: invoice.proformaid,
         paymentDate: invoice.paymentdate,
         paymentReference: invoice.paymentreference,
@@ -929,7 +929,7 @@ class MockDataService {
       subtotal: invoice.subtotal,
       taxTotal: invoice.taxtotal,
       total: invoice.total,
-      status: invoice.status as 'unpaid' | 'paid' | 'cancelled' | 'credited',
+      status: invoice.status as 'NonPayé' | 'payé' | 'annulé' | 'credited',
       proformaId: invoice.proformaid,
       paymentDate: invoice.paymentdate,
       paymentReference: invoice.paymentreference,
@@ -947,7 +947,7 @@ class MockDataService {
       
       const { data, error } = await supabase
         .from('final_invoices')
-        .update({ status: 'paid', paymentdate: new Date().toISOString().split('T')[0] })
+        .update({ status: 'payé', paymentdate: new Date().toISOString().split('T')[0] })
         .eq('id', id)
         .select('*')
         .single();
@@ -960,7 +960,7 @@ class MockDataService {
       await commitTransaction();
       return this.getFinalInvoiceById(id);
     } catch (error) {
-      console.error('Error marking invoice as paid:', error);
+      console.error('Error marking invoice as payé:', error);
       await rollbackTransaction();
       return null;
     }
@@ -1078,9 +1078,11 @@ class MockDataService {
         drivername: note.drivername,
         truck_id: note.truck_id,
         delivery_company: note.delivery_company,
+        drivertel: note.drivertel,
+        driverlisence: note.driverlisence,
         items,
         notes: note.notes || '',
-        status: note.status as 'pending' | 'delivered' | 'cancelled',
+        status: note.status as 'en_attente_de_livraison' | 'livrée' | 'annulé',
         createdAt: note.createdat || new Date().toISOString(),
         updatedAt: note.updatedat || new Date().toISOString()
       });
@@ -1197,9 +1199,11 @@ class MockDataService {
       drivername: note.drivername,
       truck_id: note.truck_id,
       delivery_company: note.delivery_company,
+      drivertel: note.drivertel,
+      driverlisence: note.driverlisence,
       items,
       notes: note.notes || '',
-      status: note.status as 'pending' | 'delivered' | 'cancelled',
+      status: note.status as 'en_attente_de_livraison' | 'livrée' | 'annulé',
       createdAt: note.createdat || new Date().toISOString(),
       updatedAt: note.updatedat || new Date().toISOString()
     };
@@ -1303,9 +1307,11 @@ class MockDataService {
         drivername: note.drivername,
         truck_id: note.truck_id,
         delivery_company: note.delivery_company,
+        drivertel: note.drivertel,
+        driverlisence: note.driverlisence,
         items,
         notes: note.notes || '',
-        status: note.status as 'pending' | 'delivered' | 'cancelled',
+        status: note.status as 'en_attente_de_livraison' | 'livrée' | 'annulé',
         createdAt: note.createdat || new Date().toISOString(),
         updatedAt: note.updatedat || new Date().toISOString()
       });
@@ -1331,10 +1337,12 @@ class MockDataService {
             issuedate: deliveryNote.issuedate,
             deliverydate: deliveryNote.deliverydate,
             notes: deliveryNote.notes || '',
-            status: deliveryNote.status || 'pending',
-            drivername: deliveryNote.drivername || 'Unknown Driver',
+            status: deliveryNote.status || 'en_attente_de_livraison',
+            drivername: deliveryNote.drivername || null,
             truck_id: deliveryNote.truck_id || null,
-            delivery_company: deliveryNote.delivery_company || null
+            delivery_company: deliveryNote.delivery_company || null,
+            drivertel: deliveryNote.drivertel || null,
+            driverlisence: deliveryNote.driverlisence || null
           })
           .select()
           .single();

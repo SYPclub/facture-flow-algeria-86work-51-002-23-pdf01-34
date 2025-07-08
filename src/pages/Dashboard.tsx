@@ -268,7 +268,7 @@ const Dashboard = () => {
                     <div className="text-right">
                       <p className="font-medium">{item.total.toLocaleString('fr-DZ', { style: 'currency', currency: 'DZD' })}</p>
                       <div className="flex items-center justify-end gap-1">
-                        <span className={`h-2 w-2 rounded-full ${item.status === 'paid' ? 'bg-green-500' : 'bg-amber-500'}`}></span>
+                        <span className={`h-2 w-2 rounded-full ${item.status === 'payé' ? 'bg-green-500' : 'bg-amber-500'}`}></span>
                         <p className="text-xs text-muted-foreground">{
                           item.status.charAt(0).toUpperCase() + item.status.slice(1)
                         }</p>
