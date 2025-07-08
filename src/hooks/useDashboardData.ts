@@ -80,7 +80,6 @@ export const useDashboardData = () => {
           id: invoice.id,
           number: invoice.number,
           clientid: invoice.clientid,
-          created_by_userid: (invoice as any).created_by_userid || '',
           client: invoice.clients ? {
             id: invoice.clients.id,
             name: invoice.clients.name,
@@ -90,13 +89,6 @@ export const useDashboardData = () => {
             email: invoice.clients.email,
             country: invoice.clients.country,
             city: invoice.clients.city,
-            rc: (invoice.clients as any).rc || null,
-            nis: (invoice.clients as any).nis || null,
-            ai: (invoice.clients as any).ai || null,
-            rib: (invoice.clients as any).rib || null,
-            ccp: (invoice.clients as any).ccp || null,
-            contact: (invoice.clients as any).contact || null,
-            telcontact: (invoice.clients as any).telcontact || null,
             createdAt: invoice.clients.createdat,
             updatedAt: invoice.clients.updatedat
           } : undefined,
@@ -120,7 +112,6 @@ export const useDashboardData = () => {
           id: invoice.id,
           number: invoice.number,
           clientid: invoice.clientid,
-          created_by_userid: (invoice as any).created_by_userid || '',
           client: invoice.clients ? {
             id: invoice.clients.id,
             name: invoice.clients.name,
@@ -130,13 +121,6 @@ export const useDashboardData = () => {
             email: invoice.clients.email,
             country: invoice.clients.country,
             city: invoice.clients.city,
-            rc: (invoice.clients as any).rc || null,
-            nis: (invoice.clients as any).nis || null,
-            ai: (invoice.clients as any).ai || null,
-            rib: (invoice.clients as any).rib || null,
-            ccp: (invoice.clients as any).ccp || null,
-            contact: (invoice.clients as any).contact || null,
-            telcontact: (invoice.clients as any).telcontact || null,
             createdAt: invoice.clients.createdat,
             updatedAt: invoice.clients.updatedat
           } : undefined,
@@ -152,7 +136,7 @@ export const useDashboardData = () => {
           paymentDate: invoice.paymentdate,
           paymentReference: invoice.paymentreference,
           payment_type: invoice.payment_type,
-          stamp_tax: invoice.stamp_tax?.toString() || '',
+          stamp_tax: invoice.stamp_tax,
           bc:invoice.bc,
           createdAt: invoice.createdat,
           updatedAt: invoice.updatedat
